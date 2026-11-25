@@ -24,8 +24,11 @@ notification, deploy VPS. Kartu tool dan izin di app tetap ada di kode tapi belu
   `io.github.radhitarayy.lumi`. App lama (`dev.juru.juru`) di HP dihapus manual karena terpasang
   sebagai aplikasi terpisah.
 - [x] App tetap lulus analyze dan test setelah dipindah.
-- [ ] PostgreSQL lokal + Mailpit untuk menangkap email di dev.
-- [ ] Scaffold `core/` (starter kit React Laravel).
+- [x] PostgreSQL lokal (Laragon 18.7): user `lumi`, database `lumi` dan `lumi_test`.
+- [x] Scaffold `core/`: Laravel 13.44 + starter kit React (Inertia), terhubung ke PostgreSQL,
+  migrasi awal jalan, `npm run build` sukses, 42 test bawaan lulus.
+- [ ] Email dev: sementara `MAIL_MAILER=log` (kode muncul di `storage/logs`); Mailpit menyusul.
+- [ ] Ganti PHPUnit ke Pest (installer gagal di langkah ini karena download dari GitHub timeout).
 
 ## 1. Lumi Core (Laravel)
 

@@ -73,6 +73,36 @@ mematikan server adb. Tutup scrcpy saat menjalankan `flutter run`.
 Aktifkan Opsi pengembang → Debugging USB, colok ulang, setujui popup "Izinkan debugging USB",
 pilih mode USB **Transfer file**. Cek dengan `adb devices -l`.
 
+## Lumi Core (Laravel)
+
+| Alat | Catatan |
+|---|---|
+| PHP | **8.4** dari Herd: `%USERPROFILE%\.config\herd\bin\php84\php.exe`. PHP di PATH default masih 7.4 (Laragon), jadi taruh folder php84 di depan PATH sebelum menjalankan `php`/`composer`. |
+| Composer | `C:\laragon\bin\composer\composer.phar` (2.8) |
+| Node / npm | Node 25, npm 11 |
+| PostgreSQL | Laragon `C:\laragon\bin\postgresql\postgresql-18.7`, data `C:\laragon\data\postgresql-18`, port 5432. User `lumi` (password hanya di `core\.env`), database `lumi` dan `lumi_test`. |
+
+```powershell
+$env:Path = "$env:USERPROFILE\.config\herd\bin\php84;$env:Path"
+cd C:\Work\lumi\core
+php artisan serve          # http://localhost:8000
+npm run dev                # Vite (Console React)
+php artisan test
+```
+
+Menyalakan PostgreSQL kalau belum jalan (atau lewat menu Laragon):
+
+```powershell
+& 'C:\laragon\bin\postgresql\postgresql-18.7\bin\pg_ctl.exe' -D 'C:\laragon\data\postgresql-18' -l 'C:\laragon\data\postgresql-18.log' start
+```
+
+### Download dari GitHub lambat
+Composer (dan Gradle) mengunduh paket dari GitHub; di jaringan ini sering timeout untuk file
+besar (mis. `phpstan` 31 MB). Solusi: ulangi `composer install` dengan
+`$env:COMPOSER_MAX_PARALLEL_HTTP = '4'` — file yang sudah terunduh tersimpan di cache Composer.
+Kalau Composer selesai memasang paket tapi tidak keluar, hentikan lalu jalankan
+`composer dump-autoload --optimize`.
+
 ## Perangkat uji
 
 - Samsung Galaxy A56 (SM-A566B), Android, lewat USB.
