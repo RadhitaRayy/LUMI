@@ -103,6 +103,12 @@ besar (mis. `phpstan` 31 MB). Solusi: ulangi `composer install` dengan
 Kalau Composer selesai memasang paket tapi tidak keluar, hentikan lalu jalankan
 `composer dump-autoload --optimize`.
 
+### Git: pakai versi 2.51, bukan Git Laragon
+Ada dua Git di PATH. Git bawaan Laragon (2.37, `C:\laragon\bin\git`) memakai credential manager
+lama yang menggantung saat push/fetch ke GitHub. Git 2.51 di
+`%LOCALAPPDATA%\Programs\Git\cmd\git.exe` (dipakai VS Code/GitHub Desktop) berjalan normal dan
+sudah tersimpan login GitHub-nya. Repo: `https://github.com/RadhitaRayy/LUMI`.
+
 ## Perangkat uji
 
 - Samsung Galaxy A56 (SM-A566B), Android, lewat USB.
