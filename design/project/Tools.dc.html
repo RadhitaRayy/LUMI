@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Juru · Tools dan koneksi</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#ECEEF1;text-decoration:none}a:hover{color:#FFFFFF}
+button,input{font:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0E1014; color: #ECEEF1; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+
+<header style="height: 60px; flex-shrink: 0; display: flex; align-items: center; gap: 4px; padding: 0 8px; border-bottom: 1px solid #1F232B">
+<a href="Main.dc.html" aria-label="Kembali ke chat" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 12px">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+</a>
+<h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 18px">Tools &amp; koneksi</h1>
+</header>
+
+<main style="flex: 1; min-height: 0; padding: 16px; display: flex; flex-direction: column; gap: 22px; overflow: hidden">
+
+<section style="display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #9BA3AF">Koneksi</h2>
+<div style="display: flex; align-items: center; gap: 12px; padding: 14px; background: #171A20; border: 1px solid #2A2F38; border-radius: 16px">
+<div style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 12px; background: #1F232B; display: flex; align-items: center; justify-content: center">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="2"></rect><path d="M2 19h20"></path></svg>
+</div>
+<div style="flex: 1; display: flex; flex-direction: column; gap: 3px">
+<span style="font-size: 15px; font-weight: 600">Laragon-PC</span>
+<span style="font-size: 12px; color: #9BA3AF">Tailscale · agent v0.1 · 42 ms</span>
+</div>
+<span style="display: flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 13px; background: rgba(181, 242, 61, 0.12); color: #B5F23D; font-size: 12px; font-weight: 600"><span style="width: 6px; height: 6px; border-radius: 50%; background: #B5F23D"></span>Online</span>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #9BA3AF">Tools</h2>
+<p style="margin: 0; font-size: 12px; color: #9BA3AF">Aksi yang mengubah sistem selalu minta izin.</p>
+</div>
+<button type="button" style="height: 44px; padding: 0 4px; border: 0; background: transparent; color: #B5F23D; font-size: 14px; font-weight: 600">+ Tambah</button>
+</div>
+<div style="background: #171A20; border: 1px solid #2A2F38; border-radius: 16px; overflow: hidden">
+<sc-for list="{{ tools }}" as="tool" hint-placeholder-count="6">
+<button type="button" style="width: 100%; min-height: 56px; display: flex; align-items: center; gap: 12px; padding: 8px 14px; border: 0; border-bottom: 1px solid #1F232B; background: transparent; color: #ECEEF1; text-align: left">
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 13.5px">{{ tool.name }}</span>
+<span style="font-size: 12px; color: #9BA3AF">{{ tool.desc }}</span>
+</span>
+<span style="{{ tool.badgeStyle }}">{{ tool.mode }}</span>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9BA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+</button>
+</sc-for>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #9BA3AF">Model AI</h2>
+<div style="background: #171A20; border: 1px solid #2A2F38; border-radius: 16px; overflow: hidden">
+<button type="button" style="width: 100%; min-height: 54px; display: flex; align-items: center; gap: 12px; padding: 0 14px; border: 0; border-bottom: 1px solid #1F232B; background: transparent; color: #ECEEF1; text-align: left; font-size: 14px">
+<span style="flex: 1">Penyedia &amp; model</span>
+<span style="color: #9BA3AF">[PILIH MODEL]</span>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9BA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+</button>
+<div style="min-height: 54px; display: flex; align-items: center; gap: 12px; padding: 0 14px; font-size: 14px">
+<span style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+<span>Memori jangka panjang</span>
+<span style="font-size: 12px; color: #9BA3AF">Disimpan lokal di perangkat</span>
+</span>
+<button type="button" aria-label="Memori jangka panjang" aria-pressed="true" style="width: 50px; height: 30px; flex-shrink: 0; border: 0; border-radius: 15px; background: #B5F23D; padding: 3px; display: flex; justify-content: flex-end">
+<span style="width: 24px; height: 24px; border-radius: 50%; background: #0E1014"></span>
+</button>
+</div>
+</div>
+</section>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+const base = 'flex-shrink: 0; height: 24px; padding: 0 9px; border-radius: 12px; font-size: 11.5px; font-weight: 600; display: flex; align-items: center;';
+const auto = base + ' background: rgba(181, 242, 61, 0.12); color: #B5F23D;';
+const ask = base + ' background: rgba(245, 181, 68, 0.14); color: #F5B544;';
+const tools = [
+{ name: 'cek_status_bot', desc: 'Lihat status semua bot', mode: 'Otomatis' },
+{ name: 'baca_log', desc: 'Baca dan cari log bot', mode: 'Otomatis' },
+{ name: 'catatan', desc: 'Simpan dan cari catatan', mode: 'Otomatis' },
+{ name: 'restart_bot', desc: 'Restart bot lewat pm2', mode: 'Minta izin' },
+{ name: 'jalankan_script', desc: 'Jalankan script terdaftar', mode: 'Minta izin' },
+{ name: 'git_pull', desc: 'Tarik update lalu deploy', mode: 'Minta izin' }
+];
+return {
+tools: tools.map((t) => ({ ...t, badgeStyle: t.mode === 'Otomatis' ? auto : ask }))
+};
+}
+}
+</script>
+</body>
+</html>

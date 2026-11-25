@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Juru · Riwayat dan memori</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#ECEEF1;text-decoration:none}a:hover{color:#FFFFFF}
+button,input{font:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0E1014; color: #ECEEF1; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+
+<header style="height: 60px; flex-shrink: 0; display: flex; align-items: center; gap: 4px; padding: 0 8px; border-bottom: 1px solid #1F232B">
+<a href="Main.dc.html" aria-label="Kembali ke chat" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 12px">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+</a>
+<h1 style="flex: 1; margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 18px">Riwayat</h1>
+<a href="Main.dc.html" aria-label="Percakapan baru" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 12px">
+<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+</a>
+</header>
+
+<div style="flex-shrink: 0; padding: 16px 16px 0; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 14px; background: #171A20; border: 1px solid #2A2F38; border-radius: 12px; color: #9BA3AF">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+<label for="cari" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Cari riwayat</label>
+<input id="cari" type="search" placeholder="Cari percakapan atau memori" style="flex: 1; min-width: 0; height: 40px; border: 0; outline: none; background: transparent; color: #ECEEF1; font-size: 14px">
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 4px; background: #171A20; border-radius: 12px">
+<button type="button" aria-pressed="{{ chatsOn }}" onClick="{{ showChats }}" style="{{ chatsTab }}">Percakapan</button>
+<button type="button" aria-pressed="{{ memOn }}" onClick="{{ showMem }}" style="{{ memTab }}">Memori</button>
+</div>
+</div>
+
+<main style="flex: 1; min-height: 0; padding: 18px 16px; overflow: hidden">
+
+<sc-if value="{{ chatsOn }}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 18px">
+<sc-for list="{{ groups }}" as="group" hint-placeholder-count="3">
+<section style="display: flex; flex-direction: column; gap: 6px">
+<h2 style="margin: 0 0 2px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #9BA3AF">{{ group.label }}</h2>
+<sc-for list="{{ group.items }}" as="chat" hint-placeholder-count="2">
+<button type="button" style="width: 100%; display: flex; flex-direction: column; gap: 5px; padding: 12px 14px; border: 1px solid #1F232B; border-radius: 14px; background: #13161B; color: #ECEEF1; text-align: left">
+<span style="width: 100%; display: flex; align-items: center; gap: 10px">
+<span style="flex: 1; font-size: 15px; font-weight: 600">{{ chat.title }}</span>
+<span style="font-size: 12px; color: #9BA3AF">{{ chat.time }}</span>
+</span>
+<span style="font-size: 13px; color: #9BA3AF">{{ chat.snippet }}</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #B5F23D">{{ chat.tools }}</span>
+</button>
+</sc-for>
+</section>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ memOn }}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; align-items: flex-start; gap: 12px; padding: 14px; border-radius: 16px; background: rgba(181, 242, 61, 0.07); border: 1px solid rgba(181, 242, 61, 0.22)">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B5F23D" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>
+<p style="margin: 0; font-size: 13px; line-height: 1.5">Hal yang Juru ingat dipakai untuk menjawab lebih tepat. Semuanya tersimpan di HP dan bisa kamu hapus kapan saja.</p>
+</div>
+<div style="background: #171A20; border: 1px solid #2A2F38; border-radius: 16px; overflow: hidden">
+<sc-for list="{{ memories }}" as="mem" hint-placeholder-count="5">
+<div style="display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 14px; border-bottom: 1px solid #1F232B">
+<span style="flex: 1; font-size: 14px; line-height: 1.4">{{ mem.text }}</span>
+<button type="button" aria-label="Hapus memori ini" style="width: 44px; height: 44px; flex-shrink: 0; border: 0; border-radius: 10px; background: transparent; color: #9BA3AF; display: flex; align-items: center; justify-content: center">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+</button>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = { tab: 'chats' };
+}
+renderVals() {
+const tab = this.state.tab;
+const base = 'height: 40px; border: 0; border-radius: 9px; font-size: 14px; font-weight: 600;';
+const on = base + ' background: #2A2F38; color: #ECEEF1;';
+const off = base + ' background: transparent; color: #9BA3AF;';
+return {
+chatsOn: tab === 'chats',
+memOn: tab === 'mem',
+chatsTab: tab === 'chats' ? on : off,
+memTab: tab === 'mem' ? on : off,
+showChats: () => this.setState({ tab: 'chats' }),
+showMem: () => this.setState({ tab: 'mem' }),
+groups: [
+{ label: 'Hari ini', items: [
+{ title: 'Restart bot Discord', time: '09.41', snippet: 'Bot dimulai ulang dan kembali online.', tools: 'cek_status_bot · restart_bot' },
+{ title: 'Ringkas error semalam', time: '07.15', snippet: 'Ada 3 timeout ke API, semuanya pulih sendiri.', tools: 'baca_log' }
+] },
+{ label: 'Kemarin', items: [
+{ title: 'Ide konten minggu ini', time: '21.03', snippet: 'Lima ide video pendek soal tips coding.', tools: 'catatan' },
+{ title: 'Deploy update tele-bot', time: '16.20', snippet: 'Tarik commit terbaru lalu restart.', tools: 'git_pull · restart_bot' }
+] }
+],
+memories: [
+{ text: 'Bot berjalan di Laragon-PC dan dikelola pakai pm2' },
+{ text: 'Suka jawaban singkat dengan bahasa santai' },
+{ text: 'Proyek web utama pakai Laravel' },
+{ text: 'Kalau bot error, cek log dulu sebelum restart' },
+{ text: 'Rutin bikin konten video pendek' }
+]
+};
+}
+}
+</script>
+</body>
+</html>

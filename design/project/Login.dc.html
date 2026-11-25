@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Juru · Masuk</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#ECEEF1;text-decoration:none}a:hover{color:#FFFFFF}
+button,input{font:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0E1014; color: #ECEEF1; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; padding: 72px 24px 36px; overflow: hidden">
+
+<div style="display: flex; flex-direction: column; gap: 22px">
+<div aria-hidden="true" style="width: 56px; height: 56px; border-radius: 16px; background: #B5F23D; color: #0E1014; display: flex; align-items: center; justify-content: center">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 4-5 4M12 17h7"></path></svg>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 30px; line-height: 1.15">Selamat datang lagi</h1>
+<p style="margin: 0; font-size: 15px; color: #9BA3AF">Masuk untuk lanjut ngobrol dengan Juru.</p>
+</div>
+</div>
+
+<form style="margin-top: 36px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label for="login-email" style="font-size: 13px; font-weight: 500; color: #9BA3AF">Email</label>
+<input id="login-email" type="email" autocomplete="email" placeholder="kamu@email.com" style="height: 52px; box-sizing: border-box; padding: 0 16px; background: #171A20; border: 1px solid #2A2F38; border-radius: 14px; color: #ECEEF1; font-size: 15px; outline: none">
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label for="login-pass" style="font-size: 13px; font-weight: 500; color: #9BA3AF">Password</label>
+<div style="display: flex; align-items: center; height: 52px; box-sizing: border-box; padding: 0 4px 0 16px; background: #171A20; border: 1px solid #B5F23D; border-radius: 14px">
+<input id="login-pass" type="password" autocomplete="current-password" value="rahasia123" style="flex: 1; min-width: 0; height: 48px; border: 0; background: transparent; color: #ECEEF1; font-size: 15px; outline: none">
+<button type="button" aria-label="Tampilkan password" style="width: 44px; height: 44px; border: 0; border-radius: 10px; background: transparent; color: #9BA3AF; display: flex; align-items: center; justify-content: center">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+</button>
+</div>
+</div>
+<a href="#lupa" style="align-self: flex-end; min-height: 44px; display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #B5F23D">Lupa password?</a>
+<a href="Main.dc.html" style="height: 52px; border-radius: 14px; background: #B5F23D; color: #0E1014; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 16px">Masuk</a>
+</form>
+
+<div style="margin: 24px 0; display: flex; align-items: center; gap: 12px; font-size: 13px; color: #9BA3AF">
+<span style="flex: 1; height: 1px; background: #2A2F38"></span>atau<span style="flex: 1; height: 1px; background: #2A2F38"></span>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 12px">
+<a href="Main.dc.html" style="height: 52px; border-radius: 14px; background: #171A20; border: 1px solid #2A2F38; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 600; font-size: 15px">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 9a8.5 8.5 0 0 1 15 0"></path><path d="M7 12.5a5 5 0 0 1 10 0v1.5a9 9 0 0 1-1.2 4.5"></path><path d="M12 12.5v2a9 9 0 0 1-2 5.5"></path><path d="M7 16a12 12 0 0 1-.4 3"></path></svg>
+Buka dengan sidik jari
+</a>
+<button type="button" style="height: 52px; border-radius: 14px; background: transparent; border: 1px solid #2A2F38; color: #ECEEF1; font-weight: 600; font-size: 15px">Lanjut dengan Google</button>
+</div>
+
+<div style="flex: 1"></div>
+
+<p style="margin: 0; text-align: center; font-size: 14px; color: #9BA3AF">Belum punya akun? <a href="Register.dc.html" style="font-weight: 600; color: #B5F23D">Daftar</a></p>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

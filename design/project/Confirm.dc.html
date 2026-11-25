@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Juru · Izin aksi</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#ECEEF1;text-decoration:none}a:hover{color:#FFFFFF}
+button,input{font:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; background: #0E1014; color: #ECEEF1; font-family: Inter, system-ui, sans-serif; overflow: hidden">
+
+<div aria-hidden="true" style="position: absolute; inset: 0; display: flex; flex-direction: column">
+<div style="height: 60px; border-bottom: 1px solid #1F232B; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 17px">Juru</div>
+<div style="padding: 20px 16px; display: flex; flex-direction: column; gap: 18px">
+<div style="align-self: flex-end; width: 62%; height: 44px; background: #1F232B; border-radius: 18px 18px 4px 18px"></div>
+<div style="height: 96px; background: #13161B; border: 1px solid #2A2F38; border-radius: 14px"></div>
+<div style="width: 90%; height: 14px; background: #1F232B; border-radius: 7px"></div>
+<div style="width: 70%; height: 14px; background: #1F232B; border-radius: 7px"></div>
+<div style="align-self: flex-end; width: 70%; height: 44px; background: #1F232B; border-radius: 18px 18px 4px 18px"></div>
+<div style="height: 62px; border-radius: 14px; border: 1px solid rgba(245, 181, 68, 0.35)"></div>
+</div>
+</div>
+<div style="position: absolute; inset: 0; background: rgba(5, 6, 8, 0.72)"></div>
+
+<section role="dialog" aria-labelledby="confirm-title" style="position: absolute; left: 0; right: 0; bottom: 0; background: #171A20; border-top: 1px solid #2A2F38; border-radius: 28px 28px 0 0; padding: 12px 20px 32px; display: flex; flex-direction: column; gap: 18px">
+<div style="align-self: center; width: 36px; height: 4px; border-radius: 2px; background: #3A404B"></div>
+
+<div style="display: flex; align-items: center; gap: 14px">
+<div style="width: 48px; height: 48px; flex-shrink: 0; border-radius: 50%; background: rgba(245, 181, 68, 0.16); color: #F5B544; display: flex; align-items: center; justify-content: center">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"></path></svg>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h2 id="confirm-title" style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 21px">Izinkan aksi ini?</h2>
+<p style="margin: 0; font-size: 14px; color: #9BA3AF">Juru ingin menjalankan perintah di laptopmu.</p>
+</div>
+</div>
+
+<dl style="margin: 0; background: #0E1014; border: 1px solid #2A2F38; border-radius: 14px; overflow: hidden">
+<div style="display: flex; justify-content: space-between; gap: 16px; padding: 12px 14px; border-bottom: 1px solid #1F232B">
+<dt style="font-size: 13px; color: #9BA3AF">Tool</dt>
+<dd style="margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 13px">restart_bot</dd>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border-bottom: 1px solid #1F232B">
+<dt style="font-size: 13px; color: #9BA3AF">Perintah</dt>
+<dd style="margin: 0; padding: 10px 12px; background: #171A20; border-radius: 10px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #B5F23D">pm2 restart bot-discord</dd>
+</div>
+<div style="display: flex; justify-content: space-between; gap: 16px; padding: 12px 14px; border-bottom: 1px solid #1F232B">
+<dt style="font-size: 13px; color: #9BA3AF">Target</dt>
+<dd style="margin: 0; font-size: 13px; text-align: right">Laragon-PC · via Tailscale</dd>
+</div>
+<div style="display: flex; justify-content: space-between; gap: 16px; padding: 12px 14px; border-bottom: 1px solid #1F232B">
+<dt style="font-size: 13px; color: #9BA3AF">Alasan</dt>
+<dd style="margin: 0; font-size: 13px; text-align: right">Kamu bilang bot lagi lemot</dd>
+</div>
+<div style="display: flex; justify-content: space-between; gap: 16px; padding: 12px 14px">
+<dt style="font-size: 13px; color: #9BA3AF">Dampak</dt>
+<dd style="margin: 0; font-size: 13px; text-align: right; color: #F5B544">Bot offline beberapa detik</dd>
+</div>
+</dl>
+
+<label style="display: flex; align-items: center; gap: 12px; min-height: 44px; font-size: 14px; cursor: pointer">
+<input type="checkbox" style="width: 20px; height: 20px; margin: 0; accent-color: #B5F23D">
+<span>Selalu izinkan <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px">restart_bot</span> tanpa bertanya</span>
+</label>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<a href="Main.dc.html" style="height: 52px; border-radius: 14px; background: #1F232B; border: 1px solid #2A2F38; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 15px">Tolak</a>
+<a href="Main.dc.html" style="height: 52px; border-radius: 14px; background: #B5F23D; color: #0E1014; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 15px">Izinkan sekali</a>
+</div>
+
+<p style="margin: 0; text-align: center; font-size: 12px; color: #9BA3AF">Semua aksi tercatat di Riwayat.</p>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
