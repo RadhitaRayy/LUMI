@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Lumi · Masuk</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&amp;family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#B5F23D;text-decoration:none}a:hover{color:#CDFA6E}
+button,input{font:inherit}
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes peek{0%{opacity:0;transform:translateY(40px) rotate(-6deg)}70%{opacity:1;transform:translateY(-4px) rotate(2deg)}100%{opacity:1;transform:none}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes wave{0%,100%{transform:rotate(0)}25%{transform:rotate(-16deg)}75%{transform:rotate(8deg)}}
+@keyframes swing{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+.up{animation:up .5s cubic-bezier(.2,.8,.2,1) both}
+.peek{animation:peek .7s cubic-bezier(.2,.8,.2,1) both}
+.bob{animation:bob 3s ease-in-out infinite}
+.wave{transform-origin:160px 158px;animation:wave 1.6s ease-in-out infinite}
+.swing{transform-origin:42px 140px;animation:swing 2.8s ease-in-out infinite}
+.press{transition:transform .12s ease,background-color .2s}
+.press:active{transform:scale(.97)}
+.fld{transition:border-color .2s,box-shadow .2s}
+.fld:focus-within{border-color:#B5F23D;box-shadow:0 0 0 3px rgba(181,242,61,.16)}
+@media (prefers-reduced-motion: reduce){.up,.peek,.bob,.wave,.swing{animation:none}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0E1014; color: #ECEEF1; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; padding: 56px 24px 32px; overflow: hidden">
+
+<div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 8px; padding-bottom: 14px">
+<div class="up" style="display: flex; align-items: baseline; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 34px; line-height: 1; letter-spacing: -0.05em" aria-label="lumi">
+<span aria-hidden="true">lum</span><span aria-hidden="true" style="position: relative; display: inline-block">ı<span style="position: absolute; top: 0.02em; left: 50%; transform: translateX(-46%); width: 0.17em; height: 0.17em; border-radius: 0.03em; background: #B5F23D"></span></span>
+</div>
+<h1 class="up" style="margin: 12px 0 0; font-family: 'Space Grotesk', sans-serif; font-size: 30px; line-height: 1.15; font-weight: 600; animation-delay: .06s">Halo lagi!</h1>
+<p class="up" style="margin: 0; font-size: 15px; line-height: 1.5; color: #9BA3AF; animation-delay: .12s">Masuk untuk lanjut ngobrol dengan Lumi.</p>
+</div>
+<div class="peek" style="width: 124px; height: 124px; flex-shrink: 0; margin-bottom: -18px; animation-delay: .15s">
+<svg viewBox="0 0 240 240" width="124" height="124" role="img" aria-label="Lumi si kucing melambai">
+<g stroke-linecap="round" stroke-linejoin="round" class="bob">
+<g class="swing">
+<g stroke="#F2EEE3" stroke-width="14"><path d="M42 140 V156" fill="none"></path><ellipse cx="42" cy="174" rx="15" ry="17" fill="#B5F23D"></ellipse><rect x="34" y="153" width="16" height="6" rx="2"></rect><rect x="35" y="189" width="14" height="5" rx="2"></rect></g>
+<g stroke="#14161A" stroke-width="3.5"><path d="M42 140 V156" fill="none"></path><rect x="34" y="153" width="16" height="6" rx="2" fill="#3A4150"></rect><ellipse cx="42" cy="174" rx="15" ry="17" fill="#B5F23D"></ellipse><path d="M42 157 V191 M34 160 Q30 174 34 188 M50 160 Q54 174 50 188" fill="none"></path><rect x="35" y="189" width="14" height="5" rx="2" fill="#3A4150"></rect></g>
+</g>
+<g stroke="#F2EEE3" stroke-width="14" fill="#F2A65A"><path d="M74 200 C 35 205 18 165 40 140 C 44 136 50 140 47 145 C 32 165 42 190 74 188 Z"></path><ellipse cx="120" cy="172" rx="52" ry="46"></ellipse><ellipse cx="100" cy="214" rx="16" ry="9"></ellipse><ellipse cx="140" cy="214" rx="16" ry="9"></ellipse><path d="M80 82 L86 44 L110 66 Z"></path><path d="M160 82 L154 44 L130 66 Z"></path><ellipse cx="120" cy="106" rx="50" ry="42"></ellipse></g>
+<g class="wave"><ellipse cx="172" cy="136" rx="12" ry="24" fill="#F2A65A" stroke="#F2EEE3" stroke-width="14" transform="rotate(28 172 136)"></ellipse><ellipse cx="172" cy="136" rx="12" ry="24" fill="#F2A65A" stroke="#14161A" stroke-width="3.5" transform="rotate(28 172 136)"></ellipse></g>
+<g stroke="#14161A" stroke-width="3.5">
+<path d="M74 200 C 35 205 18 165 40 140 C 44 136 50 140 47 145 C 32 165 42 190 74 188 Z" fill="#F2A65A"></path>
+<ellipse cx="120" cy="172" rx="52" ry="46" fill="#F2A65A"></ellipse>
+<ellipse cx="120" cy="180" rx="28" ry="28" fill="#FBE3C8"></ellipse>
+<ellipse cx="100" cy="214" rx="16" ry="9" fill="#F2A65A"></ellipse>
+<ellipse cx="140" cy="214" rx="16" ry="9" fill="#F2A65A"></ellipse>
+<path d="M80 82 L86 44 L110 66 Z" fill="#F2A65A"></path>
+<path d="M160 82 L154 44 L130 66 Z" fill="#F2A65A"></path>
+<ellipse cx="120" cy="106" rx="50" ry="42" fill="#F2A65A"></ellipse>
+<path d="M90 60 L92 72 L102 68 Z" fill="#F7C6B5" stroke="none"></path>
+<path d="M150 60 L148 72 L138 68 Z" fill="#F7C6B5" stroke="none"></path>
+<path d="M110 68 L112 80 M120 66 V80 M130 68 L128 80" fill="none"></path>
+<sc-if value="{{ eyesOpen }}" hint-placeholder-val="{{ true }}">
+<ellipse cx="102" cy="106" rx="5" ry="7" fill="#14161A"></ellipse>
+<ellipse cx="138" cy="106" rx="5" ry="7" fill="#14161A"></ellipse>
+</sc-if>
+<sc-if value="{{ eyesClosed }}" hint-placeholder-val="{{ false }}">
+<path d="M95 106 Q102 112 109 106 M131 106 Q138 112 145 106" fill="none"></path>
+</sc-if>
+<ellipse cx="90" cy="120" rx="7" ry="4" fill="#F7C6B5" stroke="none"></ellipse>
+<ellipse cx="150" cy="120" rx="7" ry="4" fill="#F7C6B5" stroke="none"></ellipse>
+<path d="M116 116 L124 116 L120 121 Z" fill="#E07A6A"></path>
+<path d="M120 121 Q115 128 109 124 M120 121 Q125 128 131 124" fill="none"></path>
+<path d="M76 110 L60 106 M76 116 L60 118 M164 110 L180 106 M164 116 L180 118" fill="none"></path>
+</g>
+</g>
+</svg>
+</div>
+</div>
+
+<form style="margin: 0; display: flex; flex-direction: column; gap: 16px; padding: 24px 20px; background: #13161B; border: 1px solid #23272F; border-radius: 24px">
+<div class="up" style="display: flex; flex-direction: column; gap: 8px; animation-delay: .18s">
+<label for="email" style="font-size: 13px; font-weight: 500; color: #C9CED6">Email</label>
+<div class="fld" style="height: 52px; display: flex; align-items: center; padding: 0 16px; background: #0E1014; border: 1px solid #2A2F38; border-radius: 14px">
+<input id="email" type="email" placeholder="kamu@email.com" autocomplete="username" style="flex: 1; min-width: 0; height: 100%; background: transparent; border: 0; outline: none; color: #ECEEF1; font-size: 15px">
+</div>
+</div>
+<div class="up" style="display: flex; flex-direction: column; gap: 8px; animation-delay: .24s">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<label for="password" style="font-size: 13px; font-weight: 500; color: #C9CED6">Password</label>
+<a href="Forgot.dc.html" style="font-size: 13px; font-weight: 500; padding: 6px 0">Lupa password?</a>
+</div>
+<div class="fld" style="height: 52px; display: flex; align-items: center; padding: 0 4px 0 16px; background: #0E1014; border: 1px solid #2A2F38; border-radius: 14px">
+<input id="password" type="{{ pwType }}" placeholder="Minimal 8 karakter" autocomplete="current-password" onFocus="{{ hideEyes }}" onBlur="{{ showEyes }}" style="flex: 1; min-width: 0; height: 100%; background: transparent; border: 0; outline: none; color: #ECEEF1; font-size: 15px">
+<button type="button" aria-label="{{ eyeLabel }}" onClick="{{ toggle }}" class="press" style="width: 44px; height: 44px; border: 0; border-radius: 12px; background: transparent; color: #9BA3AF; display: flex; align-items: center; justify-content: center">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+</button>
+</div>
+</div>
+<a href="Chat.dc.html" class="press up" style="margin-top: 4px; height: 52px; border-radius: 14px; background: #B5F23D; color: #0E1014; font-weight: 600; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; animation-delay: .3s">Masuk
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+</a>
+</form>
+
+<div style="flex: 1"></div>
+
+<p class="up" style="margin: 0; text-align: center; font-size: 14px; color: #9BA3AF; animation-delay: .4s">Belum punya akun? <a href="Register.dc.html" style="font-weight: 600; padding: 12px 4px">Daftar gratis</a></p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = { shown: false, peeking: false };
+}
+renderVals() {
+const s = this.state;
+return {
+pwType: s.shown ? 'text' : 'password',
+eyeLabel: s.shown ? 'Sembunyikan password' : 'Tampilkan password',
+eyesClosed: s.peeking && !s.shown,
+eyesOpen: !(s.peeking && !s.shown),
+toggle: () => this.setState({ shown: !s.shown }),
+hideEyes: () => this.setState({ peeking: true }),
+showEyes: () => this.setState({ peeking: false })
+};
+}
+}
+</script>
+</body>
+</html>

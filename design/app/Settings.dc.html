@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Lumi · Pengaturan</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#ECEEF1;text-decoration:none}a:hover{color:#FFFFFF}
+button,input{font:inherit}
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes ring{from{stroke-dashoffset:176}to{stroke-dashoffset:130}}
+@keyframes count{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes dim{from{opacity:0}to{opacity:1}}
+@keyframes sheet{from{transform:translateY(100%)}to{transform:none}}
+@keyframes dialog{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+@keyframes wavehand{0%,100%{transform:rotate(0)}30%{transform:rotate(-14deg)}60%{transform:rotate(10deg)}}
+.up{animation:up .45s cubic-bezier(.2,.8,.2,1) both}
+.ring{stroke-dasharray:176;animation:ring 1s .3s cubic-bezier(.2,.8,.2,1) both}
+.count{animation:count .5s .5s ease both}
+.dim{animation:dim .22s ease both}
+.sheet{animation:sheet .28s cubic-bezier(.2,.8,.2,1) both}
+.dialog{animation:dialog .2s cubic-bezier(.2,.8,.2,1) both}
+.wavehand{transform-origin:70% 80%;animation:wavehand 1.4s ease-in-out 2}
+.press{transition:transform .12s ease,background-color .15s}
+.press:active{transform:scale(.98)}
+.row:hover{background:#1A1D23}
+.fld{transition:border-color .2s,box-shadow .2s}
+.fld:focus-within{border-color:#B5F23D;box-shadow:0 0 0 3px rgba(181,242,61,.16)}
+@media (prefers-reduced-motion: reduce){.up,.ring,.count,.dim,.sheet,.dialog,.wavehand{animation:none}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0E1014; color: #ECEEF1; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; position: relative; overflow: hidden">
+
+<header style="height: 60px; flex-shrink: 0; display: flex; align-items: center; gap: 4px; padding: 0 8px">
+<a href="Chat.dc.html" aria-label="Kembali ke chat" class="press" style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+<h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 600">Pengaturan</h1>
+</header>
+
+<div style="flex: 1; min-height: 0; overflow-y: auto; padding: 8px 16px 24px; display: flex; flex-direction: column; gap: 16px">
+
+<section class="up" style="display: flex; align-items: center; gap: 14px; padding: 4px 4px 8px">
+<span style="width: 60px; height: 60px; border-radius: 50%; background: #2A2F38; font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600; display: flex; align-items: center; justify-content: center">R</span>
+<div style="flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<span style="font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 600">Rani <span class="wavehand" style="display: inline-block; color: #F2A65A">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V11M11 10V4.5a1.5 1.5 0 0 1 3 0V11M14 10.5V6a1.5 1.5 0 0 1 3 0v7a7 7 0 0 1-7 7 6 6 0 0 1-5.2-3L3 13.5a1.5 1.5 0 0 1 2.6-1.5L8 15"></path></svg></span></span>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #9BA3AF">kamu@email.com
+<span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 10px; background: rgba(181, 242, 61, 0.12); color: #B5F23D; font-size: 11px; font-weight: 600">
+<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"></path></svg>Terverifikasi</span></span>
+</div>
+</section>
+
+<section class="up" style="display: flex; align-items: center; gap: 16px; padding: 18px; border-radius: 22px; background: #13161B; border: 1px solid #23272F; animation-delay: .06s">
+<div style="position: relative; width: 68px; height: 68px; flex-shrink: 0">
+<svg width="68" height="68" viewBox="0 0 68 68" aria-hidden="true" style="transform: rotate(-90deg)"><circle cx="34" cy="34" r="28" fill="none" stroke="#23272F" stroke-width="7"></circle><circle class="ring" cx="34" cy="34" r="28" fill="none" stroke="#B5F23D" stroke-width="7" stroke-linecap="round"></circle></svg>
+<span class="count" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 600">13</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 15px; font-weight: 600">13 dari 50 pesan terpakai</span>
+<span style="font-size: 13px; line-height: 1.45; color: #9BA3AF">Kuota harian key Lumi. Reset tiap pukul 00.00 WIB. Pakai key sendiri untuk tanpa batas.</span>
+</div>
+</section>
+
+<nav class="up" aria-label="Menu pengaturan" style="display: flex; flex-direction: column; border-radius: 22px; background: #13161B; border: 1px solid #23272F; overflow: hidden; animation-delay: .12s">
+<a href="AiKey.dc.html" class="row press" style="min-height: 60px; display: flex; align-items: center; gap: 14px; padding: 0 16px">
+<span style="width: 36px; height: 36px; border-radius: 11px; background: rgba(181, 242, 61, 0.12); color: #B5F23D; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"></circle><path d="M11 12l9-9M17 6l3 3M14 9l2 2"></path></svg></span>
+<span style="flex: 1; font-size: 15px; font-weight: 500">Kunci AI saya</span>
+<span style="font-size: 13px; color: #9BA3AF">Belum diatur</span>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A93A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+</a>
+<a href="Devices.dc.html" class="row press" style="min-height: 60px; display: flex; align-items: center; gap: 14px; padding: 0 16px; border-top: 1px solid #1F232B">
+<span style="width: 36px; height: 36px; border-radius: 11px; background: rgba(143, 180, 255, 0.12); color: #8FB4FF; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"></rect><path d="M11 18h2"></path></svg></span>
+<span style="flex: 1; font-size: 15px; font-weight: 500">Perangkat aktif</span>
+<span style="font-size: 13px; color: #9BA3AF">3</span>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A93A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+</a>
+<button type="button" onClick="{{ openPw }}" class="row press" style="min-height: 60px; display: flex; align-items: center; gap: 14px; padding: 0 16px; border: 0; border-top: 1px solid #1F232B; background: transparent; color: #ECEEF1; text-align: left">
+<span style="width: 36px; height: 36px; border-radius: 11px; background: rgba(245, 181, 68, 0.12); color: #F5B544; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="3"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg></span>
+<span style="flex: 1; font-size: 15px; font-weight: 500">Ganti password</span>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A93A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+</button>
+</nav>
+
+<button type="button" onClick="{{ openLogout }}" class="up press" style="height: 54px; border-radius: 18px; border: 1px solid #2A2F38; background: transparent; color: #FFA899; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; animation-delay: .18s">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 8l-4 4 4 4M6 12h10"></path></svg>Keluar
+</button>
+
+<p class="up" style="margin: 0; text-align: center; font-size: 12px; color: #8A93A0; animation-delay: .22s">Lumi 0.1 · Light up your day.</p>
+</div>
+
+<sc-if value="{{ pwOpen }}" hint-placeholder-val="{{ false }}">
+<div class="dim" style="position: absolute; inset: 0; background: rgba(5, 6, 8, 0.6); display: flex; align-items: flex-end">
+<div class="sheet" role="dialog" aria-label="Ganti password" style="width: 100%; box-sizing: border-box; padding: 12px 20px 28px; border-radius: 28px 28px 0 0; background: #171A20; border-top: 1px solid #2A2F38; display: flex; flex-direction: column; gap: 14px">
+<span style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #3A4150"></span>
+<h2 style="margin: 6px 0 0; font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 600">Ganti password</h2>
+<p style="margin: -6px 0 0; font-size: 14px; line-height: 1.5; color: #9BA3AF">Perangkat lain akan dikeluarkan. HP ini tetap masuk.</p>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label for="old" style="font-size: 13px; font-weight: 500; color: #C9CED6">Password sekarang</label>
+<div class="fld" style="height: 50px; display: flex; align-items: center; padding: 0 16px; background: #0E1014; border: 1px solid #2A2F38; border-radius: 14px"><input id="old" type="password" autocomplete="current-password" style="flex: 1; min-width: 0; height: 100%; background: transparent; border: 0; outline: none; color: #ECEEF1; font-size: 15px"></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label for="new" style="font-size: 13px; font-weight: 500; color: #C9CED6">Password baru</label>
+<div class="fld" style="height: 50px; display: flex; align-items: center; padding: 0 16px; background: #0E1014; border: 1px solid #2A2F38; border-radius: 14px"><input id="new" type="password" placeholder="Minimal 8 karakter" autocomplete="new-password" style="flex: 1; min-width: 0; height: 100%; background: transparent; border: 0; outline: none; color: #ECEEF1; font-size: 15px"></div>
+</div>
+<div style="display: flex; gap: 10px; margin-top: 4px">
+<button type="button" onClick="{{ close }}" class="press" style="flex: 1; height: 52px; border: 1px solid #2A2F38; border-radius: 14px; background: transparent; color: #ECEEF1; font-weight: 500; font-size: 15px">Batal</button>
+<button type="button" onClick="{{ close }}" class="press" style="flex: 1; height: 52px; border: 0; border-radius: 14px; background: #B5F23D; color: #0E1014; font-weight: 600; font-size: 15px">Simpan</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ logoutOpen }}" hint-placeholder-val="{{ false }}">
+<div class="dim" style="position: absolute; inset: 0; background: rgba(5, 6, 8, 0.66); display: flex; align-items: center; justify-content: center; padding: 24px">
+<div class="dialog" role="alertdialog" aria-label="Keluar dari Lumi" style="width: 100%; box-sizing: border-box; padding: 24px; border-radius: 26px; background: #171A20; border: 1px solid #2A2F38; display: flex; flex-direction: column; gap: 10px; text-align: center; align-items: center">
+<span style="width: 56px; height: 56px; border-radius: 18px; background: rgba(255, 168, 153, 0.12); color: #FFA899; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 8l-4 4 4 4M6 12h10"></path></svg></span>
+<h2 style="margin: 6px 0 0; font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 600">Keluar dari Lumi?</h2>
+<p style="margin: 0 0 8px; font-size: 14px; line-height: 1.5; color: #9BA3AF">Riwayat chat tetap aman di akunmu. Masuk lagi kapan saja.</p>
+<a href="Login.dc.html" class="press" style="width: 100%; height: 50px; border-radius: 14px; background: #FFA899; color: #0E1014; font-weight: 600; font-size: 15px; display: flex; align-items: center; justify-content: center">Keluar</a>
+<button type="button" onClick="{{ close }}" class="press" style="width: 100%; height: 50px; border: 0; border-radius: 14px; background: transparent; color: #ECEEF1; font-weight: 500; font-size: 15px">Batal</button>
+</div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = { open: null };
+}
+renderVals() {
+const o = this.state.open;
+return {
+pwOpen: o === 'pw',
+logoutOpen: o === 'logout',
+openPw: () => this.setState({ open: 'pw' }),
+openLogout: () => this.setState({ open: 'logout' }),
+close: () => this.setState({ open: null })
+};
+}
+}
+</script>
+</body>
+</html>

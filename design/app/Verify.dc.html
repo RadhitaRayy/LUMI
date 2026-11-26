@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Lumi · Verifikasi email</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#B5F23D;text-decoration:none}a:hover{color:#CDFA6E}
+button,input{font:inherit}
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}
+@keyframes toast{0%{opacity:0;transform:translateY(-24px)}12%,85%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-24px)}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes rise{0%{opacity:0;transform:scale(.85) translateY(20px)}100%{opacity:1;transform:none}}
+@keyframes draw{from{stroke-dashoffset:60}to{stroke-dashoffset:0}}
+@keyframes ring{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.1);opacity:1}100%{transform:scale(1)}}
+@keyframes mail{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-6px) rotate(4deg)}}
+.up{animation:up .5s cubic-bezier(.2,.8,.2,1) both}
+.pop{animation:pop .28s cubic-bezier(.3,1.4,.5,1)}
+.caret{animation:blink 1s steps(1) infinite}
+@keyframes shake2{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}
+.shake{animation:shake .32s ease}
+.shake-b{animation:shake2 .32s ease}
+.toast{animation:toast 2.6s ease both}
+.fade{animation:fade .2s ease both}
+.rise{animation:rise .4s cubic-bezier(.2,.8,.2,1) both}
+.draw{stroke-dasharray:60;animation:draw .45s .25s ease-out both}
+.ring{animation:ring .45s cubic-bezier(.3,1.4,.5,1) both}
+.mail{animation:mail 2.4s ease-in-out infinite}
+.press{transition:transform .12s ease}
+.press:active{transform:scale(.97)}
+@media (prefers-reduced-motion: reduce){.up,.pop,.caret,.shake,.toast,.fade,.rise,.draw,.ring,.mail{animation:none}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0E1014; color: #ECEEF1; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; padding: 12px 24px 32px; position: relative; overflow: hidden">
+
+<header style="height: 56px; display: flex; align-items: center; margin-left: -12px">
+<a href="Register.dc.html" aria-label="Kembali" class="press" style="width: 44px; height: 44px; border-radius: 12px; color: #ECEEF1; display: flex; align-items: center; justify-content: center">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+</a>
+</header>
+
+<div class="up mail" style="width: 64px; height: 64px; margin-top: 12px; border-radius: 20px; background: rgba(181, 242, 61, 0.12); color: #B5F23D; display: flex; align-items: center; justify-content: center">
+<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="M4 7l8 6 8-6"></path></svg>
+</div>
+<h1 class="up" style="margin: 24px 0 8px; font-family: 'Space Grotesk', sans-serif; font-size: 30px; line-height: 1.15; font-weight: 600; animation-delay: .06s">Cek email kamu</h1>
+<p class="up" style="margin: 0 0 32px; font-size: 15px; line-height: 1.5; color: #9BA3AF; animation-delay: .12s">Kami kirim 6 digit kode ke <span style="color: #ECEEF1; font-weight: 500">kamu@email.com</span>. Kode berlaku 15 menit.</p>
+
+<div class="up" style="animation-delay: .18s">
+<div class="{{ rowClass }}" style="position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{ boxes }}" as="b" hint-placeholder-count="6">
+<div class="{{ b.cls }}" style="height: 58px; border-radius: 14px; background: #13161B; border: 1.5px solid {{ b.border }}; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 600; transition: border-color .2s">
+<sc-if value="{{ b.caret }}" hint-placeholder-val="{{ false }}"><span class="caret" style="width: 2px; height: 26px; background: #B5F23D"></span></sc-if>
+{{ b.digit }}
+</div>
+</sc-for>
+<label for="code" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Kode verifikasi 6 digit</label>
+<input id="code" type="text" inputmode="numeric" maxlength="6" autocomplete="one-time-code" value="{{ code }}" onChange="{{ onCode }}" style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; border: 0; font-size: 16px">
+</div>
+<sc-if value="{{ error }}" hint-placeholder-val="{{ false }}">
+<p class="fade" style="margin: 12px 0 0; font-size: 13px; color: #FFA899" role="alert">Kode salah. Sisa 4 percobaan.</p>
+</sc-if>
+</div>
+
+<button type="button" class="press up" onClick="{{ submit }}" style="margin-top: 28px; height: 52px; border: 0; border-radius: 14px; background: {{ btnBg }}; color: {{ btnFg }}; font-weight: 600; font-size: 16px; transition: background-color .25s, color .25s; animation-delay: .24s">Verifikasi</button>
+
+<div class="up" style="margin-top: 20px; text-align: center; font-size: 14px; color: #9BA3AF; animation-delay: .3s">
+<sc-if value="{{ waiting }}" hint-placeholder-val="{{ true }}">
+<span>Kirim ulang kode dalam <span style="font-family: 'JetBrains Mono', monospace; color: #ECEEF1">{{ countdown }}</span></span>
+</sc-if>
+<sc-if value="{{ canResend }}" hint-placeholder-val="{{ false }}">
+<button type="button" onClick="{{ resend }}" class="press" style="height: 44px; padding: 0 12px; border: 0; background: transparent; color: #B5F23D; font-weight: 600; font-size: 14px">Kirim ulang kode</button>
+</sc-if>
+</div>
+
+<div style="flex: 1"></div>
+<p style="margin: 0; text-align: center; font-size: 13px; line-height: 1.5; color: #8A93A0">Tidak ada di kotak masuk? Cek folder spam atau promosi.</p>
+
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+<div class="toast" role="status" style="position: absolute; top: 16px; left: 16px; right: 16px; display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-radius: 16px; background: #1F232B; border: 1px solid #2A2F38; font-size: 14px">
+<span style="width: 24px; height: 24px; border-radius: 50%; background: #B5F23D; color: #0E1014; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"></path></svg></span>
+Kode baru sudah dikirim
+</div>
+</sc-if>
+
+<sc-if value="{{ done }}" hint-placeholder-val="{{ false }}">
+<div class="fade" style="position: absolute; inset: 0; background: rgba(14, 16, 20, 0.86); display: flex; align-items: flex-end; padding: 16px">
+<div class="rise" style="width: 100%; box-sizing: border-box; padding: 32px 24px 24px; border-radius: 28px; background: #171A20; border: 1px solid #2A2F38; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center">
+<div class="ring" style="width: 72px; height: 72px; border-radius: 50%; background: #B5F23D; color: #0E1014; display: flex; align-items: center; justify-content: center">
+<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="draw" d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+</div>
+<h2 style="margin: 8px 0 0; font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 600">Email terverifikasi</h2>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: #9BA3AF">Akunmu siap. Lumi sudah menunggu.</p>
+<a href="Chat.dc.html" class="press" style="margin-top: 12px; width: 100%; height: 52px; border-radius: 14px; background: #B5F23D; color: #0E1014; font-weight: 600; font-size: 16px; display: flex; align-items: center; justify-content: center">Mulai ngobrol</a>
+</div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"demoWrongCode":{"editor":"boolean","default":false},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = { code: '2468', seconds: 42, error: false, shakeKey: 0, done: false, toastKey: 0 };
+}
+componentDidMount() {
+this.timer = setInterval(() => {
+if (this.state.seconds > 0) this.setState({ seconds: this.state.seconds - 1 });
+}, 1000);
+}
+componentWillUnmount() {
+clearInterval(this.timer);
+clearTimeout(this.toastTimer);
+}
+renderVals() {
+const s = this.state;
+const digits = s.code.split('');
+const boxes = [0, 1, 2, 3, 4, 5].map((i) => ({
+digit: digits[i] || '',
+caret: i === digits.length && !s.error,
+cls: digits[i] ? 'pop' : '',
+border: s.error ? '#FFA899' : (i === digits.length ? '#B5F23D' : (digits[i] ? '#3A4150' : '#2A2F38'))
+}));
+const full = digits.length === 6;
+const m = Math.floor(s.seconds / 60);
+const sec = String(s.seconds % 60).padStart(2, '0');
+return {
+code: s.code,
+boxes,
+rowClass: s.shakeKey % 2 === 1 ? 'shake' : (s.shakeKey > 0 ? 'shake-b' : ''),
+error: s.error,
+done: s.done,
+toast: s.toastKey > 0,
+waiting: s.seconds > 0,
+canResend: s.seconds === 0,
+countdown: m + ':' + sec,
+btnBg: full ? '#B5F23D' : '#23272F',
+btnFg: full ? '#0E1014' : '#8A93A0',
+onCode: (e) => this.setState({ code: e.target.value.replace(/[^0-9]/g, '').slice(0, 6), error: false }),
+submit: () => {
+if (!full) return;
+if (this.props.demoWrongCode ?? false) {
+this.setState({ error: true, shakeKey: s.shakeKey + 1 });
+} else {
+this.setState({ done: true });
+}
+},
+resend: () => {
+clearTimeout(this.toastTimer);
+this.setState({ seconds: 60, toastKey: s.toastKey + 1, code: '', error: false });
+this.toastTimer = setTimeout(() => this.setState({ toastKey: 0 }), 2600);
+}
+};
+}
+}
+</script>
+</body>
+</html>

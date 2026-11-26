@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Lumi · Splash</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&amp;family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#ECEEF1;text-decoration:none}a:hover{color:#FFFFFF}
+@keyframes sp-cat{0%{opacity:0;transform:translateY(40px) scale(.5)}10%{opacity:1;transform:translateY(-6px) scale(1.08)}14%{transform:translateY(0) scale(.96)}18%,86%{opacity:1;transform:translateY(0) scale(1)}95%,100%{opacity:0;transform:translateY(-12px) scale(1)}}
+@keyframes sp-lamp{0%,16%{fill:#3A4150}24%,100%{fill:#B5F23D}}
+@keyframes sp-spark{0%,20%{opacity:0;transform:scale(.2)}27%{opacity:1;transform:scale(1.15)}34%{opacity:1;transform:scale(1)}44%,100%{opacity:0;transform:scale(1)}}
+@keyframes sp-word{0%,26%{opacity:0;transform:translateY(28px)}38%,86%{opacity:1;transform:translateY(0)}95%,100%{opacity:0;transform:translateY(-12px)}}
+@keyframes sp-dot{0%,34%{opacity:0;transform:translate(-46%,-70px)}41%{opacity:1;transform:translate(-46%,0)}45%{transform:translate(-46%,-10px)}49%,86%{opacity:1;transform:translate(-46%,0)}95%,100%{opacity:0}}
+@keyframes sp-tag{0%,44%{opacity:0;transform:translateY(10px)}54%,86%{opacity:1;transform:translateY(0)}95%,100%{opacity:0}}
+@keyframes sp-loader{0%,54%{opacity:0}62%,86%{opacity:1}95%,100%{opacity:0}}
+@keyframes sp-pulse{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+@keyframes sp-fly{0%{opacity:0;transform:translateY(0)}20%{opacity:.9}100%{opacity:0;transform:translateY(-180px)}}
+@keyframes sp-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes sp-wave{0%,100%{transform:rotate(0)}25%{transform:rotate(-16deg)}75%{transform:rotate(8deg)}}
+@keyframes sp-swing{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+.sp-cat{animation:sp-cat 5s cubic-bezier(.2,.8,.2,1) infinite}
+.sp-lamp{animation:sp-lamp 5s ease-out infinite}
+.sp-spark{transform-box:fill-box;transform-origin:center;animation:sp-spark 5s ease-out infinite}
+.sp-word{animation:sp-word 5s cubic-bezier(.2,.8,.2,1) infinite}
+.sp-dot{animation:sp-dot 5s cubic-bezier(.3,1.4,.5,1) infinite}
+.sp-tag{animation:sp-tag 5s ease-out infinite}
+.sp-loader{animation:sp-loader 5s ease-out infinite}
+.sp-pulse{animation:sp-pulse 1s ease-in-out infinite}
+.sp-fly{animation:sp-fly 4s ease-out infinite}
+.sp-bob{animation:sp-bob 3s ease-in-out infinite}
+.sp-wave{transform-origin:160px 158px;animation:sp-wave 1.6s ease-in-out infinite}
+.sp-swing{transform-origin:42px 140px;animation:sp-swing 2.8s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.sp-cat,.sp-lamp,.sp-spark,.sp-word,.sp-dot,.sp-tag,.sp-loader,.sp-pulse,.sp-fly,.sp-bob,.sp-wave,.sp-swing{animation:none}}
+</style>
+</helmet>
+<a href="Login.dc.html" aria-label="Lewati ke layar Masuk" style="width: 390px; height: 844px; box-sizing: border-box; background: #0E1014; color: #ECEEF1; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; position: relative; overflow: hidden">
+
+<span class="sp-fly" style="position: absolute; left: 92px; top: 560px; width: 5px; height: 5px; border-radius: 1px; background: #B5F23D; animation-delay: .4s"></span>
+<span class="sp-fly" style="position: absolute; left: 290px; top: 600px; width: 4px; height: 4px; border-radius: 1px; background: #B5F23D; animation-delay: 1.5s"></span>
+<span class="sp-fly" style="position: absolute; left: 140px; top: 650px; width: 3px; height: 3px; border-radius: 1px; background: #B5F23D; animation-delay: 2.6s"></span>
+<span class="sp-fly" style="position: absolute; left: 250px; top: 540px; width: 4px; height: 4px; border-radius: 1px; background: #B5F23D; animation-delay: 3.3s"></span>
+
+<div class="sp-cat" style="width: 200px; height: 200px">
+<svg viewBox="0 0 240 240" width="200" height="200" role="img" aria-label="Lumi, kucing oranye yang melambai sambil membawa lentera hijau">
+<g stroke-linecap="round" stroke-linejoin="round" class="sp-bob">
+<g class="sp-swing">
+<g stroke="#B5F23D" stroke-width="4" fill="none">
+<path class="sp-spark" d="M14 160 L4 154"></path>
+<path class="sp-spark" d="M10 180 L-1 182"></path>
+<path class="sp-spark" d="M18 200 L10 208"></path>
+<path class="sp-spark" d="M68 200 L76 208"></path>
+</g>
+<g stroke="#F2EEE3" stroke-width="14">
+<path d="M42 140 V156" fill="none"></path>
+<rect x="34" y="153" width="16" height="6" rx="2" fill="#3A4150"></rect>
+<ellipse cx="42" cy="174" rx="15" ry="17" fill="#3A4150"></ellipse>
+<rect x="35" y="189" width="14" height="5" rx="2" fill="#3A4150"></rect>
+</g>
+<g stroke="#14161A" stroke-width="3.5">
+<path d="M42 140 V156" fill="none"></path>
+<rect x="34" y="153" width="16" height="6" rx="2" fill="#3A4150"></rect>
+<ellipse class="sp-lamp" cx="42" cy="174" rx="15" ry="17" fill="#B5F23D"></ellipse>
+<path d="M42 157 V191 M34 160 Q30 174 34 188 M50 160 Q54 174 50 188" fill="none"></path>
+<rect x="35" y="189" width="14" height="5" rx="2" fill="#3A4150"></rect>
+</g>
+</g>
+<g stroke="#F2EEE3" stroke-width="14" fill="#F2A65A">
+<path d="M74 200 C 35 205 18 165 40 140 C 44 136 50 140 47 145 C 32 165 42 190 74 188 Z"></path>
+<ellipse cx="120" cy="172" rx="52" ry="46"></ellipse>
+<ellipse cx="100" cy="214" rx="16" ry="9"></ellipse>
+<ellipse cx="140" cy="214" rx="16" ry="9"></ellipse>
+<path d="M80 82 L86 44 L110 66 Z"></path>
+<path d="M160 82 L154 44 L130 66 Z"></path>
+<ellipse cx="120" cy="106" rx="50" ry="42"></ellipse>
+</g>
+<g class="sp-wave">
+<ellipse cx="172" cy="136" rx="12" ry="24" fill="#F2A65A" stroke="#F2EEE3" stroke-width="14" transform="rotate(28 172 136)"></ellipse>
+<ellipse cx="172" cy="136" rx="12" ry="24" fill="#F2A65A" stroke="#14161A" stroke-width="3.5" transform="rotate(28 172 136)"></ellipse>
+</g>
+<g stroke="#14161A" stroke-width="3.5">
+<path d="M74 200 C 35 205 18 165 40 140 C 44 136 50 140 47 145 C 32 165 42 190 74 188 Z" fill="#F2A65A"></path>
+<ellipse cx="120" cy="172" rx="52" ry="46" fill="#F2A65A"></ellipse>
+<ellipse cx="120" cy="180" rx="28" ry="28" fill="#FBE3C8"></ellipse>
+<ellipse cx="100" cy="214" rx="16" ry="9" fill="#F2A65A"></ellipse>
+<ellipse cx="140" cy="214" rx="16" ry="9" fill="#F2A65A"></ellipse>
+<path d="M80 82 L86 44 L110 66 Z" fill="#F2A65A"></path>
+<path d="M160 82 L154 44 L130 66 Z" fill="#F2A65A"></path>
+<ellipse cx="120" cy="106" rx="50" ry="42" fill="#F2A65A"></ellipse>
+<path d="M90 60 L92 72 L102 68 Z" fill="#F7C6B5" stroke="none"></path>
+<path d="M150 60 L148 72 L138 68 Z" fill="#F7C6B5" stroke="none"></path>
+<path d="M110 68 L112 80 M120 66 V80 M130 68 L128 80" fill="none"></path>
+<ellipse cx="102" cy="106" rx="5" ry="7" fill="#14161A"></ellipse>
+<ellipse cx="138" cy="106" rx="5" ry="7" fill="#14161A"></ellipse>
+<ellipse cx="90" cy="120" rx="7" ry="4" fill="#F7C6B5" stroke="none"></ellipse>
+<ellipse cx="150" cy="120" rx="7" ry="4" fill="#F7C6B5" stroke="none"></ellipse>
+<path d="M116 116 L124 116 L120 121 Z" fill="#E07A6A"></path>
+<path d="M120 121 Q115 128 109 124 M120 121 Q125 128 131 124" fill="none"></path>
+<path d="M76 110 L60 106 M76 116 L60 118 M164 110 L180 106 M164 116 L180 118" fill="none"></path>
+</g>
+</g>
+</svg>
+</div>
+
+<div class="sp-word" style="display: flex; align-items: baseline; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 72px; line-height: 1; letter-spacing: -0.05em; color: #ECEEF1" aria-label="lumi">
+<span aria-hidden="true">lum</span>
+<span aria-hidden="true" style="position: relative; display: inline-block">ı<span class="sp-dot" style="position: absolute; top: 0.02em; left: 50%; width: 0.17em; height: 0.17em; border-radius: 0.03em; background: #B5F23D"></span></span>
+</div>
+
+<p class="sp-tag" style="margin: -6px 0 0; font-size: 16px; color: #9BA3AF">Light up your day.</p>
+
+<div class="sp-loader" style="position: absolute; bottom: 72px; display: flex; gap: 8px" aria-hidden="true">
+<span class="sp-pulse" style="width: 8px; height: 8px; border-radius: 2px; background: #B5F23D"></span>
+<span class="sp-pulse" style="width: 8px; height: 8px; border-radius: 2px; background: #B5F23D; animation-delay: .15s"></span>
+<span class="sp-pulse" style="width: 8px; height: 8px; border-radius: 2px; background: #B5F23D; animation-delay: .3s"></span>
+</div>
+</a>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

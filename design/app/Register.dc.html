@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Lumi · Daftar</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#B5F23D;text-decoration:none}a:hover{color:#CDFA6E}
+button,input{font:inherit}
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes slide{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+.up{animation:up .5s cubic-bezier(.2,.8,.2,1) both}
+.slide{animation:slide .4s cubic-bezier(.2,.8,.2,1) both}
+.press{transition:transform .12s ease}
+.press:active{transform:scale(.97)}
+.fld{transition:border-color .2s,box-shadow .2s}
+.fld:focus-within{border-color:#B5F23D;box-shadow:0 0 0 3px rgba(181,242,61,.16)}
+.seg{transition:background-color .3s ease,transform .3s cubic-bezier(.3,1.4,.5,1)}
+@media (prefers-reduced-motion: reduce){.up,.slide{animation:none}.seg{transition:none}}
+</style>
+</helmet>
+<div class="slide" style="width: 390px; height: 844px; box-sizing: border-box; background: #0E1014; color: #ECEEF1; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; padding: 12px 24px 32px; overflow: hidden">
+
+<header style="height: 56px; display: flex; align-items: center; margin-left: -12px">
+<a href="Login.dc.html" aria-label="Kembali ke Masuk" class="press" style="width: 44px; height: 44px; border-radius: 12px; color: #ECEEF1; display: flex; align-items: center; justify-content: center">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+</a>
+</header>
+
+<h1 class="up" style="margin: 16px 0 8px; font-family: 'Space Grotesk', sans-serif; font-size: 30px; line-height: 1.15; font-weight: 600">Buat akun Lumi</h1>
+<p class="up" style="margin: 0 0 28px; font-size: 15px; line-height: 1.5; color: #9BA3AF; animation-delay: .06s">Gratis. Kami kirim kode ke email kamu untuk memastikan itu benar milikmu.</p>
+
+<form style="margin: 0; display: flex; flex-direction: column; gap: 18px">
+<div class="up" style="display: flex; flex-direction: column; gap: 8px; animation-delay: .12s">
+<label for="name" style="font-size: 13px; font-weight: 500; color: #C9CED6">Nama panggilan</label>
+<div class="fld" style="height: 52px; display: flex; align-items: center; padding: 0 16px; background: #13161B; border: 1px solid #2A2F38; border-radius: 14px">
+<input id="name" type="text" placeholder="Biar Lumi tahu harus panggil apa" autocomplete="nickname" style="flex: 1; min-width: 0; height: 100%; background: transparent; border: 0; outline: none; color: #ECEEF1; font-size: 15px">
+</div>
+</div>
+<div class="up" style="display: flex; flex-direction: column; gap: 8px; animation-delay: .18s">
+<label for="email" style="font-size: 13px; font-weight: 500; color: #C9CED6">Email</label>
+<div class="fld" style="height: 52px; display: flex; align-items: center; padding: 0 16px; background: #13161B; border: 1px solid #2A2F38; border-radius: 14px">
+<input id="email" type="email" placeholder="kamu@email.com" autocomplete="email" style="flex: 1; min-width: 0; height: 100%; background: transparent; border: 0; outline: none; color: #ECEEF1; font-size: 15px">
+</div>
+</div>
+<div class="up" style="display: flex; flex-direction: column; gap: 8px; animation-delay: .24s">
+<label for="password" style="font-size: 13px; font-weight: 500; color: #C9CED6">Password</label>
+<div class="fld" style="height: 52px; display: flex; align-items: center; padding: 0 16px; background: #13161B; border: 1px solid #2A2F38; border-radius: 14px">
+<input id="password" type="password" placeholder="Minimal 8 karakter" autocomplete="new-password" onChange="{{ onPassword }}" style="flex: 1; min-width: 0; height: 100%; background: transparent; border: 0; outline: none; color: #ECEEF1; font-size: 15px">
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 4px" aria-hidden="true">
+<span class="seg" style="height: 5px; border-radius: 3px; background: {{ seg1 }}"></span>
+<span class="seg" style="height: 5px; border-radius: 3px; background: {{ seg2 }}"></span>
+<span class="seg" style="height: 5px; border-radius: 3px; background: {{ seg3 }}"></span>
+</div>
+<span style="font-size: 12px; color: {{ hintColor }}" aria-live="polite">{{ hint }}</span>
+</div>
+<a href="Verify.dc.html" class="press up" style="margin-top: 8px; height: 52px; border-radius: 14px; background: #B5F23D; color: #0E1014; font-weight: 600; font-size: 16px; display: flex; align-items: center; justify-content: center; animation-delay: .3s">Daftar dan kirim kode</a>
+</form>
+
+<div style="flex: 1"></div>
+
+<p class="up" style="margin: 0; text-align: center; font-size: 14px; color: #9BA3AF; animation-delay: .36s">Sudah punya akun? <a href="Login.dc.html" style="font-weight: 600; padding: 12px 4px">Masuk</a></p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = { pw: '' };
+}
+renderVals() {
+const pw = this.state.pw;
+let score = 0;
+if (pw.length >= 8) score++;
+if (/[0-9]/.test(pw) && /[a-zA-Z]/.test(pw)) score++;
+if (pw.length >= 12 || /[^a-zA-Z0-9]/.test(pw)) score++;
+if (pw.length > 0 && pw.length < 8) score = 0;
+const off = '#23272F';
+const color = score === 3 ? '#B5F23D' : score === 2 ? '#C9E07A' : '#F5B544';
+const hints = ['Minimal 8 karakter', 'Lumayan. Tambah angka biar lebih kuat', 'Bagus, tinggal sedikit lagi', 'Kuat. Mantap!'];
+return {
+seg1: pw.length === 0 ? off : color,
+seg2: score >= 2 ? color : off,
+seg3: score >= 3 ? color : off,
+hint: pw.length === 0 ? hints[0] : (pw.length < 8 ? 'Kurang ' + (8 - pw.length) + ' karakter lagi' : hints[score]),
+hintColor: pw.length > 0 && pw.length < 8 ? '#F5B544' : '#9BA3AF',
+onPassword: (e) => this.setState({ pw: e.target.value })
+};
+}
+}
+</script>
+</body>
+</html>

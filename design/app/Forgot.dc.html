@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Lumi · Lupa password</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#B5F23D;text-decoration:none}a:hover{color:#CDFA6E}
+button,input{font:inherit}
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes inR{from{opacity:0;transform:translateX(48px)}to{opacity:1;transform:none}}
+@keyframes inL{from{opacity:0;transform:translateX(-48px)}to{opacity:1;transform:none}}
+@keyframes inC{0%{opacity:0;transform:scale(.9)}100%{opacity:1;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes key{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+.up{animation:up .5s cubic-bezier(.2,.8,.2,1) both}
+.inR{animation:inR .38s cubic-bezier(.2,.8,.2,1) both}
+.inL{animation:inL .38s cubic-bezier(.2,.8,.2,1) both}
+.inC{animation:inC .4s cubic-bezier(.3,1.3,.5,1) both}
+.spin{animation:spin .8s linear infinite}
+.key{animation:key 2.4s ease-in-out infinite}
+.bar{transition:width .45s cubic-bezier(.2,.8,.2,1)}
+.press{transition:transform .12s ease}
+.press:active{transform:scale(.97)}
+.fld{transition:border-color .2s,box-shadow .2s}
+.fld:focus-within{border-color:#B5F23D;box-shadow:0 0 0 3px rgba(181,242,61,.16)}
+@media (prefers-reduced-motion: reduce){.up,.inR,.inL,.inC,.spin,.key{animation:none}.bar{transition:none}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0E1014; color: #ECEEF1; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; padding: 12px 24px 32px; overflow: hidden">
+
+<header style="height: 56px; display: flex; align-items: center; gap: 12px; margin-left: -12px">
+<sc-if value="{{ onEmail }}" hint-placeholder-val="{{ true }}">
+<a href="Login.dc.html" aria-label="Kembali ke Masuk" class="press" style="width: 44px; height: 44px; border-radius: 12px; color: #ECEEF1; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+</sc-if>
+<sc-if value="{{ onReset }}" hint-placeholder-val="{{ false }}">
+<button type="button" aria-label="Kembali ke langkah email" onClick="{{ back }}" class="press" style="width: 44px; height: 44px; border: 0; border-radius: 12px; background: transparent; color: #ECEEF1; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+</sc-if>
+<div style="flex: 1; height: 6px; border-radius: 3px; background: #23272F; overflow: hidden; margin-right: 12px" aria-hidden="true">
+<div class="bar" style="height: 100%; width: {{ progress }}; border-radius: 3px; background: #B5F23D"></div>
+</div>
+<span style="font-size: 12px; color: #9BA3AF; font-family: 'JetBrains Mono', monospace">{{ stepLabel }}</span>
+</header>
+
+<sc-if value="{{ onEmail }}" hint-placeholder-val="{{ true }}">
+<div class="{{ inClass }}" style="display: flex; flex-direction: column">
+<div class="key" style="width: 64px; height: 64px; margin-top: 12px; border-radius: 20px; background: rgba(181, 242, 61, 0.12); color: #B5F23D; display: flex; align-items: center; justify-content: center">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"></circle><path d="M11 12l9-9M17 6l3 3M14 9l2 2"></path></svg>
+</div>
+<h1 style="margin: 24px 0 8px; font-family: 'Space Grotesk', sans-serif; font-size: 30px; line-height: 1.15; font-weight: 600">Lupa password?</h1>
+<p style="margin: 0 0 28px; font-size: 15px; line-height: 1.5; color: #9BA3AF">Tenang, tulis email akunmu. Kami kirim kode untuk membuat password baru.</p>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label for="femail" style="font-size: 13px; font-weight: 500; color: #C9CED6">Email</label>
+<div class="fld" style="height: 52px; display: flex; align-items: center; padding: 0 16px; background: #13161B; border: 1px solid #2A2F38; border-radius: 14px">
+<input id="femail" type="email" placeholder="kamu@email.com" autocomplete="email" style="flex: 1; min-width: 0; height: 100%; background: transparent; border: 0; outline: none; color: #ECEEF1; font-size: 15px">
+</div>
+</div>
+<button type="button" onClick="{{ sendCode }}" class="press" style="margin-top: 24px; height: 52px; border: 0; border-radius: 14px; background: #B5F23D; color: #0E1014; font-weight: 600; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 10px">
+<sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}"><span class="spin" style="width: 18px; height: 18px; box-sizing: border-box; border-radius: 50%; border: 2.5px solid rgba(14, 16, 20, 0.25); border-top-color: #0E1014"></span></sc-if>
+{{ sendLabel }}
+</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ onReset }}" hint-placeholder-val="{{ false }}">
+<div class="inR" style="display: flex; flex-direction: column">
+<h1 style="margin: 20px 0 8px; font-family: 'Space Grotesk', sans-serif; font-size: 30px; line-height: 1.15; font-weight: 600">Buat password baru</h1>
+<p style="margin: 0 0 24px; font-size: 15px; line-height: 1.5; color: #9BA3AF">Masukkan kode dari email, lalu password barunya. Setelah ini semua perangkat akan keluar.</p>
+<form style="margin: 0; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label for="fcode" style="font-size: 13px; font-weight: 500; color: #C9CED6">Kode 6 digit</label>
+<div class="fld" style="height: 52px; display: flex; align-items: center; padding: 0 16px; background: #13161B; border: 1px solid #2A2F38; border-radius: 14px">
+<input id="fcode" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" style="flex: 1; min-width: 0; height: 100%; background: transparent; border: 0; outline: none; color: #ECEEF1; font-size: 18px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.4em">
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label for="fpw" style="font-size: 13px; font-weight: 500; color: #C9CED6">Password baru</label>
+<div class="fld" style="height: 52px; display: flex; align-items: center; padding: 0 16px; background: #13161B; border: 1px solid #2A2F38; border-radius: 14px">
+<input id="fpw" type="password" placeholder="Minimal 8 karakter" autocomplete="new-password" style="flex: 1; min-width: 0; height: 100%; background: transparent; border: 0; outline: none; color: #ECEEF1; font-size: 15px">
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label for="fpw2" style="font-size: 13px; font-weight: 500; color: #C9CED6">Ulangi password baru</label>
+<div class="fld" style="height: 52px; display: flex; align-items: center; padding: 0 16px; background: #13161B; border: 1px solid #2A2F38; border-radius: 14px">
+<input id="fpw2" type="password" placeholder="Ketik sekali lagi" autocomplete="new-password" style="flex: 1; min-width: 0; height: 100%; background: transparent; border: 0; outline: none; color: #ECEEF1; font-size: 15px">
+</div>
+</div>
+<button type="button" onClick="{{ save }}" class="press" style="margin-top: 8px; height: 52px; border: 0; border-radius: 14px; background: #B5F23D; color: #0E1014; font-weight: 600; font-size: 16px">Simpan password</button>
+</form>
+</div>
+</sc-if>
+
+<sc-if value="{{ onDone }}" hint-placeholder-val="{{ false }}">
+<div class="inC" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; padding-bottom: 80px">
+<div style="width: 80px; height: 80px; border-radius: 26px; background: #B5F23D; color: #0E1014; display: flex; align-items: center; justify-content: center">
+<svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="3"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path><path d="M9.5 15.5l2 2 3.5-3.5"></path></svg>
+</div>
+<h1 style="margin: 12px 0 0; font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 600">Password diganti</h1>
+<p style="margin: 0; max-width: 290px; font-size: 15px; line-height: 1.5; color: #9BA3AF">Demi keamanan, semua perangkat sudah dikeluarkan. Masuk lagi dengan password baru ya.</p>
+<a href="Login.dc.html" class="press" style="margin-top: 16px; width: 100%; height: 52px; border-radius: 14px; background: #B5F23D; color: #0E1014; font-weight: 600; font-size: 16px; display: flex; align-items: center; justify-content: center">Ke halaman Masuk</a>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = { step: 1, loading: false, backed: false };
+}
+componentWillUnmount() {
+clearTimeout(this.t);
+}
+renderVals() {
+const s = this.state;
+return {
+onEmail: s.step === 1,
+onReset: s.step === 2,
+onDone: s.step === 3,
+inClass: s.backed ? 'inL' : 'up',
+loading: s.loading,
+sendLabel: s.loading ? 'Mengirim…' : 'Kirim kode',
+progress: s.step === 1 ? '33%' : (s.step === 2 ? '66%' : '100%'),
+stepLabel: s.step + '/3',
+sendCode: () => {
+if (s.loading) return;
+this.setState({ loading: true });
+this.t = setTimeout(() => this.setState({ loading: false, step: 2 }), 900);
+},
+back: () => this.setState({ step: 1, backed: true }),
+save: () => this.setState({ step: 3 })
+};
+}
+}
+</script>
+</body>
+</html>

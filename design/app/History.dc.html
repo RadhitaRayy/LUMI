@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Lumi · Riwayat</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#ECEEF1;text-decoration:none}a:hover{color:#FFFFFF}
+button,input{font:inherit}
+@keyframes drawer{from{transform:translateX(-100%)}to{transform:none}}
+@keyframes dim{from{opacity:0}to{opacity:1}}
+@keyframes rowIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+@keyframes out{0%{opacity:1;max-height:80px}100%{opacity:0;max-height:0;transform:translateX(-30px)}}
+@keyframes sheet{from{transform:translateY(100%)}to{transform:none}}
+@keyframes toast{0%{opacity:0;transform:translateY(20px)}12%,85%{opacity:1;transform:none}100%{opacity:0;transform:translateY(20px)}}
+@keyframes fresh{0%,100%{background:rgba(181,242,61,0)}30%{background:rgba(181,242,61,.12)}}
+@keyframes ping{0%{transform:scale(1);opacity:.8}100%{transform:scale(2.4);opacity:0}}
+.drawer{animation:drawer .32s cubic-bezier(.2,.8,.2,1) both}
+.dim{animation:dim .3s ease both}
+.rowIn{animation:rowIn .35s cubic-bezier(.2,.8,.2,1) both}
+.out{animation:out .26s ease both;overflow:hidden}
+.sheet{animation:sheet .28s cubic-bezier(.2,.8,.2,1) both}
+.toast{animation:toast 2.4s ease both}
+.fresh{animation:fresh 2.2s ease-in-out 2}
+.ping{animation:ping 1.4s ease-out infinite}
+.press{transition:transform .12s ease,background-color .15s}
+.press:active{transform:scale(.97)}
+.row:hover{background:#171A20}
+.fld{transition:border-color .2s}
+.fld:focus-within{border-color:#B5F23D}
+.scroll::-webkit-scrollbar{display:none}
+@media (prefers-reduced-motion: reduce){.drawer,.dim,.rowIn,.out,.sheet,.toast,.fresh,.ping{animation:none}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0E1014; color: #ECEEF1; font-family: Inter, system-ui, sans-serif; position: relative; overflow: hidden">
+
+<a href="Chat.dc.html" aria-label="Tutup riwayat" class="dim" style="position: absolute; inset: 0; background: rgba(5, 6, 8, 0.6)"></a>
+
+<aside class="drawer" style="position: absolute; top: 0; bottom: 0; left: 0; width: 330px; box-sizing: border-box; background: #13161B; border-right: 1px solid #23272F; display: flex; flex-direction: column; padding: 20px 0 0">
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0 16px 0 20px">
+<h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 600">Riwayat</h1>
+<a href="Chat.dc.html" class="press" style="height: 40px; padding: 0 14px; border-radius: 20px; background: #B5F23D; color: #0E1014; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Baru
+</a>
+</div>
+
+<div class="fld" style="margin: 16px 16px 8px; height: 46px; display: flex; align-items: center; gap: 10px; padding: 0 14px; background: #0E1014; border: 1px solid #2A2F38; border-radius: 14px">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9BA3AF" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="M20 20l-4.5-4.5"></path></svg>
+<label for="q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Cari percakapan</label>
+<input id="q" type="search" placeholder="Cari percakapan" value="{{ q }}" onChange="{{ onQ }}" style="flex: 1; min-width: 0; height: 100%; background: transparent; border: 0; outline: none; color: #ECEEF1; font-size: 15px">
+</div>
+
+<div class="scroll" style="flex: 1; min-height: 0; overflow-y: auto; padding: 4px 8px 16px; scrollbar-width: none">
+<sc-for list="{{ groups }}" as="g" hint-placeholder-count="2">
+<div style="padding: 14px 12px 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; color: #8A93A0">{{ g.label }}</div>
+<sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
+<div class="{{ it.cls }}" style="animation-delay: {{ it.delay }}; border-radius: 14px">
+<div class="row" style="display: flex; align-items: center; gap: 4px; border-radius: 14px; background: {{ it.bg }}">
+<a href="Chat.dc.html" style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; padding: 11px 4px 11px 12px">
+<span style="display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 500">
+<span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ it.title }}</span>
+<sc-if value="{{ it.isNew }}" hint-placeholder-val="{{ false }}"><span style="position: relative; width: 8px; height: 8px; flex-shrink: 0"><span class="ping" style="position: absolute; inset: 0; border-radius: 50%; background: #B5F23D"></span><span style="position: absolute; inset: 0; border-radius: 50%; background: #B5F23D"></span></span></sc-if>
+</span>
+<span style="font-size: 13px; color: #9BA3AF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ it.sub }}</span>
+</a>
+<button type="button" aria-label="Hapus {{ it.title }}" onClick="{{ it.ask }}" class="press" style="width: 44px; height: 44px; flex-shrink: 0; border: 0; border-radius: 12px; background: transparent; color: #8A93A0; display: flex; align-items: center; justify-content: center">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"></path></svg>
+</button>
+</div>
+</div>
+</sc-for>
+</sc-for>
+<sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+<div class="rowIn" style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 48px 24px; text-align: center">
+<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#3A4150" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="M20 20l-4.5-4.5M9 11h4"></path></svg>
+<span style="font-size: 15px; font-weight: 500">Tidak ketemu</span>
+<span style="font-size: 13px; color: #9BA3AF">Coba kata lain dari judul atau isi percakapan.</span>
+</div>
+</sc-if>
+</div>
+
+<div style="border-top: 1px solid #23272F; padding: 12px 16px 24px; display: flex; align-items: center; gap: 12px">
+<span style="width: 36px; height: 36px; border-radius: 50%; background: #2A2F38; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center">R</span>
+<span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 500">Rani</span><span style="font-size: 12px; color: #9BA3AF">Sisa 37 pesan hari ini</span></span>
+<a href="Settings.dc.html" aria-label="Pengaturan" class="press" style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #9BA3AF">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg>
+</a>
+</div>
+</aside>
+
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+<div class="toast" role="status" style="position: absolute; left: 16px; right: 16px; bottom: 28px; display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px; border-radius: 16px; background: #ECEEF1; color: #0E1014; font-size: 14px; font-weight: 500">
+<span style="flex: 1">Percakapan dihapus</span>
+</div>
+</sc-if>
+
+<sc-if value="{{ asking }}" hint-placeholder-val="{{ false }}">
+<div class="dim" style="position: absolute; inset: 0; background: rgba(5, 6, 8, 0.6); display: flex; align-items: flex-end">
+<div class="sheet" role="dialog" aria-label="Hapus percakapan" style="width: 100%; box-sizing: border-box; padding: 12px 20px 28px; border-radius: 28px 28px 0 0; background: #171A20; border-top: 1px solid #2A2F38; display: flex; flex-direction: column; gap: 10px">
+<span style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #3A4150; margin-bottom: 10px"></span>
+<h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 600">Hapus percakapan ini?</h2>
+<p style="margin: 0 0 8px; font-size: 15px; line-height: 1.5; color: #9BA3AF">“{{ askTitle }}” akan hilang dari semua perangkatmu dan tidak bisa dikembalikan.</p>
+<button type="button" onClick="{{ confirm }}" class="press" style="height: 52px; border: 0; border-radius: 14px; background: #FFA899; color: #0E1014; font-weight: 600; font-size: 16px">Hapus</button>
+<button type="button" onClick="{{ cancel }}" class="press" style="height: 52px; border: 1px solid #2A2F38; border-radius: 14px; background: transparent; color: #ECEEF1; font-weight: 500; font-size: 16px">Batal</button>
+</div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = {
+q: '',
+asking: null,
+leaving: null,
+toastKey: 0,
+items: [
+{ id: 1, group: 'Hari ini', title: 'Resep sambal matah', sub: 'Dari HP lain · baru saja', isNew: true },
+{ id: 2, group: 'Hari ini', title: 'Rencana liburan ke Jogja', sub: 'Total 3 hari sekitar Rp1,5–2 juta…', isNew: false },
+{ id: 3, group: 'Kemarin', title: 'Email minta izin cuti', sub: 'Berikut draf yang lebih sopan…', isNew: false },
+{ id: 4, group: 'Kemarin', title: 'Belajar regex dasar', sub: 'Tanda ^ artinya awal baris…', isNew: false },
+{ id: 5, group: '7 hari terakhir', title: 'Ide kado ulang tahun ibu', sub: 'Tanaman hias, tas rajut, atau…', isNew: false },
+{ id: 6, group: '7 hari terakhir', title: 'Jadwal lari 5K pemula', sub: 'Minggu 1: jalan cepat 20 menit…', isNew: false },
+{ id: 7, group: '7 hari terakhir', title: 'Arti kata "ngabuburit"', sub: 'Menunggu waktu berbuka puasa…', isNew: false }
+]
+};
+}
+componentWillUnmount() {
+clearTimeout(this.t1);
+clearTimeout(this.t2);
+}
+renderVals() {
+const s = this.state;
+const q = s.q.trim().toLowerCase();
+const shown = s.items.filter((it) => !q || (it.title + ' ' + it.sub).toLowerCase().includes(q));
+const order = ['Hari ini', 'Kemarin', '7 hari terakhir'];
+let n = 0;
+const groups = order.map((label) => ({
+label,
+items: shown.filter((it) => it.group === label).map((it) => ({
+title: it.title,
+sub: it.sub,
+isNew: it.isNew,
+bg: 'transparent',
+cls: it.id === s.leaving ? 'out' : (it.isNew ? 'rowIn fresh' : 'rowIn'),
+delay: (0.08 + (n++) * 0.04) + 's',
+ask: () => this.setState({ asking: it })
+}))
+})).filter((g) => g.items.length > 0);
+return {
+q: s.q,
+groups,
+empty: shown.length === 0,
+asking: !!s.asking,
+askTitle: s.asking ? s.asking.title : '',
+toast: s.toastKey > 0,
+onQ: (e) => this.setState({ q: e.target.value }),
+cancel: () => this.setState({ asking: null }),
+confirm: () => {
+const id = s.asking.id;
+clearTimeout(this.t2);
+this.setState({ asking: null, leaving: id, toastKey: 0 });
+this.t1 = setTimeout(() => {
+this.setState({ items: this.state.items.filter((x) => x.id !== id), leaving: null, toastKey: this.state.toastKey + 1 });
+this.t2 = setTimeout(() => this.setState({ toastKey: 0 }), 2400);
+}, 260);
+}
+};
+}
+}
+</script>
+</body>
+</html>

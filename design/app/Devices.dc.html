@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Lumi · Perangkat aktif</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#ECEEF1;text-decoration:none}a:hover{color:#FFFFFF}
+button{font:inherit}
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes out{0%{opacity:1;max-height:90px;transform:none}100%{opacity:0;max-height:0;transform:translateX(60px);margin-top:-1px}}
+@keyframes ping{0%{transform:scale(1);opacity:.8}100%{transform:scale(2.6);opacity:0}}
+@keyframes dim{from{opacity:0}to{opacity:1}}
+@keyframes sheet{from{transform:translateY(100%)}to{transform:none}}
+@keyframes toast{0%{opacity:0;transform:translateY(20px)}12%,85%{opacity:1;transform:none}100%{opacity:0;transform:translateY(20px)}}
+.up{animation:up .45s cubic-bezier(.2,.8,.2,1) both}
+.out{animation:out .3s ease both;overflow:hidden}
+.ping{animation:ping 1.6s ease-out infinite}
+.dim{animation:dim .22s ease both}
+.sheet{animation:sheet .28s cubic-bezier(.2,.8,.2,1) both}
+.toast{animation:toast 2.4s ease both}
+.press{transition:transform .12s ease,background-color .15s}
+.press:active{transform:scale(.97)}
+@media (prefers-reduced-motion: reduce){.up,.out,.ping,.dim,.sheet,.toast{animation:none}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0E1014; color: #ECEEF1; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; position: relative; overflow: hidden">
+
+<header style="height: 60px; flex-shrink: 0; display: flex; align-items: center; gap: 4px; padding: 0 8px">
+<a href="Settings.dc.html" aria-label="Kembali ke pengaturan" class="press" style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+<h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 600">Perangkat aktif</h1>
+</header>
+
+<div style="flex: 1; min-height: 0; overflow-y: auto; padding: 4px 16px 24px; display: flex; flex-direction: column; gap: 16px">
+<p class="up" style="margin: 0 4px; font-size: 14px; line-height: 1.55; color: #9BA3AF">Akun Lumi kamu sedang masuk di perangkat ini. Keluarkan yang tidak kamu kenali, perangkat itu langsung kembali ke layar Masuk.</p>
+
+<div class="up" style="display: flex; flex-direction: column; border-radius: 22px; background: #13161B; border: 1px solid #23272F; overflow: hidden; animation-delay: .06s">
+<sc-for list="{{ devices }}" as="d" hint-placeholder-count="3">
+<div class="{{ d.cls }}" style="border-top: {{ d.divider }}">
+<div style="min-height: 72px; display: flex; align-items: center; gap: 14px; padding: 12px 8px 12px 16px">
+<span style="width: 42px; height: 42px; flex-shrink: 0; border-radius: 13px; background: {{ d.iconBg }}; color: {{ d.iconFg }}; display: flex; align-items: center; justify-content: center">
+<sc-if value="{{ d.isTablet }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="3"></rect><path d="M11 18h2"></path></svg></sc-if>
+<sc-if value="{{ d.isPhone }}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"></rect><path d="M11 18h2"></path></svg></sc-if>
+</span>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+<span style="display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 500">{{ d.name }}
+<sc-if value="{{ d.current }}" hint-placeholder-val="{{ false }}"><span style="padding: 2px 8px; border-radius: 10px; background: rgba(181, 242, 61, 0.12); color: #B5F23D; font-size: 11px; font-weight: 600">Perangkat ini</span></sc-if>
+</span>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #9BA3AF">
+<sc-if value="{{ d.online }}" hint-placeholder-val="{{ false }}"><span style="position: relative; width: 7px; height: 7px"><span class="ping" style="position: absolute; inset: 0; border-radius: 50%; background: #B5F23D"></span><span style="position: absolute; inset: 0; border-radius: 50%; background: #B5F23D"></span></span></sc-if>
+{{ d.seen }}</span>
+</div>
+<sc-if value="{{ d.removable }}" hint-placeholder-val="{{ true }}">
+<button type="button" onClick="{{ d.ask }}" class="press" style="height: 40px; padding: 0 14px; border: 1px solid #2A2F38; border-radius: 12px; background: transparent; color: #FFA899; font-size: 13px; font-weight: 600">Keluarkan</button>
+</sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+
+<sc-if value="{{ hasOthers }}" hint-placeholder-val="{{ true }}">
+<button type="button" onClick="{{ askAll }}" class="up press" style="height: 52px; border-radius: 16px; border: 1px solid #2A2F38; background: transparent; color: #FFA899; font-size: 15px; font-weight: 600; animation-delay: .12s">Keluarkan semua perangkat lain</button>
+</sc-if>
+<sc-if value="{{ alone }}" hint-placeholder-val="{{ false }}">
+<p class="up" style="margin: 0; text-align: center; font-size: 14px; color: #9BA3AF">Hanya perangkat ini yang masuk. Aman.</p>
+</sc-if>
+</div>
+
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+<div class="toast" role="status" style="position: absolute; left: 16px; right: 16px; bottom: 28px; padding: 14px 16px; border-radius: 16px; background: #ECEEF1; color: #0E1014; font-size: 14px; font-weight: 500">{{ toastText }}</div>
+</sc-if>
+
+<sc-if value="{{ asking }}" hint-placeholder-val="{{ false }}">
+<div class="dim" style="position: absolute; inset: 0; background: rgba(5, 6, 8, 0.6); display: flex; align-items: flex-end">
+<div class="sheet" role="dialog" aria-label="Keluarkan perangkat" style="width: 100%; box-sizing: border-box; padding: 12px 20px 28px; border-radius: 28px 28px 0 0; background: #171A20; border-top: 1px solid #2A2F38; display: flex; flex-direction: column; gap: 10px">
+<span style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #3A4150; margin-bottom: 10px"></span>
+<h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 600">{{ askTitle }}</h2>
+<p style="margin: 0 0 8px; font-size: 15px; line-height: 1.5; color: #9BA3AF">Perangkat itu langsung keluar dan harus masuk lagi dengan password.</p>
+<button type="button" onClick="{{ confirm }}" class="press" style="height: 52px; border: 0; border-radius: 14px; background: #FFA899; color: #0E1014; font-weight: 600; font-size: 16px">Keluarkan</button>
+<button type="button" onClick="{{ cancel }}" class="press" style="height: 52px; border: 1px solid #2A2F38; border-radius: 14px; background: transparent; color: #ECEEF1; font-weight: 500; font-size: 16px">Batal</button>
+</div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = {
+asking: null,
+leaving: [],
+toastKey: 0,
+toastText: '',
+list: [
+{ id: 1, name: 'Galaxy A56', kind: 'phone', seen: 'Aktif sekarang', current: true, online: true },
+{ id: 2, name: 'iPad Air', kind: 'tablet', seen: '2 jam lalu · Jakarta', current: false, online: false },
+{ id: 3, name: 'Redmi Note 13', kind: 'phone', seen: '5 hari lalu · Bandung', current: false, online: false }
+]
+};
+}
+componentWillUnmount() {
+clearTimeout(this.t1);
+clearTimeout(this.t2);
+}
+renderVals() {
+const s = this.state;
+const others = s.list.filter((d) => !d.current);
+return {
+devices: s.list.map((d, i) => ({
+name: d.name,
+seen: d.seen,
+current: d.current,
+online: d.online,
+removable: !d.current,
+isPhone: d.kind === 'phone',
+isTablet: d.kind === 'tablet',
+iconBg: d.current ? 'rgba(181, 242, 61, 0.12)' : '#1F232B',
+iconFg: d.current ? '#B5F23D' : '#C9CED6',
+divider: i === 0 ? '0' : '1px solid #1F232B',
+cls: s.leaving.indexOf(d.id) >= 0 ? 'out' : '',
+ask: () => this.setState({ asking: { ids: [d.id], title: 'Keluarkan ' + d.name + '?' } })
+})),
+hasOthers: others.length > 0,
+alone: others.length === 0,
+asking: !!s.asking,
+askTitle: s.asking ? s.asking.title : '',
+toast: s.toastKey > 0,
+toastText: s.toastText,
+askAll: () => this.setState({ asking: { ids: others.map((d) => d.id), title: 'Keluarkan ' + others.length + ' perangkat lain?' } }),
+cancel: () => this.setState({ asking: null }),
+confirm: () => {
+const ids = s.asking.ids;
+clearTimeout(this.t2);
+this.setState({ asking: null, leaving: ids, toastKey: 0 });
+this.t1 = setTimeout(() => {
+this.setState({
+list: this.state.list.filter((d) => ids.indexOf(d.id) < 0),
+leaving: [],
+toastKey: this.state.toastKey + 1,
+toastText: ids.length > 1 ? ids.length + ' perangkat dikeluarkan' : 'Perangkat dikeluarkan'
+});
+this.t2 = setTimeout(() => this.setState({ toastKey: 0 }), 2400);
+}, 300);
+}
+};
+}
+}
+</script>
+</body>
+</html>

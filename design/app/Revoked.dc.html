@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Lumi · Sesi berakhir</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#ECEEF1;text-decoration:none}a:hover{color:#FFFFFF}
+@keyframes dim{from{opacity:0}to{opacity:1}}
+@keyframes dialog{0%{opacity:0;transform:scale(.88) translateY(12px)}70%{opacity:1;transform:scale(1.02)}100%{opacity:1;transform:none}}
+@keyframes z{0%{opacity:0;transform:translate(0,0) scale(.6)}30%{opacity:1}100%{opacity:0;transform:translate(18px,-34px) scale(1.1)}}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03,0.98)}}
+@keyframes flicker{0%,100%{fill:#3A4150}50%{fill:#556072}}
+.dim{animation:dim .3s ease both}
+.dialog{animation:dialog .42s .1s cubic-bezier(.2,.8,.2,1) both}
+.z{animation:z 2.4s ease-out infinite}
+.breathe{transform-origin:120px 220px;animation:breathe 3s ease-in-out infinite}
+.flicker{animation:flicker 3s ease-in-out infinite}
+.press{transition:transform .12s ease}
+.press:active{transform:scale(.97)}
+@media (prefers-reduced-motion: reduce){.dim,.dialog,.z,.breathe,.flicker{animation:none}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0E1014; color: #ECEEF1; font-family: Inter, system-ui, sans-serif; position: relative; overflow: hidden">
+
+<div aria-hidden="true" style="position: absolute; inset: 0; padding: 84px 16px; display: flex; flex-direction: column; gap: 16px; opacity: 0.5">
+<div style="align-self: flex-end; width: 200px; height: 42px; border-radius: 20px 20px 6px 20px; background: #1F232B"></div>
+<div style="display: flex; flex-direction: column; gap: 8px; width: 290px"><div style="height: 12px; border-radius: 6px; background: #1F232B"></div><div style="height: 12px; border-radius: 6px; background: #1F232B; width: 86%"></div><div style="height: 12px; border-radius: 6px; background: #1F232B; width: 64%"></div></div>
+<div style="align-self: flex-end; width: 150px; height: 42px; border-radius: 20px 20px 6px 20px; background: #1F232B"></div>
+</div>
+
+<div class="dim" style="position: absolute; inset: 0; background: rgba(5, 6, 8, 0.72); display: flex; align-items: center; justify-content: center; padding: 24px">
+<div class="dialog" role="alertdialog" aria-labelledby="t" style="width: 100%; box-sizing: border-box; padding: 8px 24px 24px; border-radius: 28px; background: #171A20; border: 1px solid #2A2F38; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center">
+
+<div style="position: relative; width: 150px; height: 150px">
+<sc-if value="{{ sleepy }}" hint-placeholder-val="{{ true }}">
+<span class="z" style="position: absolute; right: 22px; top: 22px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 18px; color: #9BA3AF" aria-hidden="true">z</span>
+<span class="z" style="position: absolute; right: 14px; top: 30px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 14px; color: #9BA3AF; animation-delay: .8s" aria-hidden="true">z</span>
+<span class="z" style="position: absolute; right: 28px; top: 34px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 12px; color: #9BA3AF; animation-delay: 1.6s" aria-hidden="true">z</span>
+</sc-if>
+<svg viewBox="0 0 240 240" width="150" height="150" role="img" aria-label="{{ catLabel }}">
+<g stroke-linecap="round" stroke-linejoin="round" class="breathe">
+<g stroke="#F2EEE3" stroke-width="14"><path d="M42 140 V156" fill="none"></path><ellipse cx="42" cy="174" rx="15" ry="17" fill="#3A4150"></ellipse><rect x="34" y="153" width="16" height="6" rx="2"></rect><rect x="35" y="189" width="14" height="5" rx="2"></rect></g>
+<g stroke="#14161A" stroke-width="3.5"><path d="M42 140 V156" fill="none"></path><rect x="34" y="153" width="16" height="6" rx="2" fill="#3A4150"></rect><ellipse class="{{ lampClass }}" cx="42" cy="174" rx="15" ry="17" fill="{{ lampFill }}"></ellipse><path d="M42 157 V191 M34 160 Q30 174 34 188 M50 160 Q54 174 50 188" fill="none"></path><rect x="35" y="189" width="14" height="5" rx="2" fill="#3A4150"></rect></g>
+<g stroke="#F2EEE3" stroke-width="14" fill="#F2A65A"><path d="M74 200 C 35 205 18 165 40 140 C 44 136 50 140 47 145 C 32 165 42 190 74 188 Z"></path><ellipse cx="120" cy="172" rx="52" ry="46"></ellipse><ellipse cx="100" cy="214" rx="16" ry="9"></ellipse><ellipse cx="140" cy="214" rx="16" ry="9"></ellipse><path d="M80 82 L86 44 L110 66 Z"></path><path d="M160 82 L154 44 L130 66 Z"></path><ellipse cx="120" cy="106" rx="50" ry="42"></ellipse></g>
+<g stroke="#14161A" stroke-width="3.5">
+<path d="M74 200 C 35 205 18 165 40 140 C 44 136 50 140 47 145 C 32 165 42 190 74 188 Z" fill="#F2A65A"></path>
+<ellipse cx="120" cy="172" rx="52" ry="46" fill="#F2A65A"></ellipse>
+<ellipse cx="120" cy="180" rx="28" ry="28" fill="#FBE3C8"></ellipse>
+<ellipse cx="100" cy="214" rx="16" ry="9" fill="#F2A65A"></ellipse>
+<ellipse cx="140" cy="214" rx="16" ry="9" fill="#F2A65A"></ellipse>
+<path d="M80 82 L86 44 L110 66 Z" fill="#F2A65A"></path>
+<path d="M160 82 L154 44 L130 66 Z" fill="#F2A65A"></path>
+<ellipse cx="120" cy="106" rx="50" ry="42" fill="#F2A65A"></ellipse>
+<path d="M90 60 L92 72 L102 68 Z" fill="#F7C6B5" stroke="none"></path>
+<path d="M150 60 L148 72 L138 68 Z" fill="#F7C6B5" stroke="none"></path>
+<path d="M110 68 L112 80 M120 66 V80 M130 68 L128 80" fill="none"></path>
+<path d="M95 106 Q102 112 109 106 M131 106 Q138 112 145 106" fill="none"></path>
+<ellipse cx="90" cy="120" rx="7" ry="4" fill="#F7C6B5" stroke="none"></ellipse>
+<ellipse cx="150" cy="120" rx="7" ry="4" fill="#F7C6B5" stroke="none"></ellipse>
+<path d="M116 116 L124 116 L120 121 Z" fill="#E07A6A"></path>
+<path d="M114 126 Q120 123 126 126" fill="none"></path>
+<path d="M76 110 L60 106 M76 116 L60 118 M164 110 L180 106 M164 116 L180 118" fill="none"></path>
+</g>
+</g>
+</svg>
+</div>
+
+<sc-if value="{{ sleepy }}" hint-placeholder-val="{{ true }}">
+<h2 id="t" style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 600">Sesi berakhir</h2>
+<p style="margin: 0 0 10px; font-size: 15px; line-height: 1.5; color: #9BA3AF">Akunmu dikeluarkan dari perangkat ini, dari perangkat lain atau karena password diganti. Masuk lagi untuk lanjut.</p>
+<a href="Login.dc.html" class="press" style="width: 100%; height: 52px; border-radius: 14px; background: #B5F23D; color: #0E1014; font-weight: 600; font-size: 16px; display: flex; align-items: center; justify-content: center">Masuk lagi</a>
+</sc-if>
+<sc-if value="{{ quota }}" hint-placeholder-val="{{ false }}">
+<h2 id="t" style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 600">Kuota hari ini habis</h2>
+<p style="margin: 0 0 10px; font-size: 15px; line-height: 1.5; color: #9BA3AF">Lumi istirahat dulu, kuota reset pukul 00.00 WIB. Pakai key AI sendiri supaya bisa lanjut tanpa batas.</p>
+<a href="AiKey.dc.html" class="press" style="width: 100%; height: 52px; border-radius: 14px; background: #B5F23D; color: #0E1014; font-weight: 600; font-size: 16px; display: flex; align-items: center; justify-content: center">Atur Kunci AI</a>
+<a href="Chat.dc.html" class="press" style="width: 100%; height: 48px; border-radius: 14px; color: #ECEEF1; font-weight: 500; font-size: 15px; display: flex; align-items: center; justify-content: center">Nanti saja</a>
+</sc-if>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"variant":{"editor":"enum","options":["Sesi berakhir","Kuota habis"],"default":"Sesi berakhir"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+const quota = (this.props.variant ?? 'Sesi berakhir') === 'Kuota habis';
+return {
+sleepy: !quota,
+quota,
+lampFill: quota ? '#3A4150' : '#3A4150',
+lampClass: quota ? 'flicker' : '',
+catLabel: quota ? 'Lumi tidur, lenteranya meredup' : 'Lumi tertidur'
+};
+}
+}
+</script>
+</body>
+</html>

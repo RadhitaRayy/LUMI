@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Lumi · Kunci AI saya</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#B5F23D;text-decoration:none}a:hover{color:#CDFA6E}
+button,input{font:inherit}
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes expand{from{opacity:0;max-height:0;transform:translateY(-6px)}to{opacity:1;max-height:120px;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(3px)}}
+@keyframes flip{0%{opacity:0;transform:perspective(600px) rotateX(-70deg)}100%{opacity:1;transform:none}}
+@keyframes toast{0%{opacity:0;transform:translateY(-24px)}12%,85%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-24px)}}
+@keyframes dim{from{opacity:0}to{opacity:1}}
+@keyframes sheet{from{transform:translateY(100%)}to{transform:none}}
+.up{animation:up .45s cubic-bezier(.2,.8,.2,1) both}
+.expand{animation:expand .3s cubic-bezier(.2,.8,.2,1) both;overflow:hidden}
+.spin{animation:spin .8s linear infinite}
+@keyframes shake2{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(3px)}}
+.shake{animation:shake .32s ease}
+.shake-b{animation:shake2 .32s ease}
+.flip{transform-origin:top center;animation:flip .45s cubic-bezier(.2,.8,.2,1) both}
+.toast{animation:toast 2.8s ease both}
+.dim{animation:dim .22s ease both}
+.sheet{animation:sheet .28s cubic-bezier(.2,.8,.2,1) both}
+.pill{transition:left .3s cubic-bezier(.3,1.2,.5,1)}
+.knob{transition:transform .25s cubic-bezier(.3,1.4,.5,1)}
+.track{transition:background-color .25s}
+.press{transition:transform .12s ease,background-color .2s}
+.press:active{transform:scale(.97)}
+.fld{transition:border-color .2s,box-shadow .2s}
+.fld:focus-within{border-color:#B5F23D;box-shadow:0 0 0 3px rgba(181,242,61,.16)}
+@media (prefers-reduced-motion: reduce){.up,.expand,.spin,.shake,.flip,.toast,.dim,.sheet{animation:none}.pill,.knob,.track{transition:none}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0E1014; color: #ECEEF1; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; position: relative; overflow: hidden">
+
+<header style="height: 60px; flex-shrink: 0; display: flex; align-items: center; gap: 4px; padding: 0 8px">
+<a href="Settings.dc.html" aria-label="Kembali ke pengaturan" class="press" style="width: 44px; height: 44px; border-radius: 12px; color: #ECEEF1; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+<h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 600">Kunci AI saya</h1>
+</header>
+
+<div style="flex: 1; min-height: 0; overflow-y: auto; padding: 4px 20px 24px; display: flex; flex-direction: column; gap: 18px">
+
+<sc-if value="{{ saved }}" hint-placeholder-val="{{ false }}">
+<section class="flip" style="display: flex; flex-direction: column; gap: 14px; padding: 18px; border-radius: 22px; background: #13161B; border: 1px solid {{ cardBorder }}">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="width: 40px; height: 40px; border-radius: 12px; background: rgba(181, 242, 61, 0.12); color: #B5F23D; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"></circle><path d="M11 12l9-9M17 6l3 3M14 9l2 2"></path></svg></span>
+<div style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 15px; font-weight: 600">{{ providerName }} <span style="font-family: 'JetBrains Mono', monospace; font-weight: 500; color: #9BA3AF">••••a1b2</span></span>
+<span style="font-size: 12px; color: #9BA3AF">{{ statusText }}</span>
+</div>
+<button type="button" role="switch" aria-checked="{{ activeStr }}" aria-label="Pakai key ini" onClick="{{ toggleActive }}" class="track" style="width: 52px; height: 32px; flex-shrink: 0; border: 0; border-radius: 16px; padding: 3px; background: {{ trackBg }}; display: flex">
+<span class="knob" style="width: 26px; height: 26px; border-radius: 50%; background: #FFFFFF; transform: {{ knobX }}"></span>
+</button>
+</div>
+<div style="display: flex; gap: 8px">
+<button type="button" onClick="{{ test }}" class="press" style="flex: 1; height: 44px; border: 1px solid #2A2F38; border-radius: 12px; background: transparent; color: #ECEEF1; font-size: 14px; font-weight: 500">Uji ulang</button>
+<button type="button" onClick="{{ askDelete }}" class="press" style="flex: 1; height: 44px; border: 1px solid #2A2F38; border-radius: 12px; background: transparent; color: #FFA899; font-size: 14px; font-weight: 500">Hapus key</button>
+</div>
+</section>
+</sc-if>
+
+<p class="up" style="margin: 0; font-size: 14px; line-height: 1.55; color: #9BA3AF">Pakai API key milikmu sendiri supaya chat tidak dibatasi kuota harian. Key disimpan terenkripsi di server dan tidak pernah ditampilkan lagi.</p>
+
+<div class="up" style="display: flex; flex-direction: column; gap: 8px; animation-delay: .05s">
+<span id="prov" style="font-size: 13px; font-weight: 500; color: #C9CED6">Provider</span>
+<div role="radiogroup" aria-labelledby="prov" style="position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 4px; border-radius: 16px; background: #13161B; border: 1px solid #23272F">
+<span class="pill" style="position: absolute; top: 4px; bottom: 4px; left: {{ pillLeft }}; width: calc((100% - 8px) / 3); border-radius: 12px; background: #2A2F38"></span>
+<sc-for list="{{ providers }}" as="p" hint-placeholder-count="3">
+<button type="button" role="radio" aria-checked="{{ p.checked }}" onClick="{{ p.pick }}" style="position: relative; height: 44px; border: 0; background: transparent; color: {{ p.color }}; font-size: 13px; font-weight: 600; transition: color .2s">{{ p.label }}</button>
+</sc-for>
+</div>
+<span style="font-size: 12px; color: #9BA3AF">{{ providerHint }}</span>
+</div>
+
+<sc-if value="{{ needsUrl }}" hint-placeholder-val="{{ false }}">
+<div class="expand" style="display: flex; flex-direction: column; gap: 8px">
+<label for="base" style="font-size: 13px; font-weight: 500; color: #C9CED6">Base URL</label>
+<div class="fld" style="height: 52px; display: flex; align-items: center; padding: 0 16px; background: #13161B; border: 1px solid #2A2F38; border-radius: 14px"><input id="base" type="url" placeholder="https://api.contoh.com/v1" style="flex: 1; min-width: 0; height: 100%; background: transparent; border: 0; outline: none; color: #ECEEF1; font-size: 14px; font-family: 'JetBrains Mono', monospace"></div>
+</div>
+</sc-if>
+
+<div class="up" style="display: flex; flex-direction: column; gap: 8px; animation-delay: .1s">
+<label for="key" style="font-size: 13px; font-weight: 500; color: #C9CED6">API key</label>
+<div class="fld {{ keyShake }}" style="height: 52px; display: flex; align-items: center; padding: 0 16px; background: #13161B; border: 1px solid {{ keyBorder }}; border-radius: 14px"><input id="key" type="password" placeholder="{{ keyPlaceholder }}" autocomplete="off" style="flex: 1; min-width: 0; height: 100%; background: transparent; border: 0; outline: none; color: #ECEEF1; font-size: 14px; font-family: 'JetBrains Mono', monospace"></div>
+<sc-if value="{{ failed }}" hint-placeholder-val="{{ false }}"><span role="alert" style="font-size: 13px; color: #FFA899">Key ditolak provider (401). Cek lagi key-nya, lalu coba lagi.</span></sc-if>
+</div>
+
+<div class="up" style="display: flex; flex-direction: column; gap: 8px; animation-delay: .15s">
+<label for="model" style="font-size: 13px; font-weight: 500; color: #C9CED6">Model</label>
+<div class="fld" style="height: 52px; display: flex; align-items: center; padding: 0 16px; background: #13161B; border: 1px solid #2A2F38; border-radius: 14px"><input id="model" type="text" placeholder="{{ modelPlaceholder }}" autocomplete="off" style="flex: 1; min-width: 0; height: 100%; background: transparent; border: 0; outline: none; color: #ECEEF1; font-size: 14px; font-family: 'JetBrains Mono', monospace"></div>
+<span style="font-size: 12px; color: #9BA3AF">Tulis ID model persis seperti di dashboard provider.</span>
+</div>
+
+<button type="button" onClick="{{ test }}" class="press up" style="height: 52px; border: 0; border-radius: 14px; background: #B5F23D; color: #0E1014; font-weight: 600; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 10px; animation-delay: .2s">
+<sc-if value="{{ testing }}" hint-placeholder-val="{{ false }}"><span class="spin" style="width: 18px; height: 18px; box-sizing: border-box; border-radius: 50%; border: 2.5px solid rgba(14, 16, 20, 0.25); border-top-color: #0E1014"></span></sc-if>
+{{ testLabel }}
+</button>
+</div>
+
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+<div class="toast" role="status" style="position: absolute; top: 14px; left: 16px; right: 16px; display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 16px; background: #1F232B; border: 1px solid #2A2F38; font-size: 14px; line-height: 1.4">
+<span style="width: 26px; height: 26px; flex-shrink: 0; border-radius: 50%; background: #B5F23D; color: #0E1014; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"></path></svg></span>
+Key berfungsi. Lumi sekarang pakai key kamu.
+</div>
+</sc-if>
+
+<sc-if value="{{ deleting }}" hint-placeholder-val="{{ false }}">
+<div class="dim" style="position: absolute; inset: 0; background: rgba(5, 6, 8, 0.6); display: flex; align-items: flex-end">
+<div class="sheet" role="dialog" aria-label="Hapus key" style="width: 100%; box-sizing: border-box; padding: 12px 20px 28px; border-radius: 28px 28px 0 0; background: #171A20; border-top: 1px solid #2A2F38; display: flex; flex-direction: column; gap: 10px">
+<span style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #3A4150; margin-bottom: 10px"></span>
+<h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 600">Hapus key ini?</h2>
+<p style="margin: 0 0 8px; font-size: 15px; line-height: 1.5; color: #9BA3AF">Lumi kembali memakai key Lumi dengan kuota 50 pesan per hari.</p>
+<button type="button" onClick="{{ confirmDelete }}" class="press" style="height: 52px; border: 0; border-radius: 14px; background: #FFA899; color: #0E1014; font-weight: 600; font-size: 16px">Hapus key</button>
+<button type="button" onClick="{{ cancelDelete }}" class="press" style="height: 52px; border: 1px solid #2A2F38; border-radius: 14px; background: transparent; color: #ECEEF1; font-weight: 500; font-size: 16px">Batal</button>
+</div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"demoKeyRejected":{"editor":"boolean","default":false},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = { provider: 0, testing: false, saved: false, active: true, failed: false, shakeKey: 0, toastKey: 0, deleting: false };
+}
+componentWillUnmount() {
+clearTimeout(this.t1);
+clearTimeout(this.t2);
+}
+renderVals() {
+const s = this.state;
+const list = [
+{ label: 'OpenRouter', hint: 'Banyak model gratis berlabel :free. Ambil key di openrouter.ai.', key: 'sk-or-v1-…', model: 'contoh: nama-model:free' },
+{ label: 'NVIDIA NIM', hint: 'Model gratis dari build.nvidia.com. Alamatnya sudah diisi Lumi.', key: 'nvapi-…', model: 'contoh: vendor/nama-model' },
+{ label: 'Lainnya', hint: 'Layanan lain yang kompatibel dengan API OpenAI.', key: 'Tempel API key', model: 'ID model dari provider' }
+];
+const p = list[s.provider];
+return {
+providers: list.map((x, i) => ({
+label: x.label,
+checked: i === s.provider ? 'true' : 'false',
+color: i === s.provider ? '#ECEEF1' : '#9BA3AF',
+pick: () => this.setState({ provider: i, failed: false })
+})),
+pillLeft: 'calc(4px + ' + s.provider + ' * (100% - 8px) / 3)',
+providerHint: p.hint,
+providerName: list[s.provider].label,
+needsUrl: s.provider === 2,
+keyPlaceholder: p.key,
+modelPlaceholder: p.model,
+testing: s.testing,
+testLabel: s.testing ? 'Menguji key…' : (s.saved ? 'Simpan perubahan' : 'Uji dan simpan'),
+failed: s.failed,
+keyBorder: s.failed ? '#FFA899' : '#2A2F38',
+keyShake: s.shakeKey === 0 ? '' : (s.shakeKey % 2 ? 'shake' : 'shake-b'),
+saved: s.saved,
+cardBorder: s.active ? 'rgba(181, 242, 61, 0.35)' : '#23272F',
+statusText: s.active ? 'Aktif · diuji baru saja' : 'Nonaktif · pakai key Lumi',
+activeStr: s.active ? 'true' : 'false',
+trackBg: s.active ? '#B5F23D' : '#3A4150',
+knobX: s.active ? 'translateX(20px)' : 'translateX(0)',
+toast: s.toastKey > 0,
+deleting: s.deleting,
+toggleActive: () => this.setState({ active: !s.active }),
+test: () => {
+if (s.testing) return;
+this.setState({ testing: true, failed: false });
+this.t1 = setTimeout(() => {
+if (this.props.demoKeyRejected ?? false) {
+this.setState({ testing: false, failed: true, shakeKey: this.state.shakeKey + 1 });
+return;
+}
+this.setState({ testing: false, saved: true, active: true, toastKey: this.state.toastKey + 1 });
+clearTimeout(this.t2);
+this.t2 = setTimeout(() => this.setState({ toastKey: 0 }), 2800);
+}, 1200);
+},
+askDelete: () => this.setState({ deleting: true }),
+cancelDelete: () => this.setState({ deleting: false }),
+confirmDelete: () => this.setState({ deleting: false, saved: false })
+};
+}
+}
+</script>
+</body>
+</html>
