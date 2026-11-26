@@ -98,10 +98,18 @@ diuji ke provider, lalu disimpan terenkripsi:
 
 ```powershell
 # OpenRouter (model gratis berlabel :free)
-php artisan lumi:add-provider openrouter "meta-llama/llama-3.3-70b-instruct:free" --name=OpenRouter
+php artisan lumi:add-provider openrouter "google/gemma-4-31b-it:free" --name=OpenRouter --label="Gemma 4 31B (free)"
 # NVIDIA NIM (OpenAI-compatible)
 php artisan lumi:add-provider openai_compatible "meta/llama-3.1-8b-instruct" --name="NVIDIA NIM" --url=https://integrate.api.nvidia.com/v1
 ```
+
+Catatan:
+- Paste key dengan **klik kanan**. Di prompt tersembunyi, Ctrl+V hanya mengetik huruf `v`,
+  dan provider membalasnya dengan "Missing Authentication header". Perintah ini menolak isian
+  yang tidak berbentuk key dan menampilkan panjang serta 4 karakter terakhir key yang diterima.
+- Daftar model gratis OpenRouter sering berubah. Contohnya, `meta-llama/llama-3.3-70b-instruct:free`
+  sudah tidak gratis lagi per 2026-11-26. Cek daftar terbaru (tanpa key):
+  `curl -s https://openrouter.ai/api/v1/models`, lalu pilih id yang berakhiran `:free`.
 
 Menyalakan PostgreSQL kalau belum jalan (atau lewat menu Laragon):
 

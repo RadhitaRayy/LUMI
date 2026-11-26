@@ -144,6 +144,41 @@ describe('chat streaming', function () {
             ->assertJsonPath('user.quota.remaining', 0);
     });
 
+    it('does not charge the quota for answers the provider failed to give', function () {
+        withPlatformModel();
+        fakeLlm([], failWith: new LlmException(LlmException::RATE_LIMITED, '429'));
+        [$user, $token] = userWithToken();
+        $conversation = $user->conversations()->create();
+
+        $this->withToken($token)->post("/api/v1/conversations/{$conversation->id}/messages", ['content' => 'hai'])
+            ->assertOk()->streamedContent();
+
+        $this->withToken($token)->getJson('/api/v1/me')->assertJsonPath('user.quota.used_today', 0);
+    });
+
+    it('keeps counting the quota after the conversation is deleted', function () {
+        withPlatformModel();
+        fakeLlm(['ok']);
+        [$user, $token] = userWithToken();
+        $conversation = $user->conversations()->create();
+
+        $this->withToken($token)->post("/api/v1/conversations/{$conversation->id}/messages", ['content' => 'hai'])
+            ->assertOk()->streamedContent();
+        $this->withToken($token)->deleteJson("/api/v1/conversations/{$conversation->id}")->assertOk();
+
+        $this->withToken($token)->getJson('/api/v1/me')->assertJsonPath('user.quota.used_today', 1);
+    });
+
+    it('counts answers that are still streaming', function () {
+        withPlatformModel();
+        [$user] = userWithToken();
+        $user->conversations()->create()->messages()->create([
+            'role' => 'assistant', 'content' => '', 'status' => 'streaming', 'key_source' => 'platform',
+        ]);
+
+        expect($user->platformMessagesToday())->toBe(1);
+    });
+
     it("uses the user's own key and does not count it against the quota", function () {
         withPlatformModel();
         $fake = fakeLlm(['pakai key sendiri']);

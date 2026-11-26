@@ -42,10 +42,8 @@ class AddLlmProvider extends Command
             return self::FAILURE;
         }
 
-        $apiKey = trim((string) $this->secret('API key (hidden)'));
-        if ($apiKey === '') {
-            $this->error('No API key given.');
-
+        $apiKey = $this->askForKey();
+        if ($apiKey === null) {
             return self::FAILURE;
         }
 
@@ -56,12 +54,15 @@ class AddLlmProvider extends Command
             $this->line('Testing the key with a tiny request...');
             try {
                 $driver->ping(new ResolvedModel(ResolvedModel::SOURCE_PLATFORM, $name, $type, $url, $apiKey, $modelId));
+                $this->info('Key works.');
             } catch (LlmException $e) {
-                $this->error("Provider refused the test ({$e->errorCode}): {$e->getMessage()}");
+                if (! $e->keyWasAccepted()) {
+                    $this->error("Provider refused the test ({$e->errorCode}): {$e->getMessage()}");
 
-                return self::FAILURE;
+                    return self::FAILURE;
+                }
+                $this->warn('Key accepted, but the model is rate-limited right now (common for free models). Saving anyway.');
             }
-            $this->info('Key works.');
         }
 
         DB::transaction(function () use ($name, $type, $url, $apiKey, $modelId) {
@@ -86,5 +87,32 @@ class AddLlmProvider extends Command
         $this->info("{$name} added; {$modelId} is now the default model.");
 
         return self::SUCCESS;
+    }
+
+    /**
+     * Read the key hidden, with a sanity check: in a Windows terminal Ctrl+V inside a hidden
+     * prompt can type a lone "v" instead of pasting, which providers then report as a missing key.
+     */
+    private function askForKey(): ?string
+    {
+        for ($try = 1; $try <= 3; $try++) {
+            $key = trim((string) $this->secret('API key (hidden; paste with right-click)'));
+
+            if (strlen($key) >= 20 && preg_match('/^[\x21-\x7E]+$/', $key)) {
+                $this->line(sprintf('Got a key of %d characters ending in …%s.', strlen($key), substr($key, -4)));
+
+                return $key;
+            }
+
+            $this->warn(sprintf(
+                'That does not look like an API key (%d characters%s). Paste it with a right-click, then press Enter.',
+                strlen($key),
+                $key !== '' && ! preg_match('/^[\x21-\x7E]+$/', $key) ? ', with spaces or hidden characters' : '',
+            ));
+        }
+
+        $this->error('No usable API key given.');
+
+        return null;
     }
 }

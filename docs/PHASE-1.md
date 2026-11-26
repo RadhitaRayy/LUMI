@@ -197,6 +197,10 @@ Dipasang lewat Console oleh admin; **key tidak pernah di-commit**.
 | 1 | **OpenRouter** (model berlabel `:free`) | Driver OpenRouter bawaan Prism |
 | 2 | **NVIDIA NIM** (build.nvidia.com) | Endpoint kompatibel OpenAI (base URL kustom) |
 
+Model default saat ini: `nvidia/nemotron-3-ultra-550b-a55b:free` lewat OpenRouter. Daftar model
+`:free` sering berubah dan model gratis sering kena rate limit dari penyedianya (Gemma 4 di
+2026-11-26), jadi saat menguji key, balasan 429 tetap dianggap key valid.
+
 Yang dicek saat implementasi: batas pemakaian gratis, dukungan streaming dan tool calling per
 model, serta kebijakan data (tier gratis bisa memakai data untuk pelatihan — jangan kirim data
 sensitif saat uji coba).
@@ -235,10 +239,10 @@ sensitif saat uji coba).
 |---|---|
 | 2026-11-25 | Persiapan repo (monorepo, GitHub), scaffold `core/` di PostgreSQL |
 | 2026-11-26 | **Auth API**: register, login, logout, verifikasi email & lupa password (kode 6 digit, 15 menit, maks 5 percobaan), `GET/PATCH /me`, ganti password, daftar & keluarkan perangkat, peran `superadmin`/`user`, blokir user, `app_settings` (pendaftaran, wajib verifikasi, kuota default, system prompt), rate limit, format error `{code, message}`, perintah `lumi:make-superadmin`. 32 test API + 42 test bawaan lulus, PHPStan level 7 bersih |
-
 | 2026-11-26 | **LLM Gateway + chat SSE + BYOK user**: Prism (driver OpenRouter dipakai juga untuk NVIDIA NIM lewat base URL kustom, karena driver `openai` Prism memakai Responses API), pemilihan key (key user aktif → key platform), percakapan (CRUD + cari), `POST /conversations/{id}/messages` streaming SSE, kuota harian untuk key platform, log pemakaian, error provider dengan kode jelas, `/me/ai-key` (simpan setelah diuji, uji ulang, nyala/mati, hapus), perintah `lumi:add-provider`. 91 test lulus, PHPStan bersih |
+| 2026-11-26 | **Uji nyata OpenRouter**: daftar → verifikasi kode → percakapan → chat streaming lewat HTTP dengan `nvidia/nemotron-3-ultra-550b-a55b:free` (jawaban ~4 detik, konteks percakapan diingat, token tercatat). Perbaikan dari uji ini: `lumi:add-provider` mengecek bentuk key (paste dengan klik kanan), balasan 429 saat uji key dianggap key valid (juga di `/me/ai-key`), kuota tidak lagi terpotong oleh jawaban gagal dan tidak bisa direset dengan menghapus percakapan. 100 test lulus |
 
-Belum: broadcast realtime (Reverb, langkah 5) termasuk `session.revoked`; uji dengan OpenRouter/NIM sungguhan (butuh API key pemilik).
+Belum: broadcast realtime (Reverb, langkah 5) termasuk `session.revoked`; uji dengan NVIDIA NIM sungguhan.
 
 ## 7. Urutan kerja
 

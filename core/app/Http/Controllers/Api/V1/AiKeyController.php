@@ -105,6 +105,10 @@ class AiKeyController extends Controller
         try {
             $this->driver->ping($model);
         } catch (LlmException $e) {
+            if ($e->keyWasAccepted()) {
+                return;
+            }
+
             throw new ApiException('ai_key_invalid', $e->userMessage(true), 422, ['reason' => $e->errorCode]);
         }
     }

@@ -82,11 +82,22 @@ it('re-tests the stored key and records failures', function () {
 
     $this->withToken($token)->postJson('/api/v1/me/ai-key/test')->assertOk()->assertJsonPath('ai_key.last_error', null);
 
-    $fake->failPingWith = new LlmException(LlmException::RATE_LIMITED, '429');
+    $fake->failPingWith = new LlmException(LlmException::KEY_INVALID, '401');
     $this->withToken($token)->postJson('/api/v1/me/ai-key/test')
         ->assertUnprocessable()->assertJsonPath('code', 'ai_key_invalid');
 
     expect($user->aiKey->fresh()->last_error)->not->toBeNull();
+});
+
+it('accepts a key when the model is only rate-limited', function () {
+    fakeLlm(failPingWith: new LlmException(LlmException::RATE_LIMITED, '429 from upstream'));
+    [, $token] = userWithToken();
+
+    $this->withToken($token)->putJson('/api/v1/me/ai-key', aiKeyPayload())
+        ->assertOk()->assertJsonPath('ai_key.key_last4', 'abcd');
+
+    $this->withToken($token)->postJson('/api/v1/me/ai-key/test')
+        ->assertOk()->assertJsonPath('ai_key.last_error', null);
 });
 
 it('says so when there is no key to test', function () {

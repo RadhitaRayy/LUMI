@@ -63,12 +63,25 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     {
         $startOfDay = now('Asia/Jakarta')->startOfDay()->utc();
 
-        return Message::query()
-            ->whereIn('conversation_id', $this->conversations()->select('id'))
-            ->where('role', Message::ROLE_USER)
+        // Finished turns come from the usage log, which survives deleting the conversation;
+        // failed turns (provider errors) are free.
+        $finished = LlmUsage::query()
+            ->where('user_id', $this->id)
             ->where('key_source', 'platform')
+            ->where('status', '!=', 'error')
             ->where('created_at', '>=', $startOfDay)
             ->count();
+
+        // Answers still streaming are not logged yet but must count, or parallel requests could slip past.
+        $inFlight = Message::query()
+            ->whereIn('conversation_id', $this->conversations()->select('id'))
+            ->where('role', Message::ROLE_ASSISTANT)
+            ->where('key_source', 'platform')
+            ->where('status', 'streaming')
+            ->where('created_at', '>=', $startOfDay)
+            ->count();
+
+        return $finished + $inFlight;
     }
 
     /** The user's own AI key if it is set and switched on. */

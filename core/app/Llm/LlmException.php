@@ -30,6 +30,15 @@ class LlmException extends RuntimeException
         parent::__construct($message, 0, $previous);
     }
 
+    /**
+     * A 429 is only sent after the provider has accepted the key, so a key test that hits it
+     * still proves the key works (free models are often throttled upstream).
+     */
+    public function keyWasAccepted(): bool
+    {
+        return $this->errorCode === self::RATE_LIMITED;
+    }
+
     /** A short Indonesian message the app can show as-is. */
     public function userMessage(bool $userKey): string
     {
