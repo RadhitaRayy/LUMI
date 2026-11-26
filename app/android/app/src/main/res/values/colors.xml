@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_launcher_background">#B5F23D</color>
+    <!-- Lumi is always dark: the window behind Flutter and the launch screen use this. -->
+    <color name="lumi_background">#0E1014</color>
+</resources>
