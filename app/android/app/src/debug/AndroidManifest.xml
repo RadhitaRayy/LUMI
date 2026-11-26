@@ -4,4 +4,7 @@
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Debug builds talk to Lumi Core on the laptop over plain HTTP (adb reverse to 127.0.0.1).
+         Release builds only reach the VPS over HTTPS. -->
+    <application android:usesCleartextTraffic="true"/>
 </manifest>

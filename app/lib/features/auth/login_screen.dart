@@ -1,170 +1,210 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
-import '../../app.dart';
+import '../../core/api_client.dart';
+import '../../state/session_controller.dart';
 import '../../theme/app_theme.dart';
-import '../../widgets/common.dart';
+import '../../theme/motion.dart';
+import '../../widgets/lumi_cat.dart';
+import '../../widgets/ui.dart';
 import 'auth_widgets.dart';
+import 'forgot_screen.dart';
+import 'register_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class LoginScreen extends ConsumerStatefulWidget {
+  const LoginScreen({super.key, this.email});
+
+  final String? email;
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _email = TextEditingController();
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  final _form = GlobalKey<FormState>();
+  late final _email = TextEditingController(text: widget.email);
   final _password = TextEditingController();
-  bool _loading = false;
+  final _passwordFocus = FocusNode();
+  var _shown = false;
+  var _busy = false;
+  String? _error;
+  Map<String, List<String>> _fieldErrors = const {};
+
+  @override
+  void initState() {
+    super.initState();
+    // The cat covers its eyes while the password is typed.
+    _passwordFocus.addListener(() => setState(() {}));
+  }
 
   @override
   void dispose() {
     _email.dispose();
     _password.dispose();
+    _passwordFocus.dispose();
     super.dispose();
   }
 
   Future<void> _submit() async {
-    if (!(_formKey.currentState?.validate() ?? false)) return;
-    setState(() => _loading = true);
-    // TODO: ganti dengan Firebase Auth / Supabase Auth.
-    await Future<void>.delayed(const Duration(milliseconds: 500));
-    if (!mounted) return;
-    Navigator.of(context).pushReplacementNamed(Routes.chat);
-  }
-
-  void _unlockWithBiometric() {
-    // TODO: pakai package local_auth.
-    Navigator.of(context).pushReplacementNamed(Routes.chat);
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _error = null;
+      _fieldErrors = const {};
+    });
+    if (!_form.currentState!.validate()) return;
+    setState(() => _busy = true);
+    try {
+      await ref.read(sessionProvider.notifier).login(_email.text, _password.text);
+      // The router moves on to the chat (or the email code) from here.
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _fieldErrors = e.fieldErrors;
+        _error = e.fieldErrors.isEmpty ? apiErrorText(context.l10n, e) : null;
+      });
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 48, 24, 24),
+    final l = context.l10n;
+    final peeking = _passwordFocus.hasFocus && !_shown;
+
+    return AuthScaffold(
+      footer: FadeSlideIn.step(
+        6,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(l.noAccount, style: const TextStyle(color: AppColors.muted, fontSize: 14)),
+            TextButton(
+              onPressed: () => Navigator.of(context).push(lumiRoute<void>(const RegisterScreen())),
+              child: Text(l.signUpFree),
+            ),
+          ],
+        ),
+      ),
+      children: [
+        const SizedBox(height: 40),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const FadeSlideIn(child: LumiWordmark(size: 34)),
+                    const SizedBox(height: 18),
+                    FadeSlideIn.step(1, child: Text(l.loginGreeting, style: AppText.heading(30))),
+                    const SizedBox(height: 8),
+                    FadeSlideIn.step(
+                      2,
+                      child: Text(l.loginSubtitle, style: const TextStyle(fontSize: 15, height: 1.5, color: AppColors.muted)),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            FadeSlideIn(
+              delay: const Duration(milliseconds: 150),
+              offset: const Offset(0, 40),
+              duration: const Duration(milliseconds: 650),
+              child: Transform.translate(
+                offset: const Offset(0, 18),
+                child: LumiCat(size: 124, eyesClosed: peeking, semanticLabel: l.catWaving),
+              ),
+            ),
+          ],
+        ),
+        Container(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+          decoration: BoxDecoration(
+            color: AppColors.card,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: AppColors.line),
+          ),
           child: Form(
-            key: _formKey,
+            key: _form,
             child: AutofillGroup(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: LumiLogo(),
-                  ),
-                  const SizedBox(height: 22),
-                  Text('Selamat datang lagi', style: AppText.heading(30)),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Masuk untuk lanjut ngobrol dengan Lumi.',
-                    style: TextStyle(fontSize: 15, color: AppColors.muted),
-                  ),
-                  const SizedBox(height: 36),
-                  LabeledField(
-                    label: 'Email',
-                    child: TextFormField(
-                      controller: _email,
-                      keyboardType: TextInputType.emailAddress,
-                      autofillHints: const [AutofillHints.email],
-                      textInputAction: TextInputAction.next,
-                      validator: Validators.email,
-                      decoration: const InputDecoration(
-                        hintText: 'kamu@email.com',
+                  FadeSlideIn.step(
+                    3,
+                    child: LabeledField(
+                      label: l.emailLabel,
+                      child: TextFormField(
+                        controller: _email,
+                        keyboardType: TextInputType.emailAddress,
+                        autofillHints: const [AutofillHints.username, AutofillHints.email],
+                        textInputAction: TextInputAction.next,
+                        decoration: InputDecoration(
+                          hintText: l.emailHint,
+                          fillColor: AppColors.bg,
+                          errorText: _fieldErrors['email']?.first,
+                        ),
+                        validator: (v) => emailText(context, v),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  LabeledField(
-                    label: 'Password',
-                    child: PasswordField(
-                      controller: _password,
-                      validator: Validators.password,
-                      onFieldSubmitted: (_) => _submit(),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () => showDemoSnack(
-                        context,
-                        'Reset password belum tersedia di versi demo.',
+                  const SizedBox(height: 14),
+                  FadeSlideIn.step(
+                    4,
+                    child: LabeledField(
+                      label: l.passwordLabel,
+                      trailing: TextButton(
+                        style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(44, 32)),
+                        onPressed: () => Navigator.of(context).push(
+                          lumiRoute<void>(ForgotScreen(email: _email.text.trim())),
+                        ),
+                        child: Text(l.forgotPasswordLink, style: const TextStyle(fontSize: 13)),
                       ),
-                      child: const Text('Lupa password?'),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  FilledButton(
-                    onPressed: _loading ? null : _submit,
-                    child: _loading
-                        ? const SizedBox(
-                            width: 22,
-                            height: 22,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.5,
-                              color: AppColors.bg,
+                      child: TextFormField(
+                        controller: _password,
+                        focusNode: _passwordFocus,
+                        obscureText: !_shown,
+                        autofillHints: const [AutofillHints.password],
+                        textInputAction: TextInputAction.done,
+                        onFieldSubmitted: (_) => _submit(),
+                        decoration: InputDecoration(
+                          hintText: l.passwordHint,
+                          fillColor: AppColors.bg,
+                          errorText: _fieldErrors['password']?.first,
+                          suffixIcon: IconButton(
+                            tooltip: _shown ? l.hidePassword : l.showPassword,
+                            onPressed: () => setState(() => _shown = !_shown),
+                            icon: Icon(
+                              _shown ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                              color: AppColors.muted,
+                              size: 20,
                             ),
-                          )
-                        : const Text('Masuk'),
-                  ),
-                  const SizedBox(height: 24),
-                  const Row(
-                    children: [
-                      Expanded(child: Divider(color: AppColors.border)),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        child: Text(
-                          'atau',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: AppColors.muted,
                           ),
                         ),
+                        validator: (v) => requiredText(context, v),
                       ),
-                      Expanded(child: Divider(color: AppColors.border)),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  OutlinedButton.icon(
-                    onPressed: _unlockWithBiometric,
-                    icon: const Icon(Icons.fingerprint, size: 24),
-                    label: const Text('Buka dengan sidik jari'),
-                  ),
-                  const SizedBox(height: 12),
-                  OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
                     ),
-                    onPressed: () => showDemoSnack(
-                      context,
-                      'Login Google belum tersedia di versi demo.',
-                    ),
-                    child: const Text('Lanjut dengan Google'),
                   ),
-                  const SizedBox(height: 32),
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      const Text(
-                        'Belum punya akun?',
-                        style: TextStyle(fontSize: 14, color: AppColors.muted),
-                      ),
-                      TextButton(
-                        onPressed: () =>
-                            Navigator.of(context).pushNamed(Routes.register),
-                        child: const Text('Daftar'),
-                      ),
-                    ],
+                  FormError(_error),
+                  const SizedBox(height: 18),
+                  FadeSlideIn.step(
+                    5,
+                    child: PrimaryButton(
+                      label: l.signIn,
+                      icon: Icons.arrow_forward_rounded,
+                      loading: _busy,
+                      onPressed: _submit,
+                    ),
                   ),
                 ],
               ),
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

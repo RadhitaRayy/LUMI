@@ -1,153 +1,163 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../../theme/app_theme.dart';
+import '../../widgets/ui.dart';
 
-/// Label di atas field + TextFormField.
-class LabeledField extends StatelessWidget {
-  const LabeledField({super.key, required this.label, required this.child});
+/// Scrollable page for the sign-in flow, with an optional back button.
+class AuthScaffold extends StatelessWidget {
+  const AuthScaffold({super.key, required this.children, this.onBack, this.footer, this.header});
 
-  final String label;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(label, style: AppText.label),
-        const SizedBox(height: 8),
-        child,
-      ],
-    );
-  }
-}
-
-/// Field password dengan tombol tampil/sembunyi.
-class PasswordField extends StatefulWidget {
-  const PasswordField({
-    super.key,
-    required this.controller,
-    this.validator,
-    this.onChanged,
-    this.autofillHints = const [AutofillHints.password],
-    this.textInputAction = TextInputAction.done,
-    this.onFieldSubmitted,
-  });
-
-  final TextEditingController controller;
-  final FormFieldValidator<String>? validator;
-  final ValueChanged<String>? onChanged;
-  final Iterable<String> autofillHints;
-  final TextInputAction textInputAction;
-  final ValueChanged<String>? onFieldSubmitted;
-
-  @override
-  State<PasswordField> createState() => _PasswordFieldState();
-}
-
-class _PasswordFieldState extends State<PasswordField> {
-  bool _obscure = true;
+  final List<Widget> children;
+  final VoidCallback? onBack;
+  final Widget? footer;
+  final Widget? header;
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: widget.controller,
-      obscureText: _obscure,
-      validator: widget.validator,
-      onChanged: widget.onChanged,
-      autofillHints: widget.autofillHints,
-      textInputAction: widget.textInputAction,
-      onFieldSubmitted: widget.onFieldSubmitted,
-      decoration: InputDecoration(
-        hintText: '••••••••',
-        suffixIcon: IconButton(
-          tooltip: _obscure ? 'Tampilkan password' : 'Sembunyikan password',
-          color: AppColors.muted,
-          icon: Icon(
-            _obscure
-                ? Icons.visibility_outlined
-                : Icons.visibility_off_outlined,
+    return Scaffold(
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) => SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight - 32),
+              child: IntrinsicHeight(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (onBack != null || header != null)
+                      SizedBox(
+                        height: 56,
+                        child: Row(
+                          children: [
+                            if (onBack != null)
+                              Transform.translate(
+                                offset: const Offset(-12, 0),
+                                child: IconButton(
+                                  tooltip: context.l10n.back,
+                                  onPressed: onBack,
+                                  icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+                                ),
+                              ),
+                            if (header != null) Expanded(child: header!),
+                          ],
+                        ),
+                      ),
+                    ...children,
+                    const Spacer(),
+                    if (footer != null) ...[const SizedBox(height: 24), footer!],
+                  ],
+                ),
+              ),
+            ),
           ),
-          onPressed: () => setState(() => _obscure = !_obscure),
         ),
       ),
     );
   }
 }
 
-abstract final class Validators {
-  static final _email = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+class AuthTitle extends StatelessWidget {
+  const AuthTitle({super.key, required this.title, required this.subtitle, this.step = 0});
 
-  static String? email(String? v) {
-    if (v == null || v.trim().isEmpty) return 'Email wajib diisi';
-    if (!_email.hasMatch(v.trim())) return 'Format email belum benar';
-    return null;
-  }
-
-  static String? password(String? v) {
-    if (v == null || v.isEmpty) return 'Password wajib diisi';
-    if (v.length < 8) return 'Minimal 8 karakter';
-    return null;
-  }
-
-  static String? required(String? v, String field) {
-    if (v == null || v.trim().isEmpty) return '$field wajib diisi';
-    return null;
-  }
-}
-
-/// Skor kekuatan password 0–3.
-int passwordStrength(String v) {
-  var score = 0;
-  if (v.length >= 8) score++;
-  if (RegExp(r'\d').hasMatch(v)) score++;
-  if (RegExp(r'[A-Z]').hasMatch(v) || RegExp(r'[^A-Za-z0-9]').hasMatch(v)) {
-    score++;
-  }
-  return score;
-}
-
-class PasswordStrengthMeter extends StatelessWidget {
-  const PasswordStrengthMeter({super.key, required this.password});
-
-  final String password;
+  final String title;
+  final String subtitle;
+  final int step;
 
   @override
   Widget build(BuildContext context) {
-    final score = password.isEmpty ? 0 : passwordStrength(password);
-    final label = switch (score) {
-      0 => 'Minimal 8 karakter',
-      1 => 'Lemah · minimal 8 karakter',
-      2 => 'Cukup kuat · minimal 8 karakter',
-      _ => 'Kuat',
-    };
-    final color = score <= 1 ? AppColors.warn : AppColors.accent;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            for (var i = 0; i < 3; i++) ...[
-              if (i > 0) const SizedBox(width: 6),
-              Expanded(
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: i < score ? color : AppColors.border,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-            ],
-          ],
-        ),
+        FadeSlideIn.step(step, child: Text(title, style: AppText.heading(30))),
         const SizedBox(height: 8),
-        Text(
-          label,
-          style: const TextStyle(fontSize: 12, color: AppColors.muted),
+        FadeSlideIn.step(
+          step + 1,
+          child: Text(subtitle, style: const TextStyle(fontSize: 15, height: 1.5, color: AppColors.muted)),
         ),
       ],
     );
   }
+}
+
+/// A rounded icon tile that gently sways (mail on the code screen, key on the reset screen).
+class SwayingIcon extends StatefulWidget {
+  const SwayingIcon({super.key, required this.icon});
+
+  final IconData icon;
+
+  @override
+  State<SwayingIcon> createState() => _SwayingIconState();
+}
+
+class _SwayingIconState extends State<SwayingIcon> with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 2400));
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!MediaQuery.disableAnimationsOf(context) && !_c.isAnimating) _c.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _c,
+      builder: (context, child) {
+        final t = Curves.easeInOut.transform(_c.value);
+        return Transform.translate(
+          offset: Offset(0, -6 * t),
+          child: Transform.rotate(angle: (-4 + 8 * t) * 0.0174533, child: child),
+        );
+      },
+      child: Container(
+        width: 64,
+        height: 64,
+        decoration: BoxDecoration(
+          color: AppColors.accent.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Icon(widget.icon, color: AppColors.accent, size: 30),
+      ),
+    );
+  }
+}
+
+/// Shows a coral error line that fades in.
+class FormError extends StatelessWidget {
+  const FormError(this.message, {super.key});
+
+  final String? message;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 200),
+      child: message == null
+          ? const SizedBox(width: double.infinity)
+          : Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Semantics(
+                liveRegion: true,
+                child: Text(message!, style: const TextStyle(fontSize: 13, color: AppColors.danger, height: 1.4)),
+              ),
+            ),
+    );
+  }
+}
+
+String? requiredText(BuildContext context, String? value) =>
+    (value == null || value.trim().isEmpty) ? context.l10n.fieldRequired : null;
+
+String? emailText(BuildContext context, String? value) {
+  final empty = requiredText(context, value);
+  if (empty != null) return empty;
+  return RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(value!.trim()) ? null : context.l10n.emailInvalid;
 }

@@ -1,23 +1,34 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
-import '../../app.dart';
+import '../../core/api_client.dart';
+import '../../state/session_controller.dart';
 import '../../theme/app_theme.dart';
+import '../../theme/motion.dart';
+import '../../widgets/ui.dart';
 import 'auth_widgets.dart';
 
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
-  final _formKey = GlobalKey<FormState>();
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
+  final _form = GlobalKey<FormState>();
   final _name = TextEditingController();
   final _email = TextEditingController();
   final _password = TextEditingController();
-  bool _biometric = true;
-  bool _loading = false;
+  var _busy = false;
+  String? _error;
+  Map<String, List<String>> _fieldErrors = const {};
+
+  @override
+  void initState() {
+    super.initState();
+    _password.addListener(() => setState(() {}));
+  }
 
   @override
   void dispose() {
@@ -28,138 +39,163 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _submit() async {
-    if (!(_formKey.currentState?.validate() ?? false)) return;
-    setState(() => _loading = true);
-    // TODO: ganti dengan Firebase Auth / Supabase Auth.
-    await Future<void>.delayed(const Duration(milliseconds: 500));
-    if (!mounted) return;
-    Navigator.of(context)
-        .pushNamedAndRemoveUntil(Routes.chat, (route) => false);
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _error = null;
+      _fieldErrors = const {};
+    });
+    if (!_form.currentState!.validate()) return;
+    setState(() => _busy = true);
+    try {
+      await ref.read(sessionProvider.notifier).register(_name.text, _email.text, _password.text);
+      // The router opens the email code screen.
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _fieldErrors = e.fieldErrors;
+        _error = e.fieldErrors.isEmpty ? apiErrorText(context.l10n, e) : null;
+      });
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  /// 0 = too short, 1 = okay, 2 = good, 3 = strong (same rules as the canvas).
+  int _score(String pw) {
+    if (pw.length < 8) return 0;
+    var score = 1;
+    if (RegExp('[0-9]').hasMatch(pw) && RegExp('[a-zA-Z]').hasMatch(pw)) score++;
+    if (pw.length >= 12 || RegExp('[^a-zA-Z0-9]').hasMatch(pw)) score++;
+    return score;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        shape: const Border(),
-        leading: IconButton(
-          tooltip: 'Kembali ke halaman masuk',
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-          onPressed: () => Navigator.of(context).maybePop(),
-        ),
+    final l = context.l10n;
+    final pw = _password.text;
+    final score = _score(pw);
+    final color = switch (score) { 3 => AppColors.accent, 2 => const Color(0xFFC9E07A), _ => AppColors.warn };
+    final hint = pw.isEmpty
+        ? l.pwStrengthEmpty
+        : pw.length < 8
+        ? l.pwStrengthShort(8 - pw.length)
+        : [l.pwStrengthWeak, l.pwStrengthWeak, l.pwStrengthGood, l.pwStrengthStrong][score];
+
+    return AuthScaffold(
+      onBack: () => Navigator.of(context).pop(),
+      footer: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(l.haveAccount, style: const TextStyle(color: AppColors.muted, fontSize: 14)),
+          TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l.signIn)),
+        ],
       ),
-      body: SafeArea(
-        top: false,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
-          child: Form(
-            key: _formKey,
-            child: AutofillGroup(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text('Buat akun', style: AppText.heading(30)),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Cukup sekali. Setelah itu buka Lumi pakai sidik jari.',
-                    style: TextStyle(
-                      fontSize: 15,
-                      height: 1.45,
-                      color: AppColors.muted,
-                    ),
-                  ),
-                  const SizedBox(height: 28),
-                  LabeledField(
-                    label: 'Nama panggilan',
+      children: [
+        const SizedBox(height: 16),
+        AuthTitle(title: l.registerTitle, subtitle: l.registerSubtitle),
+        const SizedBox(height: 24),
+        Form(
+          key: _form,
+          child: AutofillGroup(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                FadeSlideIn.step(
+                  2,
+                  child: LabeledField(
+                    label: l.nameLabel,
                     child: TextFormField(
                       controller: _name,
+                      textCapitalization: TextCapitalization.words,
                       autofillHints: const [AutofillHints.nickname],
                       textInputAction: TextInputAction.next,
-                      textCapitalization: TextCapitalization.words,
-                      validator: (v) => Validators.required(v, 'Nama'),
-                      decoration: const InputDecoration(
-                        hintText: 'Biar Lumi tahu manggil kamu apa',
-                      ),
+                      decoration: InputDecoration(hintText: l.nameHint, errorText: _fieldErrors['name']?.first),
+                      validator: (v) => requiredText(context, v),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  LabeledField(
-                    label: 'Email',
+                ),
+                const SizedBox(height: 14),
+                FadeSlideIn.step(
+                  3,
+                  child: LabeledField(
+                    label: l.emailLabel,
                     child: TextFormField(
                       controller: _email,
                       keyboardType: TextInputType.emailAddress,
                       autofillHints: const [AutofillHints.email],
                       textInputAction: TextInputAction.next,
-                      validator: Validators.email,
-                      decoration: const InputDecoration(
-                        hintText: 'kamu@email.com',
-                      ),
+                      decoration: InputDecoration(hintText: l.emailHint, errorText: _fieldErrors['email']?.first),
+                      validator: (v) => emailText(context, v),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  LabeledField(
-                    label: 'Password',
-                    child: PasswordField(
-                      controller: _password,
-                      autofillHints: const [AutofillHints.newPassword],
-                      validator: Validators.password,
-                      onChanged: (_) => setState(() {}),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  PasswordStrengthMeter(password: _password.text),
-                  const SizedBox(height: 8),
-                  CheckboxListTile(
-                    value: _biometric,
-                    onChanged: (v) => setState(() => _biometric = v ?? false),
-                    contentPadding: EdgeInsets.zero,
-                    controlAffinity: ListTileControlAffinity.leading,
-                    title: const Text(
-                      'Aktifkan buka dengan sidik jari / Face ID',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  FilledButton(
-                    onPressed: _loading ? null : _submit,
-                    child: _loading
-                        ? const SizedBox(
-                            width: 22,
-                            height: 22,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.5,
-                              color: AppColors.bg,
+                ),
+                const SizedBox(height: 14),
+                FadeSlideIn.step(
+                  4,
+                  child: LabeledField(
+                    label: l.passwordLabel,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TextFormField(
+                          controller: _password,
+                          obscureText: true,
+                          autofillHints: const [AutofillHints.newPassword],
+                          textInputAction: TextInputAction.done,
+                          onFieldSubmitted: (_) => _submit(),
+                          decoration: InputDecoration(hintText: l.passwordHint, errorText: _fieldErrors['password']?.first),
+                          validator: (v) => (v ?? '').length < 8 ? l.passwordTooShort : null,
+                        ),
+                        const SizedBox(height: 10),
+                        ExcludeSemantics(
+                          child: Row(
+                            children: [
+                              for (var i = 0; i < 3; i++) ...[
+                                if (i > 0) const SizedBox(width: 6),
+                                Expanded(
+                                  child: AnimatedContainer(
+                                    duration: Motion.of(context, const Duration(milliseconds: 300)),
+                                    height: 5,
+                                    decoration: BoxDecoration(
+                                      color: (i == 0 && pw.isNotEmpty) || (i > 0 && score > i) ? color : AppColors.line,
+                                      borderRadius: BorderRadius.circular(3),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Semantics(
+                          liveRegion: true,
+                          child: AnimatedSwitcher(
+                            duration: Motion.of(context, const Duration(milliseconds: 180)),
+                            child: Text(
+                              hint,
+                              key: ValueKey(hint),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: pw.isNotEmpty && pw.length < 8 ? AppColors.warn : AppColors.muted,
+                              ),
                             ),
-                          )
-                        : const Text('Buat akun'),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Riwayat chat dan memori tetap tersimpan di perangkatmu.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 12, color: AppColors.muted),
-                  ),
-                  const SizedBox(height: 24),
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      const Text(
-                        'Sudah punya akun?',
-                        style: TextStyle(fontSize: 14, color: AppColors.muted),
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.of(context).maybePop(),
-                        child: const Text('Masuk'),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                ),
+                FormError(_error),
+                const SizedBox(height: 22),
+                FadeSlideIn.step(
+                  5,
+                  child: PrimaryButton(label: l.registerButton, loading: _busy, onPressed: _submit),
+                ),
+              ],
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

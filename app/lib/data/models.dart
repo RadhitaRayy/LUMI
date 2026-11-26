@@ -1,92 +1,199 @@
-/// Model data untuk versi demo. Nanti diganti data asli dari agent di laptop.
-library;
+DateTime? _date(Object? value) =>
+    value is String ? DateTime.tryParse(value)?.toLocal() : null;
 
-enum PermissionMode { auto, ask }
+class Quota {
+  const Quota({required this.dailyLimit, required this.usedToday, required this.remaining});
 
-extension PermissionModeLabel on PermissionMode {
-  String get label => switch (this) {
-    PermissionMode.auto => 'Otomatis',
-    PermissionMode.ask => 'Minta izin',
-  };
+  factory Quota.fromJson(Map<String, dynamic> json) => Quota(
+    dailyLimit: json['daily_limit'] as int? ?? 0,
+    usedToday: json['used_today'] as int? ?? 0,
+    remaining: json['remaining'] as int? ?? 0,
+  );
+
+  final int dailyLimit;
+  final int usedToday;
+  final int remaining;
 }
 
-class AgentTool {
-  AgentTool({
+class User {
+  const User({
+    required this.id,
     required this.name,
-    required this.description,
-    required this.mode,
+    required this.email,
+    required this.locale,
+    required this.emailVerified,
+    required this.usesOwnKey,
+    required this.quota,
   });
 
+  factory User.fromJson(Map<String, dynamic> json) => User(
+    id: json['id'] as int,
+    name: json['name'] as String? ?? '',
+    email: json['email'] as String? ?? '',
+    locale: json['locale'] as String? ?? 'id',
+    emailVerified: json['email_verified'] as bool? ?? false,
+    usesOwnKey: json['ai_key_source'] == 'user',
+    quota: Quota.fromJson(json['quota'] as Map<String, dynamic>? ?? const {}),
+  );
+
+  final int id;
   final String name;
-  final String description;
-  PermissionMode mode;
+  final String email;
+  final String locale;
+  final bool emailVerified;
+  final bool usesOwnKey;
+  final Quota quota;
+
+  String get initial => name.trim().isEmpty ? '?' : name.trim()[0].toUpperCase();
 }
 
-/// Satu item di layar chat.
-sealed class ChatItem {
-  const ChatItem();
-}
-
-class UserMessage extends ChatItem {
-  const UserMessage(this.text);
-  final String text;
-}
-
-class AgentMessage extends ChatItem {
-  const AgentMessage(this.text);
-  final String text;
-}
-
-/// Hasil pemanggilan tool yang sudah selesai.
-class ToolCall extends ChatItem {
-  const ToolCall({required this.tool, required this.took, required this.rows});
-
-  final String tool;
-  final Duration took;
-
-  /// Baris hasil: (nama, keterangan).
-  final List<(String, String)> rows;
-}
-
-enum ActionStatus { waiting, approved, rejected }
-
-/// Aksi yang mengubah sistem dan menunggu izin pengguna.
-class PendingAction extends ChatItem {
-  PendingAction({
-    required this.tool,
-    required this.target,
-    required this.command,
-    required this.host,
-    required this.reason,
-    required this.impact,
-    this.status = ActionStatus.waiting,
+class Conversation {
+  const Conversation({
+    required this.id,
+    this.title,
+    this.lastMessageAt,
+    this.createdAt,
+    this.fresh = false,
   });
 
-  final String tool;
-  final String target;
-  final String command;
-  final String host;
-  final String reason;
-  final String impact;
-  ActionStatus status;
+  factory Conversation.fromJson(Map<String, dynamic> json) => Conversation(
+    id: json['id'] as String,
+    title: json['title'] as String?,
+    lastMessageAt: _date(json['last_message_at']),
+    createdAt: _date(json['created_at']),
+  );
+
+  final String id;
+  final String? title;
+  final DateTime? lastMessageAt;
+  final DateTime? createdAt;
+
+  /// Arrived from another device while this one was open; shown with a pulsing dot.
+  final bool fresh;
+
+  DateTime get sortKey => lastMessageAt ?? createdAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+
+  Conversation copyWith({String? title, DateTime? lastMessageAt, bool? fresh}) => Conversation(
+    id: id,
+    title: title ?? this.title,
+    lastMessageAt: lastMessageAt ?? this.lastMessageAt,
+    createdAt: createdAt,
+    fresh: fresh ?? this.fresh,
+  );
 }
 
-class ChatSummary {
-  const ChatSummary({
-    required this.title,
-    required this.time,
-    required this.snippet,
-    required this.tools,
+enum MessageStatus { complete, streaming, error, cancelled }
+
+class ChatMessage {
+  const ChatMessage({
+    required this.id,
+    required this.role,
+    required this.content,
+    this.status = MessageStatus.complete,
+    this.errorText,
   });
 
-  final String title;
-  final String time;
-  final String snippet;
-  final List<String> tools;
+  factory ChatMessage.fromJson(Map<String, dynamic> json) => ChatMessage(
+    id: '${json['id']}',
+    role: json['role'] == 'user' ? Role.user : Role.assistant,
+    content: json['content'] as String? ?? '',
+    status: switch (json['status']) {
+      'error' => MessageStatus.error,
+      'cancelled' => MessageStatus.cancelled,
+      'streaming' => MessageStatus.streaming,
+      _ => MessageStatus.complete,
+    },
+  );
+
+  final String id;
+  final Role role;
+  final String content;
+  final MessageStatus status;
+
+  /// Why an answer failed, already in the user's language.
+  final String? errorText;
+
+  bool get isUser => role == Role.user;
+
+  ChatMessage copyWith({String? id, String? content, MessageStatus? status, String? errorText}) =>
+      ChatMessage(
+        id: id ?? this.id,
+        role: role,
+        content: content ?? this.content,
+        status: status ?? this.status,
+        errorText: errorText ?? this.errorText,
+      );
 }
 
-class ChatGroup {
-  const ChatGroup(this.label, this.items);
-  final String label;
-  final List<ChatSummary> items;
+enum Role { user, assistant }
+
+class Device {
+  const Device({
+    required this.id,
+    required this.name,
+    required this.isCurrent,
+    this.lastUsedAt,
+  });
+
+  factory Device.fromJson(Map<String, dynamic> json) => Device(
+    id: json['id'] as int,
+    name: json['name'] as String? ?? '',
+    isCurrent: json['is_current'] as bool? ?? false,
+    lastUsedAt: _date(json['last_used_at']) ?? _date(json['created_at']),
+  );
+
+  final int id;
+  final String name;
+  final bool isCurrent;
+  final DateTime? lastUsedAt;
+
+  bool get looksLikeTablet => RegExp('ipad|tab', caseSensitive: false).hasMatch(name);
+}
+
+/// The three choices in "My AI key"; NVIDIA NIM is an OpenAI-compatible endpoint with a fixed URL.
+enum AiProvider {
+  openRouter('openrouter', null),
+  nim('openai_compatible', 'https://integrate.api.nvidia.com/v1'),
+  other('openai_compatible', null);
+
+  const AiProvider(this.driver, this.fixedBaseUrl);
+
+  final String driver;
+  final String? fixedBaseUrl;
+
+  static AiProvider of(String driver, String? baseUrl) {
+    if (driver == 'openrouter') return AiProvider.openRouter;
+    if (baseUrl != null && baseUrl.contains('nvidia.com')) return AiProvider.nim;
+    return AiProvider.other;
+  }
+}
+
+class AiKey {
+  const AiKey({
+    required this.provider,
+    required this.modelId,
+    required this.keyLast4,
+    required this.isActive,
+    this.baseUrl,
+    this.lastValidatedAt,
+    this.lastError,
+  });
+
+  factory AiKey.fromJson(Map<String, dynamic> json) => AiKey(
+    provider: AiProvider.of(json['driver'] as String? ?? '', json['base_url'] as String?),
+    baseUrl: json['base_url'] as String?,
+    modelId: json['model_id'] as String? ?? '',
+    keyLast4: json['key_last4'] as String? ?? '',
+    isActive: json['is_active'] as bool? ?? false,
+    lastValidatedAt: _date(json['last_validated_at']),
+    lastError: json['last_error'] as String?,
+  );
+
+  final AiProvider provider;
+  final String? baseUrl;
+  final String modelId;
+  final String keyLast4;
+  final bool isActive;
+  final DateTime? lastValidatedAt;
+  final String? lastError;
 }

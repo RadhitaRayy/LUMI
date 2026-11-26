@@ -18,6 +18,14 @@ abstract final class AppColors {
 
   /// Aksi yang butuh izin.
   static const warn = Color(0xFFF5B544);
+
+  /// Aksi yang menghapus atau mengeluarkan.
+  static const danger = Color(0xFFFFA899);
+  static const info = Color(0xFF8FB4FF);
+  static const labelText = Color(0xFFC9CED6);
+  static const faint = Color(0xFF8A93A0);
+  static const line = Color(0xFF23272F);
+  static const lamp = Color(0xFF3A4150);
 }
 
 /// Matikan di test supaya google_fonts tidak mencoba fetch dari internet.
@@ -50,6 +58,18 @@ abstract final class AppText {
   }) => _font(
     'JetBrains Mono',
     TextStyle(fontSize: size, color: color, fontWeight: weight),
+  );
+
+  /// The `lumi` wordmark: Bricolage Grotesque 800, tight letter spacing.
+  static TextStyle logo(double size, {Color color = AppColors.text}) => _font(
+    'Bricolage Grotesque',
+    TextStyle(
+      fontSize: size,
+      fontWeight: FontWeight.w800,
+      letterSpacing: size * -0.05,
+      height: 1,
+      color: color,
+    ),
   );
 
   static const label = TextStyle(
