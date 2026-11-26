@@ -198,6 +198,10 @@ Akses:
 - **Kunci AI saya** (Pengaturan): pilih provider (OpenRouter / NVIDIA NIM / kompatibel OpenAI),
   tempel API key, pilih model, tombol uji; tampil status aktif + 4 karakter terakhir; hapus key.
   Di layar Chat ada penanda sumber key dan sisa kuota saat memakai key platform.
+- **Terasa hidup, tidak statis:** splash screen beranimasi (kucing Lumi + lentera menyala, lalu
+  logotipe `lumi`) sebelum layar Masuk; transisi antar layar, popup/bottom sheet yang muncul
+  dengan animasi, umpan balik saat tombol ditekan, animasi pesan masuk dan indikator mengetik.
+  Animasi didesain bersama layar di kanvas.
 - Tombol "sidik jari" dan "Google" di layar Masuk disembunyikan dulu.
 - `DemoAgent` dihapus atau hanya dipakai di test.
 
