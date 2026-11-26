@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -57,10 +58,41 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         return $this->daily_quota ?? AppSetting::current()->default_daily_quota;
     }
 
+    /** Platform-key messages sent today (Asia/Jakarta), counted against the daily quota. */
+    public function platformMessagesToday(): int
+    {
+        $startOfDay = now('Asia/Jakarta')->startOfDay()->utc();
+
+        return Message::query()
+            ->whereIn('conversation_id', $this->conversations()->select('id'))
+            ->where('role', Message::ROLE_USER)
+            ->where('key_source', 'platform')
+            ->where('created_at', '>=', $startOfDay)
+            ->count();
+    }
+
+    /** The user's own AI key if it is set and switched on. */
+    public function activeAiKey(): ?UserAiKey
+    {
+        return $this->aiKey()->where('is_active', true)->first();
+    }
+
     /** @return HasMany<AuthCode, $this> */
     public function authCodes(): HasMany
     {
         return $this->hasMany(AuthCode::class);
+    }
+
+    /** @return HasMany<Conversation, $this> */
+    public function conversations(): HasMany
+    {
+        return $this->hasMany(Conversation::class);
+    }
+
+    /** @return HasOne<UserAiKey, $this> */
+    public function aiKey(): HasOne
+    {
+        return $this->hasOne(UserAiKey::class);
     }
 
     /**

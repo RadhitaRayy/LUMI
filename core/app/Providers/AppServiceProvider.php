@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Llm\ChatDriver;
+use App\Llm\PrismChatDriver;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -18,7 +20,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // LLM Gateway driver; tests swap in App\Llm\FakeChatDriver.
+        $this->app->bind(ChatDriver::class, PrismChatDriver::class);
     }
 
     /**
@@ -46,6 +49,12 @@ class AppServiceProvider extends ServiceProvider
             Limit::perMinute(10)->by('ip:'.$request->ip()),
             Limit::perMinute(5)->by('who:'.($request->user()->id ?? strtolower((string) $request->input('email')))),
         ]);
+
+        // Chat messages: burst protection for both platform and user keys.
+        RateLimiter::for('api-chat', fn (Request $request) => Limit::perMinute(20)->by('chat:'.$request->user()?->id));
+
+        // Saving/testing a personal AI key calls the provider, so keep it slow.
+        RateLimiter::for('api-ai-key', fn (Request $request) => Limit::perMinute(5)->by('ai-key:'.$request->user()?->id));
 
         // Resending the verification email: once a minute per user.
         RateLimiter::for('api-resend', fn (Request $request) => Limit::perMinute(1)->by('resend:'.$request->user()?->id));

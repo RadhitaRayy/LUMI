@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AiKeyController;
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\ConversationController;
 use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\EmailVerificationController;
 use App\Http\Controllers\Api\V1\MeController;
+use App\Http\Controllers\Api\V1\MessageController;
 use App\Http\Controllers\Api\V1\PasswordResetController;
 use Illuminate\Support\Facades\Route;
 
@@ -39,5 +42,23 @@ Route::prefix('v1')->group(function () {
 
         Route::get('devices', [DeviceController::class, 'index']);
         Route::delete('devices/{device}', [DeviceController::class, 'destroy'])->whereNumber('device');
+
+        // Kunci AI saya (hybrid BYOK)
+        Route::get('me/ai-key', [AiKeyController::class, 'show']);
+        Route::put('me/ai-key', [AiKeyController::class, 'upsert'])->middleware('throttle:api-ai-key');
+        Route::post('me/ai-key/test', [AiKeyController::class, 'test'])->middleware('throttle:api-ai-key');
+        Route::patch('me/ai-key', [AiKeyController::class, 'update']);
+        Route::delete('me/ai-key', [AiKeyController::class, 'destroy']);
+
+        // Chat (needs a verified email when the platform requires it)
+        Route::middleware('verified.api')->group(function () {
+            Route::get('conversations', [ConversationController::class, 'index']);
+            Route::post('conversations', [ConversationController::class, 'store']);
+            Route::get('conversations/{conversation}', [ConversationController::class, 'show']);
+            Route::patch('conversations/{conversation}', [ConversationController::class, 'update']);
+            Route::delete('conversations/{conversation}', [ConversationController::class, 'destroy']);
+            Route::post('conversations/{conversation}/messages', [MessageController::class, 'store'])
+                ->middleware('throttle:api-chat');
+        });
     });
 });

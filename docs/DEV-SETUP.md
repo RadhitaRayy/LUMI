@@ -93,6 +93,16 @@ php vendor/bin/pint --dirty
 php artisan lumi:make-superadmin email@kamu.com   # akun pemilik untuk Lumi Console
 ```
 
+Memasang key platform (sementara, sampai halaman Console siap). Key diketik tersembunyi,
+diuji ke provider, lalu disimpan terenkripsi:
+
+```powershell
+# OpenRouter (model gratis berlabel :free)
+php artisan lumi:add-provider openrouter "meta-llama/llama-3.3-70b-instruct:free" --name=OpenRouter
+# NVIDIA NIM (OpenAI-compatible)
+php artisan lumi:add-provider openai_compatible "meta/llama-3.1-8b-instruct" --name="NVIDIA NIM" --url=https://integrate.api.nvidia.com/v1
+```
+
 Menyalakan PostgreSQL kalau belum jalan (atau lewat menu Laragon):
 
 ```powershell

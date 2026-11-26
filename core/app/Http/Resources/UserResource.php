@@ -18,10 +18,12 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'email_verified' => $this->hasVerifiedEmail(),
             'role' => $this->role->value,
-            // Phase 1 later: 'user' once the user has their own AI key.
-            'ai_key_source' => 'platform',
+            'ai_key_source' => $this->activeAiKey() !== null ? 'user' : 'platform',
+            // Quota only applies to messages sent with the platform key.
             'quota' => [
-                'daily_limit' => $this->effectiveDailyQuota(),
+                'daily_limit' => $limit = $this->effectiveDailyQuota(),
+                'used_today' => $used = $this->platformMessagesToday(),
+                'remaining' => max(0, $limit - $used),
             ],
             'created_at' => $this->created_at?->toIso8601String(),
         ];

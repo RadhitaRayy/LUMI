@@ -236,7 +236,9 @@ sensitif saat uji coba).
 | 2026-11-25 | Persiapan repo (monorepo, GitHub), scaffold `core/` di PostgreSQL |
 | 2026-11-26 | **Auth API**: register, login, logout, verifikasi email & lupa password (kode 6 digit, 15 menit, maks 5 percobaan), `GET/PATCH /me`, ganti password, daftar & keluarkan perangkat, peran `superadmin`/`user`, blokir user, `app_settings` (pendaftaran, wajib verifikasi, kuota default, system prompt), rate limit, format error `{code, message}`, perintah `lumi:make-superadmin`. 32 test API + 42 test bawaan lulus, PHPStan level 7 bersih |
 
-Belum: broadcast `session.revoked` (menunggu Reverb di langkah 5), kuota terpakai di `/me` (menunggu tabel pesan).
+| 2026-11-26 | **LLM Gateway + chat SSE + BYOK user**: Prism (driver OpenRouter dipakai juga untuk NVIDIA NIM lewat base URL kustom, karena driver `openai` Prism memakai Responses API), pemilihan key (key user aktif → key platform), percakapan (CRUD + cari), `POST /conversations/{id}/messages` streaming SSE, kuota harian untuk key platform, log pemakaian, error provider dengan kode jelas, `/me/ai-key` (simpan setelah diuji, uji ulang, nyala/mati, hapus), perintah `lumi:add-provider`. 91 test lulus, PHPStan bersih |
+
+Belum: broadcast realtime (Reverb, langkah 5) termasuk `session.revoked`; uji dengan OpenRouter/NIM sungguhan (butuh API key pemilik).
 
 ## 7. Urutan kerja
 
