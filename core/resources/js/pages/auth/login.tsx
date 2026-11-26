@@ -23,7 +23,7 @@ export default function Login({ status }: Props) {
             <Form
                 {...store.form()}
                 resetOnSuccess={['password']}
-                className="flex flex-col gap-5"
+                className="flex flex-col gap-4"
             >
                 {({ processing, errors }) => (
                     <>
@@ -43,7 +43,7 @@ export default function Login({ status }: Props) {
                                 autoFocus
                                 autoComplete="username"
                                 placeholder="kamu@email.com"
-                                className="h-12"
+                                className="h-11"
                             />
                             <InputError message={errors.email} />
                         </div>
@@ -55,12 +55,12 @@ export default function Login({ status }: Props) {
                                 name="password"
                                 required
                                 autoComplete="current-password"
-                                className="h-12"
+                                className="h-11"
                             />
                             <InputError message={errors.password} />
                         </div>
 
-                        <div className="flex min-h-11 items-center gap-3">
+                        <div className="flex min-h-10 items-center gap-3">
                             <Checkbox id="remember" name="remember" />
                             <Label htmlFor="remember">
                                 Ingat saya di browser ini
@@ -69,7 +69,7 @@ export default function Login({ status }: Props) {
 
                         <Button
                             type="submit"
-                            className="h-12 w-full text-[15px] font-semibold"
+                            className="h-11 w-full text-[15px] font-semibold"
                             disabled={processing}
                             data-test="login-button"
                         >
@@ -80,10 +80,10 @@ export default function Login({ status }: Props) {
                 )}
             </Form>
 
-            <p className="text-center text-[13px] leading-relaxed text-muted-foreground">
-                Lupa password? Jalankan{' '}
+            <p className="text-center text-xs leading-relaxed text-muted-foreground">
+                Lupa password? Pakai{' '}
                 <code className="font-mono text-foreground/80">
-                    php artisan lumi:make-superadmin
+                    lumi:make-superadmin
                 </code>{' '}
                 di server.
             </p>

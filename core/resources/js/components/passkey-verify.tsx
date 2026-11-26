@@ -31,7 +31,7 @@ export default function PasskeyVerify({
             },
         }),
         onSuccess: (response) => {
-            router.visit(response.redirect ?? '/dashboard');
+            router.visit(response.redirect ?? '/console');
         },
     });
 
@@ -40,12 +40,12 @@ export default function PasskeyVerify({
     }
 
     return (
-        <>
+        <div className="flex flex-col gap-4">
             <div className="grid gap-2">
                 <Button
                     type="button"
                     variant="outline"
-                    className="w-full"
+                    className="h-11 w-full"
                     onClick={verify}
                     disabled={isLoading}
                 >
@@ -59,16 +59,11 @@ export default function PasskeyVerify({
                 )}
             </div>
 
-            <div className="relative my-6">
-                <div className="absolute inset-0 flex items-center">
-                    <Separator className="w-full" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">
-                        {separator ?? 'atau masuk dengan email'}
-                    </span>
-                </div>
+            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                <Separator className="flex-1" />
+                {separator ?? 'atau dengan email'}
+                <Separator className="flex-1" />
             </div>
-        </>
+        </div>
     );
 }
