@@ -58,8 +58,8 @@ notification, deploy VPS. Kartu tool dan izin di app tetap ada di kode tapi belu
 
 | Method & path | Fungsi |
 |---|---|
-| `POST /auth/register` | `name`, `email`, `password`, `device_name` → `{user, token}` dan kirim kode verifikasi. `403 registration_closed` jika pendaftaran ditutup. |
-| `POST /auth/login` | `email`, `password`, `device_name` → `{user, token}`. `403 account_blocked` untuk user diblokir. |
+| `POST /auth/register` | `name`, `email`, `password`, `device_name` → `{user, token, token_id}` dan kirim kode verifikasi. `403 registration_closed` jika pendaftaran ditutup. |
+| `POST /auth/login` | `email`, `password`, `device_name` → `{user, token, token_id}`. `403 account_blocked` untuk user diblokir. |
 | `POST /auth/email/verify` | `code` → tandai email terverifikasi. |
 | `POST /auth/email/resend` | Kirim ulang kode (dibatasi, mis. 1 per menit). |
 | `POST /auth/password/forgot` | `email` → kirim kode reset. Respons selalu sama walau email tidak terdaftar. |
@@ -113,7 +113,11 @@ event: error           data: {"code":"provider_error","message":"..."}
 
 ### Realtime antar perangkat (Reverb)
 
-- Channel privat `private-user.{id}`, diotorisasi dengan token Sanctum.
+- Channel privat `private-user.{id}`, diotorisasi dengan token Sanctum di
+  `POST /api/v1/broadcasting/auth` (`socket_id`, `channel_name`). Channel milik user lain → `403`.
+- App mengirim header `X-Socket-ID` (socket id dari koneksi Reverb-nya) di setiap request, supaya
+  perangkat yang melakukan perubahan tidak menerima gema event-nya sendiri.
+- Event dikirim lewat queue, jadi `queue:work` harus jalan (dev: `php artisan dev`).
 - Event yang disiarkan:
 
 | Event | Kapan | Isi |
@@ -122,10 +126,13 @@ event: error           data: {"code":"provider_error","message":"..."}
 | `conversation.updated` | Judul berubah / pesan baru selesai | ringkasan + `last_message_at` |
 | `conversation.deleted` | Percakapan dihapus | `id` |
 | `message.created` | Pesan user tersimpan / jawaban asisten selesai | pesan lengkap |
-| `session.revoked` | Perangkat dikeluarkan / password direset | `token_id` → perangkat itu kembali ke layar Masuk |
+| `session.revoked` | Perangkat dikeluarkan / password diganti / password direset | `token_ids` → perangkat yang `token_id`-nya ada di daftar kembali ke layar Masuk |
 
 - Fase 1 tidak menyiarkan potongan teks per token ke perangkat lain; perangkat lain menerima
   jawaban lengkap saat selesai.
+- Batasan: koneksi WebSocket perangkat yang dikeluarkan tidak diputus paksa oleh server. App wajib
+  menutup koneksinya saat menerima `session.revoked`; token-nya sendiri sudah tidak berlaku untuk API
+  maupun untuk join channel lagi.
 
 ### LLM Gateway
 
@@ -241,8 +248,9 @@ sensitif saat uji coba).
 | 2026-11-26 | **Auth API**: register, login, logout, verifikasi email & lupa password (kode 6 digit, 15 menit, maks 5 percobaan), `GET/PATCH /me`, ganti password, daftar & keluarkan perangkat, peran `superadmin`/`user`, blokir user, `app_settings` (pendaftaran, wajib verifikasi, kuota default, system prompt), rate limit, format error `{code, message}`, perintah `lumi:make-superadmin`. 32 test API + 42 test bawaan lulus, PHPStan level 7 bersih |
 | 2026-11-26 | **LLM Gateway + chat SSE + BYOK user**: Prism (driver OpenRouter dipakai juga untuk NVIDIA NIM lewat base URL kustom, karena driver `openai` Prism memakai Responses API), pemilihan key (key user aktif → key platform), percakapan (CRUD + cari), `POST /conversations/{id}/messages` streaming SSE, kuota harian untuk key platform, log pemakaian, error provider dengan kode jelas, `/me/ai-key` (simpan setelah diuji, uji ulang, nyala/mati, hapus), perintah `lumi:add-provider`. 91 test lulus, PHPStan bersih |
 | 2026-11-26 | **Uji nyata OpenRouter**: daftar → verifikasi kode → percakapan → chat streaming lewat HTTP dengan `nvidia/nemotron-3-ultra-550b-a55b:free` (jawaban ~4 detik, konteks percakapan diingat, token tercatat). Perbaikan dari uji ini: `lumi:add-provider` mengecek bentuk key (paste dengan klik kanan), balasan 429 saat uji key dianggap key valid (juga di `/me/ai-key`), kuota tidak lagi terpotong oleh jawaban gagal dan tidak bisa direset dengan menghapus percakapan. 100 test lulus |
+| 2026-11-26 | **Realtime (Reverb)**: channel privat `private-user.{id}` diotorisasi token Sanctum, event `conversation.created/updated/deleted`, `message.created` (pertanyaan langsung, jawaban saat selesai), `session.revoked` (`token_ids`); `token_id` di respons register/login; perangkat pengirim dilewati lewat `X-Socket-ID`. 111 test lulus. Uji WebSocket nyata 13/13: dua perangkat satu akun + satu akun lain (ditolak join, tidak menerima apa pun), chat dengan AI sungguhan muncul di perangkat lain, perangkat yang dikeluarkan menerima `session.revoked` |
 
-Belum: broadcast realtime (Reverb, langkah 5) termasuk `session.revoked`; uji dengan NVIDIA NIM sungguhan.
+Belum: uji dengan NVIDIA NIM sungguhan.
 
 ## 7. Urutan kerja
 

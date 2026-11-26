@@ -111,6 +111,12 @@ Catatan:
   sudah tidak gratis lagi per 2026-11-26. Cek daftar terbaru (tanpa key):
   `curl -s https://openrouter.ai/api/v1/models`, lalu pilih id yang berakhiran `:free`.
 
+Realtime (Reverb) butuh tiga proses: server API, `reverb:start`, dan `queue:work` (event dikirim
+lewat queue). `php artisan dev` menjalankan semuanya sekaligus. Di laptop ini port 8080 dipakai
+Apache bawaan Laragon, jadi Reverb lokal memakai port 8090 (`REVERB_PORT=8090` dan
+`REVERB_SERVER_PORT=8090` di `.env`). Setelah mengubah `.env`, restart `queue:work`; worker lama
+masih memakai nilai yang lama.
+
 Menyalakan PostgreSQL kalau belum jalan (atau lewat menu Laragon):
 
 ```powershell

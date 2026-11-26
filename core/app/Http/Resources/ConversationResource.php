@@ -9,6 +9,16 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /** @mixin Conversation */
 class ConversationResource extends JsonResource
 {
+    /**
+     * The conversation without its messages (for lists and realtime events).
+     *
+     * @return array<string, mixed>
+     */
+    public static function summary(Conversation $conversation): array
+    {
+        return (new self($conversation->withoutRelations()))->resolve();
+    }
+
     /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {

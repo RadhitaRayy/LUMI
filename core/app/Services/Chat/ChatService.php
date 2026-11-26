@@ -2,6 +2,8 @@
 
 namespace App\Services\Chat;
 
+use App\Events\ConversationUpdated;
+use App\Events\MessageCreated;
 use App\Exceptions\ApiException;
 use App\Llm\ChatDriver;
 use App\Llm\LlmException;
@@ -77,6 +79,10 @@ class ChatService
             'last_message_at' => now(),
         ])->save();
 
+        // Other devices see the question right away; the answer follows when it is finished.
+        broadcast(MessageCreated::for($conversation, $userMessage))->toOthers();
+        broadcast(ConversationUpdated::for($conversation))->toOthers();
+
         // Oldest first, ending with the new user message.
         $messages = [...$history, ['role' => Message::ROLE_USER, 'content' => $content]];
 
@@ -143,6 +149,9 @@ class ChatService
         ]);
 
         $turn->conversation->forceFill(['last_message_at' => now()])->save();
+
+        broadcast(MessageCreated::for($turn->conversation, $turn->assistant))->toOthers();
+        broadcast(ConversationUpdated::for($turn->conversation))->toOthers();
 
         LlmUsage::create([
             'user_id' => $turn->user->id,

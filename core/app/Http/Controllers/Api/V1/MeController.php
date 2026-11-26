@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Events\SessionRevoked;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\JsonResponse;
@@ -38,7 +39,12 @@ class MeController extends Controller
         $user->forceFill(['password' => $data['password']])->save();
 
         // Keep this device signed in, sign out the others.
-        $user->tokens()->whereKeyNot($user->currentAccessToken()->getKey())->delete();
+        $others = $user->tokens()->whereKeyNot($user->currentAccessToken()->getKey());
+        $revoked = $others->pluck('id')->all();
+        $others->delete();
+        if ($revoked !== []) {
+            broadcast(SessionRevoked::for($user->id, $revoked));
+        }
 
         return response()->json(['message' => 'Password sudah diganti. Perangkat lain sudah dikeluarkan.']);
     }

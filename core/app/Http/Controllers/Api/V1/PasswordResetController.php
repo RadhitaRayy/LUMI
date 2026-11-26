@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Enums\AuthCodePurpose;
+use App\Events\SessionRevoked;
 use App\Exceptions\ApiException;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -52,7 +53,11 @@ class PasswordResetController extends Controller
         $user->forceFill(['password' => $data['password']])->save();
 
         // A password reset signs out every device.
+        $revoked = $user->tokens()->pluck('id')->all();
         $user->tokens()->delete();
+        if ($revoked !== []) {
+            broadcast(SessionRevoked::for($user->id, $revoked));
+        }
 
         return response()->json([
             'message' => 'Password sudah diganti. Silakan masuk lagi di semua perangkat.',

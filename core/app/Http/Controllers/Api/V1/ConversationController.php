@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Events\ConversationCreated;
+use App\Events\ConversationDeleted;
+use App\Events\ConversationUpdated;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ConversationResource;
 use App\Models\Conversation;
@@ -39,6 +42,8 @@ class ConversationController extends Controller
             'title' => $data['title'] ?? null,
         ]);
 
+        broadcast(ConversationCreated::for($conversation))->toOthers();
+
         return (new ConversationResource($conversation))->response()->setStatusCode(201);
     }
 
@@ -58,6 +63,7 @@ class ConversationController extends Controller
         ]);
 
         $conversation->update($data);
+        broadcast(ConversationUpdated::for($conversation))->toOthers();
 
         return new ConversationResource($conversation);
     }
@@ -67,6 +73,7 @@ class ConversationController extends Controller
         $this->ensureOwner($request, $conversation);
 
         $conversation->delete();
+        broadcast(ConversationDeleted::for($conversation))->toOthers();
 
         return response()->json(['message' => 'Percakapan dihapus.']);
     }

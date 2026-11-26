@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Events\SessionRevoked;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -36,6 +37,7 @@ class DeviceController extends Controller
     {
         $token = $request->user()->tokens()->findOrFail($device);
         $token->delete();
+        broadcast(SessionRevoked::for($request->user()->id, [$token->getKey()]));
 
         return response()->json(['message' => 'Perangkat sudah dikeluarkan.']);
     }

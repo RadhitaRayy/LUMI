@@ -41,7 +41,7 @@ class AuthController extends Controller
 
         return response()->json([
             'user' => new UserResource($user->refresh()),
-            'token' => $user->createToken($data['device_name'])->plainTextToken,
+            ...$this->issueToken($user, $data['device_name']),
         ], 201);
     }
 
@@ -65,7 +65,7 @@ class AuthController extends Controller
 
         return response()->json([
             'user' => new UserResource($user),
-            'token' => $user->createToken($data['device_name'])->plainTextToken,
+            ...$this->issueToken($user, $data['device_name']),
         ]);
     }
 
@@ -74,5 +74,17 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
 
         return response()->json(['message' => 'Kamu sudah keluar dari perangkat ini.']);
+    }
+
+    /**
+     * A new device token. `token_id` lets the device recognise its own `session.revoked` event.
+     *
+     * @return array{token: string, token_id: int}
+     */
+    private function issueToken(User $user, string $deviceName): array
+    {
+        $token = $user->createToken($deviceName);
+
+        return ['token' => $token->plainTextToken, 'token_id' => (int) $token->accessToken->getKey()];
     }
 }
