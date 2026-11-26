@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class MeController extends Controller
@@ -18,8 +19,10 @@ class MeController extends Controller
 
     public function update(Request $request): JsonResponse
     {
+        // Either field may be sent alone: the app changes the language without touching the name.
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:60'],
+            'name' => ['sometimes', 'required', 'string', 'max:60'],
+            'locale' => ['sometimes', 'required', 'string', Rule::in(config('app.supported_locales'))],
         ]);
 
         $user = $request->user();
@@ -46,6 +49,6 @@ class MeController extends Controller
             broadcast(SessionRevoked::for($user->id, $revoked));
         }
 
-        return response()->json(['message' => 'Password sudah diganti. Perangkat lain sudah dikeluarkan.']);
+        return response()->json(['message' => __('Password changed. Your other devices have been signed out.')]);
     }
 }

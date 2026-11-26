@@ -75,7 +75,7 @@ class ConversationController extends Controller
         $conversation->delete();
         broadcast(ConversationDeleted::for($conversation))->toOthers();
 
-        return response()->json(['message' => 'Percakapan dihapus.']);
+        return response()->json(['message' => __('Conversation deleted.')]);
     }
 
     /** Someone else's conversation looks exactly like a missing one. */

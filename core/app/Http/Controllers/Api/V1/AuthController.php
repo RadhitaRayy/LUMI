@@ -12,6 +12,7 @@ use App\Services\Auth\AuthCodeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
@@ -21,7 +22,7 @@ class AuthController extends Controller
     public function register(Request $request): JsonResponse
     {
         if (! AppSetting::current()->registration_open) {
-            throw new ApiException('registration_closed', 'Pendaftaran sedang ditutup.', 403);
+            throw new ApiException('registration_closed', __('Registration is closed right now.'), 403);
         }
 
         $data = $request->validate([
@@ -29,12 +30,15 @@ class AuthController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', Password::defaults(), 'min:8'],
             'device_name' => ['required', 'string', 'max:100'],
+            'locale' => ['nullable', 'string', Rule::in(config('app.supported_locales'))],
         ]);
 
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => $data['password'],
+            // The app sends its language; otherwise keep the one this request is answered in.
+            'locale' => $data['locale'] ?? app()->getLocale(),
         ]);
 
         $this->codes->send($user, AuthCodePurpose::VerifyEmail);
@@ -56,11 +60,11 @@ class AuthController extends Controller
         $user = User::where('email', strtolower($data['email']))->first();
 
         if ($user === null || ! Hash::check($data['password'], $user->password)) {
-            throw new ApiException('invalid_credentials', 'Email atau password salah.', 401);
+            throw new ApiException('invalid_credentials', __('Wrong email or password.'), 401);
         }
 
         if ($user->is_blocked) {
-            throw new ApiException('account_blocked', 'Akun kamu diblokir. Hubungi admin Lumi.', 403);
+            throw new ApiException('account_blocked', __('Your account is blocked. Contact the Lumi admin.'), 403);
         }
 
         return response()->json([
@@ -73,7 +77,7 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Kamu sudah keluar dari perangkat ini.']);
+        return response()->json(['message' => __('You are signed out of this device.')]);
     }
 
     /**

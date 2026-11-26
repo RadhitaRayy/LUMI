@@ -39,6 +39,6 @@ class EmailVerificationController extends Controller
             $this->codes->send($user, AuthCodePurpose::VerifyEmail);
         }
 
-        return response()->json(['message' => 'Kode verifikasi baru sudah dikirim ke email kamu.']);
+        return response()->json(['message' => __('A new verification code has been sent to your email.')]);
     }
 }

@@ -39,6 +39,6 @@ class DeviceController extends Controller
         $token->delete();
         broadcast(SessionRevoked::for($request->user()->id, [$token->getKey()]));
 
-        return response()->json(['message' => 'Perangkat sudah dikeluarkan.']);
+        return response()->json(['message' => __('Device signed out.')]);
     }
 }

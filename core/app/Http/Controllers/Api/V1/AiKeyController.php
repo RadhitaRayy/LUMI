@@ -97,7 +97,7 @@ class AiKeyController extends Controller
         $request->user()->aiKey()->delete();
         $request->user()->unsetRelation('aiKey');
 
-        return response()->json(['message' => 'Kunci AI dihapus. Lumi kembali memakai kuota gratis.']);
+        return response()->json(['message' => __('AI key removed. Lumi is back on the free daily quota.')]);
     }
 
     private function check(ResolvedModel $model): void
@@ -116,7 +116,7 @@ class AiKeyController extends Controller
     private function ownKey(Request $request): UserAiKey
     {
         return $request->user()->aiKey()->first()
-            ?? throw new ApiException('ai_key_missing', 'Kamu belum memasang kunci AI.', 404);
+            ?? throw new ApiException('ai_key_missing', __('You have not added an AI key yet.'), 404);
     }
 
     /** @return array<string, mixed>|null */

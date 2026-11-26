@@ -30,7 +30,7 @@ class PasswordResetController extends Controller
 
         // Same answer whether or not the email exists, so accounts can't be discovered.
         return response()->json([
-            'message' => 'Kalau email itu terdaftar, kode reset sudah dikirim.',
+            'message' => __('If that email is registered, a reset code has been sent.'),
         ]);
     }
 
@@ -45,7 +45,7 @@ class PasswordResetController extends Controller
         $user = User::where('email', strtolower($data['email']))->first();
 
         if ($user === null || $user->is_blocked) {
-            throw new ApiException('code_invalid', 'Kode tidak valid. Minta kode baru.', 422);
+            throw new ApiException('code_invalid', __('Invalid code. Ask for a new one.'), 422);
         }
 
         $this->codes->consume($user, AuthCodePurpose::ResetPassword, $data['code']);
@@ -60,7 +60,7 @@ class PasswordResetController extends Controller
         }
 
         return response()->json([
-            'message' => 'Password sudah diganti. Silakan masuk lagi di semua perangkat.',
+            'message' => __('Password changed. Sign in again on all your devices.'),
         ]);
     }
 }

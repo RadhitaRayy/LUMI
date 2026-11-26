@@ -29,7 +29,7 @@ class ModelResolver
         $model = LlmModel::platformDefault();
 
         if ($model === null) {
-            throw new ApiException('no_model_configured', 'Belum ada model AI yang diatur admin.', 503);
+            throw new ApiException('no_model_configured', __('The admin has not set up an AI model yet.'), 503);
         }
 
         return new ResolvedModel(

@@ -58,14 +58,14 @@ notification, deploy VPS. Kartu tool dan izin di app tetap ada di kode tapi belu
 
 | Method & path | Fungsi |
 |---|---|
-| `POST /auth/register` | `name`, `email`, `password`, `device_name` → `{user, token, token_id}` dan kirim kode verifikasi. `403 registration_closed` jika pendaftaran ditutup. |
+| `POST /auth/register` | `name`, `email`, `password`, `device_name`, `locale` (opsional) → `{user, token, token_id}` dan kirim kode verifikasi. `403 registration_closed` jika pendaftaran ditutup. |
 | `POST /auth/login` | `email`, `password`, `device_name` → `{user, token, token_id}`. `403 account_blocked` untuk user diblokir. |
 | `POST /auth/email/verify` | `code` → tandai email terverifikasi. |
 | `POST /auth/email/resend` | Kirim ulang kode (dibatasi, mis. 1 per menit). |
 | `POST /auth/password/forgot` | `email` → kirim kode reset. Respons selalu sama walau email tidak terdaftar. |
 | `POST /auth/password/reset` | `email`, `code`, `password` → ganti password dan **cabut semua token** (semua perangkat keluar). |
 | `POST /auth/logout` | Cabut token perangkat ini. |
-| `GET /me` · `PATCH /me` | Profil (nama), status verifikasi, sisa kuota hari ini. |
+| `GET /me` · `PATCH /me` | Profil (nama, `locale`), status verifikasi, sisa kuota hari ini. |
 | `PUT /me/password` | Ganti password (butuh password lama). |
 | `GET /devices` | Daftar perangkat aktif (nama, terakhir dipakai, penanda "perangkat ini"). |
 | `DELETE /devices/{id}` | Keluarkan perangkat lain. |
@@ -198,6 +198,11 @@ Akses:
 - **Kunci AI saya** (Pengaturan): pilih provider (OpenRouter / NVIDIA NIM / kompatibel OpenAI),
   tempel API key, pilih model, tombol uji; tampil status aktif + 4 karakter terakhir; hapus key.
   Di layar Chat ada penanda sumber key dan sisa kuota saat memakai key platform.
+- **Multi-bahasa:** Bahasa Indonesia dan English sejak awal (file ARB, mudah ditambah bahasa
+  lain). Bawaan mengikuti bahasa HP; bisa diganti di Pengaturan → Bahasa tanpa keluar akun.
+  Pilihan disimpan di HP dan dikirim ke Core (`locale` di user + header `Accept-Language`),
+  jadi email kode, pesan error, dan pesan validasi dari server ikut bahasa yang sama.
+  App menerjemahkan error berdasarkan `code`; `message` dari server hanya cadangan.
 - **Terasa hidup, tidak statis:** splash screen beranimasi (kucing Lumi + lentera menyala, lalu
   logotipe `lumi`) sebelum layar Masuk; transisi antar layar, popup/bottom sheet yang muncul
   dengan animasi, umpan balik saat tombol ditekan, animasi pesan masuk dan indikator mengetik.

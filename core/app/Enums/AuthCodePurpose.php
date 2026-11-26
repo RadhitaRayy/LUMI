@@ -10,8 +10,8 @@ enum AuthCodePurpose: string
     public function subject(): string
     {
         return match ($this) {
-            self::VerifyEmail => 'Kode verifikasi email Lumi',
-            self::ResetPassword => 'Kode reset password Lumi',
+            self::VerifyEmail => __('Your Lumi email verification code'),
+            self::ResetPassword => __('Your Lumi password reset code'),
         };
     }
 }

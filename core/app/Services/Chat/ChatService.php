@@ -39,7 +39,7 @@ class ChatService
         if (! $model->isUserKey()) {
             $limit = $user->effectiveDailyQuota();
             if ($user->platformMessagesToday() >= $limit) {
-                throw new ApiException('quota_exceeded', 'Kuota harian kamu sudah habis. Pasang API key sendiri di Kunci AI saya, atau coba lagi besok.', 429, [
+                throw new ApiException('quota_exceeded', __('You have used up today\'s quota. Add your own API key in My AI key, or try again tomorrow.'), 429, [
                     'daily_limit' => $limit,
                 ]);
             }

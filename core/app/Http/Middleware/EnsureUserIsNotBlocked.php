@@ -12,7 +12,7 @@ class EnsureUserIsNotBlocked
     public function handle(Request $request, Closure $next): Response
     {
         if ($request->user()?->is_blocked) {
-            throw new ApiException('account_blocked', 'Akun kamu diblokir. Hubungi admin Lumi.', 403);
+            throw new ApiException('account_blocked', __('Your account is blocked. Contact the Lumi admin.'), 403);
         }
 
         return $next($request);

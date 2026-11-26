@@ -18,7 +18,7 @@ class EnsureEmailIsVerifiedForApi
         $user = $request->user();
 
         if ($user && ! $user->hasVerifiedEmail() && AppSetting::current()->require_email_verification) {
-            throw new ApiException('email_unverified', 'Verifikasi email kamu dulu.', 403);
+            throw new ApiException('email_unverified', __('Verify your email first.'), 403);
         }
 
         return $next($request);

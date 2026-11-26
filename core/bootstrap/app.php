@@ -5,6 +5,7 @@ use App\Http\Middleware\EnsureUserIsNotBlocked;
 use App\Http\Middleware\EnsureUserIsSuperadmin;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\SetLocaleFromRequest;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -36,6 +37,8 @@ return Application::configure(basePath: dirname(__DIR__))
             AddLinkHeadersForPreloadedAssets::class,
         ]);
 
+        $middleware->api(prepend: [SetLocaleFromRequest::class]);
+
         $middleware->alias([
             'not-blocked' => EnsureUserIsNotBlocked::class,
             'verified.api' => EnsureEmailIsVerifiedForApi::class,
@@ -62,7 +65,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($request->is('api/*')) {
                 return response()->json([
                     'code' => 'unauthenticated',
-                    'message' => 'Sesi kamu sudah berakhir. Silakan masuk lagi.',
+                    'message' => __('Your session has ended. Please sign in again.'),
                 ], 401);
             }
         });
@@ -71,7 +74,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($request->is('api/*')) {
                 return response()->json([
                     'code' => 'too_many_requests',
-                    'message' => 'Terlalu banyak permintaan. Coba lagi sebentar.',
+                    'message' => __('Too many requests. Try again in a moment.'),
                     'retry_after' => (int) ($e->getHeaders()['Retry-After'] ?? 60),
                 ], 429, $e->getHeaders());
             }
@@ -81,7 +84,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($request->is('api/*')) {
                 return response()->json([
                     'code' => 'not_found',
-                    'message' => 'Data tidak ditemukan.',
+                    'message' => __('Not found.'),
                 ], 404);
             }
         });

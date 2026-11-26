@@ -52,22 +52,22 @@ class AuthCodeService
             ->first();
 
         if ($authCode === null) {
-            throw new ApiException('code_invalid', 'Kode tidak valid. Minta kode baru.', 422);
+            throw new ApiException('code_invalid', __('Invalid code. Ask for a new one.'), 422);
         }
 
         if ($authCode->expires_at->isPast()) {
-            throw new ApiException('code_expired', 'Kode sudah kedaluwarsa. Minta kode baru.', 422);
+            throw new ApiException('code_expired', __('This code has expired. Ask for a new one.'), 422);
         }
 
         if ($authCode->attempts >= self::MAX_ATTEMPTS) {
-            throw new ApiException('code_attempts_exceeded', 'Terlalu banyak percobaan. Minta kode baru.', 429);
+            throw new ApiException('code_attempts_exceeded', __('Too many attempts. Ask for a new code.'), 429);
         }
 
         if (! Hash::check($code, $authCode->code_hash)) {
             $authCode->increment('attempts');
             $left = max(0, self::MAX_ATTEMPTS - $authCode->attempts);
 
-            throw new ApiException('code_invalid', 'Kode salah.', 422, ['attempts_left' => $left]);
+            throw new ApiException('code_invalid', __('Wrong code.'), 422, ['attempts_left' => $left]);
         }
 
         $authCode->update(['used_at' => now()]);

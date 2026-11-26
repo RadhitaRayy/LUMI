@@ -25,17 +25,18 @@ class AuthCodeNotification extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
+        // Sent in the user's language (User::preferredLocale), so these lines are translated.
         $intro = match ($this->purpose) {
-            AuthCodePurpose::VerifyEmail => 'Masukkan kode ini di aplikasi Lumi untuk memverifikasi email kamu.',
-            AuthCodePurpose::ResetPassword => 'Masukkan kode ini di aplikasi Lumi untuk membuat password baru.',
+            AuthCodePurpose::VerifyEmail => __('Enter this code in the Lumi app to verify your email.'),
+            AuthCodePurpose::ResetPassword => __('Enter this code in the Lumi app to set a new password.'),
         };
 
         return (new MailMessage)
             ->subject($this->purpose->subject())
-            ->greeting('Halo!')
+            ->greeting(__('Hi!'))
             ->line($intro)
             ->line("**{$this->code}**")
-            ->line("Kode berlaku {$this->ttlMinutes} menit dan hanya bisa dipakai sekali.")
-            ->line('Kalau kamu tidak meminta kode ini, abaikan email ini.');
+            ->line(__('The code works for :minutes minutes and can only be used once.', ['minutes' => $this->ttlMinutes]))
+            ->line(__('If you did not ask for this code, you can ignore this email.'));
     }
 }
