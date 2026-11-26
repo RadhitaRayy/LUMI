@@ -28,7 +28,7 @@ notification, deploy VPS. Kartu tool dan izin di app tetap ada di kode tapi belu
 - [x] Scaffold `core/`: Laravel 13.44 + starter kit React (Inertia), terhubung ke PostgreSQL,
   migrasi awal jalan, `npm run build` sukses, 42 test bawaan lulus.
 - [ ] Email dev: sementara `MAIL_MAILER=log` (kode muncul di `storage/logs`); Mailpit menyusul.
-- [ ] Ganti PHPUnit ke Pest (installer gagal di langkah ini karena download dari GitHub timeout).
+- [x] Pest 5 terpasang; test memakai PostgreSQL `lumi_test` (bukan SQLite).
 
 ## 1. Lumi Core (Laravel)
 
@@ -228,6 +228,15 @@ sensitif saat uji coba).
 - [ ] User bisa memasang key sendiri di app; setelah itu chat memakai key-nya dan tidak memotong kuota;
   key tidak pernah muncul di respons API maupun di Console.
 - [ ] Test Core, Console, dan App lulus; `flutter analyze` bersih.
+
+## Progres
+
+| Tanggal | Selesai |
+|---|---|
+| 2026-11-25 | Persiapan repo (monorepo, GitHub), scaffold `core/` di PostgreSQL |
+| 2026-11-26 | **Auth API**: register, login, logout, verifikasi email & lupa password (kode 6 digit, 15 menit, maks 5 percobaan), `GET/PATCH /me`, ganti password, daftar & keluarkan perangkat, peran `superadmin`/`user`, blokir user, `app_settings` (pendaftaran, wajib verifikasi, kuota default, system prompt), rate limit, format error `{code, message}`, perintah `lumi:make-superadmin`. 32 test API + 42 test bawaan lulus, PHPStan level 7 bersih |
+
+Belum: broadcast `session.revoked` (menunggu Reverb di langkah 5), kuota terpakai di `/me` (menunggu tabel pesan).
 
 ## 7. Urutan kerja
 

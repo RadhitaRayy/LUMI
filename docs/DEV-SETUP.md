@@ -87,7 +87,10 @@ $env:Path = "$env:USERPROFILE\.config\herd\bin\php84;$env:Path"
 cd C:\Work\lumi\core
 php artisan serve          # http://localhost:8000
 npm run dev                # Vite (Console React)
-php artisan test
+php vendor/bin/pest        # test (database lumi_test)
+php vendor/bin/phpstan analyse --memory-limit=1G
+php vendor/bin/pint --dirty
+php artisan lumi:make-superadmin email@kamu.com   # akun pemilik untuk Lumi Console
 ```
 
 Menyalakan PostgreSQL kalau belum jalan (atau lewat menu Laragon):

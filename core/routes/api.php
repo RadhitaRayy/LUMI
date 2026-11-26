@@ -1,0 +1,43 @@
+<?php
+
+use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\DeviceController;
+use App\Http\Controllers\Api\V1\EmailVerificationController;
+use App\Http\Controllers\Api\V1\MeController;
+use App\Http\Controllers\Api\V1\PasswordResetController;
+use Illuminate\Support\Facades\Route;
+
+/*
+| Lumi App API (mobile). Every route lives under /api/v1.
+| Errors are JSON: { "code": "...", "message": "..." }.
+*/
+
+Route::prefix('v1')->group(function () {
+    // Guests
+    Route::middleware('throttle:api-auth')->group(function () {
+        Route::post('auth/register', [AuthController::class, 'register']);
+        Route::post('auth/login', [AuthController::class, 'login']);
+    });
+
+    Route::middleware('throttle:api-codes')->group(function () {
+        Route::post('auth/password/forgot', [PasswordResetController::class, 'forgot']);
+        Route::post('auth/password/reset', [PasswordResetController::class, 'reset']);
+    });
+
+    // Signed-in devices
+    Route::middleware(['auth:sanctum', 'not-blocked'])->group(function () {
+        Route::post('auth/logout', [AuthController::class, 'logout']);
+
+        Route::post('auth/email/verify', [EmailVerificationController::class, 'verify'])
+            ->middleware('throttle:api-codes');
+        Route::post('auth/email/resend', [EmailVerificationController::class, 'resend'])
+            ->middleware('throttle:api-resend');
+
+        Route::get('me', [MeController::class, 'show']);
+        Route::patch('me', [MeController::class, 'update']);
+        Route::put('me/password', [MeController::class, 'updatePassword']);
+
+        Route::get('devices', [DeviceController::class, 'index']);
+        Route::delete('devices/{device}', [DeviceController::class, 'destroy'])->whereNumber('device');
+    });
+});
