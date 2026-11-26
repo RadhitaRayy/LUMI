@@ -76,22 +76,54 @@ Satu repo karena satu pengembang, dan perubahan API hampir selalu diikuti peruba
   konsisten (mis. logout langsung membersihkan semua layar). Saat app kembali aktif, data
   disegarkan dari server.
 
+## BYOK campuran dan peran
+
+**Kunci AI (BYOK campuran):**
+
+| Sumber key | Siapa memasang | Siapa membayar | Batas |
+|---|---|---|---|
+| **Key platform** | Superadmin, di Lumi Console | Pemilik Lumi | Kuota harian per user (gratis, terbatas) |
+| **Key milik user** | User sendiri, di app (Pengaturan → Kunci AI saya) | User itu sendiri | Tidak dibatasi kuota Lumi (hanya rate limit) |
+
+- User baru langsung bisa chat dengan key platform dalam batas kuota.
+- Kalau user memasang key sendiri yang aktif dan valid, LLM Gateway memakai key itu lebih dulu.
+  Kalau key user gagal (salah/kuota provider habis), app memberi tahu; tidak diam-diam pindah ke
+  key platform.
+- Key user dikirim sekali dari app ke Core, disimpan terenkripsi per user, dan **tidak pernah
+  dikirim balik** (app hanya melihat 4 karakter terakhir).
+
+**Peran:**
+
+| Peran | Siapa | Akses |
+|---|---|---|
+| `superadmin` | Pemilik/developer Lumi | Lumi Console penuh: key platform, provider & model, pengaturan, user, log; nanti tool Bridge |
+| `user` | Semua yang mendaftar | Hanya app; bisa memasang key AI miliknya sendiri |
+
+- **Lumi Console hanya dipegang pemilik** (superadmin). Tidak ada dashboard per user; semua
+  pengaturan akun user ada di app.
+- Superadmin pertama dibuat lewat perintah artisan, tidak bisa lewat pendaftaran.
+- Peran `admin` terbatas (kelola user & lihat log, tanpa akses key/pengaturan) bisa ditambahkan
+  nanti bila ada yang membantu mengelola.
+
 ## Alur chat (Fase 1)
 
 1. App mengirim `POST /api/v1/conversations/{id}/messages` dengan token perangkat.
-2. Core memeriksa email terverifikasi, kuota, dan rate limit, lalu menyimpan pesan user.
-3. Core memanggil LLM Gateway dengan riwayat percakapan + system prompt.
+2. Core memeriksa email terverifikasi, rate limit, dan kuota (kuota hanya untuk key platform),
+   lalu menyimpan pesan user.
+3. Core memanggil LLM Gateway dengan riwayat percakapan + system prompt, memakai key user bila
+   ada, kalau tidak memakai key platform.
 4. Jawaban dialirkan balik ke perangkat pengirim sebagai **Server-Sent Events**.
 5. Setelah selesai, Core menyimpan pesan asisten dan mencatat pemakaian token.
 6. Core menyiarkan event lewat Reverb, sehingga perangkat lain milik user yang sama ikut ter-update.
 
 ## Prinsip keamanan
 
-- **API key tidak pernah dikirim ke app.** Key disimpan terenkripsi di database Core
-  (`Crypt`) dan hanya bisa diubah dari Console.
+- **Key platform tidak pernah dikirim ke app**; disimpan terenkripsi (`Crypt`) dan hanya bisa
+  diubah dari Console. **Key milik user** disimpan terenkripsi per user dan tidak pernah dikirim
+  balik ke app (hanya 4 karakter terakhir), tidak terlihat oleh superadmin di Console.
 - **Pendaftaran bebas, dengan pengaman:** verifikasi email (kode 6 digit) sebelum bisa chat,
-  kuota harian per user, rate limit, sakelar pendaftaran buka/tutup, blokir user.
-- **Peran:** `admin` dan `user`. Tool yang menyentuh sistem (Bridge) hanya untuk admin.
+  kuota harian per user untuk key platform, rate limit, sakelar pendaftaran buka/tutup, blokir user.
+- **Peran:** `superadmin` dan `user`. Console dan tool yang menyentuh sistem (Bridge) hanya untuk superadmin.
 - **Channel realtime privat** diotorisasi per user; perangkat hanya menerima event miliknya.
 - **Tidak ada shell bebas.** Tool sistem hanya menjalankan perintah dari daftar putih.
 - **Aksi yang mengubah sistem butuh izin** pengguna di app, dan semuanya masuk log audit.
@@ -112,7 +144,9 @@ Satu repo karena satu pengembang, dan perubahan API hampir selalu diikuti peruba
 | 2026-11-25 | **Verifikasi email & lupa password masuk Fase 1**, dengan kode 6 digit lewat email | Pendaftaran bebas butuh verifikasi untuk menekan penyalahgunaan; kode lebih mudah di app daripada link (tanpa deep link) |
 | 2026-11-25 | **Sesi per perangkat** (token Sanctum) + **riwayat tersinkron** antar HP + **realtime lewat Reverb di Fase 1** | Pemilik ingin login yang sama di HP A dan HP B melihat riwayat yang sama dan ter-update langsung |
 | 2026-11-25 | **Riverpod** untuk state di dalam app | Fase 1 menambah login, panggilan API, streaming, dan realtime yang dipakai banyak layar |
-| 2026-11-25 | **BYOK diatur admin** di Console; uji coba pakai provider gratis: **OpenRouter** (pertama) dan **NVIDIA NIM** (kedua) | Biaya nol selama pengembangan; dua provider berbeda membuktikan LLM Gateway tidak terikat satu provider |
+| 2026-11-25 | Uji coba pakai provider gratis: **OpenRouter** (pertama) dan **NVIDIA NIM** (kedua) | Biaya nol selama pengembangan; dua provider berbeda membuktikan LLM Gateway tidak terikat satu provider |
+| 2026-11-26 | **BYOK campuran**: key platform (dipasang superadmin, dengan kuota gratis per user) + key milik user (dipasang di app, tanpa kuota Lumi). Masuk Fase 1 | User baru tetap mudah mencoba; biaya pemilik terkendali; user yang butuh lebih memakai key sendiri |
+| 2026-11-26 | **Lumi Console hanya dipegang pemilik** (`superadmin`); tidak ada dashboard per user. Peran Fase 1: `superadmin` + `user` | Semua kebutuhan user sudah ada di app; dashboard per user = produk kedua yang tidak diperlukan |
 | 2026-11-25 | Backend final di **VPS**; semua API mobile lewat VPS | Satu titik akses untuk semua pengguna; laptop tidak perlu dibuka ke internet |
 | 2026-11-25 | Tool di laptop lewat **Lumi Bridge** dengan koneksi keluar | Tidak perlu membuka port di laptop; pola yang sama dengan relay di LISA |
 | 2026-11-25 | Jawaban chat dialirkan lewat **SSE**; event antar perangkat lewat **Reverb** | SSE paling sederhana untuk aliran jawaban ke pengirim; Reverb untuk memberi tahu perangkat lain |
@@ -120,5 +154,4 @@ Satu repo karena satu pengembang, dan perubahan API hampir selalu diikuti peruba
 ## Pertanyaan terbuka
 
 - Bot-bot pemilik tetap di laptop (pakai Bridge) atau dipindah ke VPS?
-- BYOK per user (setiap user memasukkan key sendiri) atau hanya key admin?
 - Layanan email (SMTP) untuk produksi.

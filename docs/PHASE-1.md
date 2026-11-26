@@ -43,14 +43,15 @@ notification, deploy VPS. Kartu tool dan izin di app tetap ada di kode tapi belu
 
 | Tabel | Kolom penting |
 |---|---|
-| `users` | `name`, `email`, `email_verified_at`, `password`, `role` (`admin`/`user`), `is_blocked`, `daily_quota` (nullable → pakai default) |
+| `users` | `name`, `email`, `email_verified_at`, `password`, `role` (`superadmin`/`user`), `is_blocked`, `daily_quota` (nullable → pakai default) |
 | `personal_access_tokens` | bawaan Sanctum; satu token per perangkat (`name` = nama perangkat), `last_used_at` |
 | `auth_codes` | `user_id`, `purpose` (`verify_email`/`reset_password`), `code_hash`, `expires_at`, `attempts`, `used_at` |
 | `conversations` | `id` (ULID), `user_id`, `title`, `last_message_at`, timestamps |
 | `messages` | `id` (ULID), `conversation_id`, `role` (`user`/`assistant`), `content`, `status` (`complete`/`error`/`cancelled`), `provider`, `model`, `input_tokens`, `output_tokens`, timestamps |
 | `llm_providers` | `name`, `driver` (`openrouter`/`openai_compatible`/...), `base_url`, `api_key` (cast `encrypted`), `is_enabled` |
 | `llm_models` | `provider_id`, `model_id`, `label`, `is_default`, `supports_tools`, `is_enabled` |
-| `llm_usages` | `user_id`, `conversation_id`, `provider`, `model`, `input_tokens`, `output_tokens`, `latency_ms`, `status`, `error_code` |
+| `user_ai_keys` | `user_id` (unik), `driver` (`openrouter`/`openai_compatible`), `base_url`, `api_key` (cast `encrypted`), `key_last4`, `model_id`, `is_active`, `last_validated_at`, `last_error` |
+| `llm_usages` | `user_id`, `conversation_id`, `key_source` (`platform`/`user`), `provider`, `model`, `input_tokens`, `output_tokens`, `latency_ms`, `status`, `error_code` |
 | `app_settings` | `registration_open`, `require_email_verification`, `default_daily_quota`, `system_prompt` |
 
 ### API — akun & sesi
@@ -68,6 +69,18 @@ notification, deploy VPS. Kartu tool dan izin di app tetap ada di kode tapi belu
 | `PUT /me/password` | Ganti password (butuh password lama). |
 | `GET /devices` | Daftar perangkat aktif (nama, terakhir dipakai, penanda "perangkat ini"). |
 | `DELETE /devices/{id}` | Keluarkan perangkat lain. |
+
+### API — kunci AI milik user (BYOK)
+
+| Method & path | Fungsi |
+|---|---|
+| `GET /me/ai-key` | Status key milik user: provider, model, aktif, `key_last4`, terakhir divalidasi. **Tidak pernah** mengembalikan key. |
+| `PUT /me/ai-key` | Simpan/ganti key: `driver`, `base_url` (untuk NIM / kompatibel OpenAI), `api_key`, `model_id`. Key divalidasi dulu dengan panggilan kecil ke provider; gagal → `422 ai_key_invalid`. |
+| `POST /me/ai-key/test` | Uji ulang key yang tersimpan. |
+| `PATCH /me/ai-key` | Aktif/nonaktifkan tanpa menghapus. |
+| `DELETE /me/ai-key` | Hapus key; user kembali memakai key platform (dengan kuota). |
+
+`GET /me` menyertakan `ai_key_source` (`platform`/`user`) dan sisa kuota (hanya relevan untuk key platform).
 
 Kode verifikasi/reset: 6 digit, disimpan sebagai hash, berlaku 15 menit, maksimal 5 percobaan.
 
@@ -116,24 +129,30 @@ event: error           data: {"code":"provider_error","message":"..."}
 
 ### LLM Gateway
 
-- Interface tunggal di Core (mis. `App\Llm\Gateway`) yang membaca provider & model aktif dari
-  database dan memanggil Prism. Kode lain tidak tahu provider mana yang dipakai.
+- Interface tunggal di Core (mis. `App\Llm\Gateway`) yang memilih **sumber key** lalu memanggil
+  Prism. Kode lain tidak tahu provider mana yang dipakai.
+- Urutan pemilihan: key milik user yang aktif → kalau tidak ada, provider & model default platform
+  dari database. Kalau key user gagal, kirim error yang jelas (`user_key_error`) — tidak diam-diam
+  pindah ke key platform.
 - System prompt dari `app_settings`, riwayat dibatasi N pesan terakhir supaya muat di konteks.
 - Error provider (kuota habis, key salah, timeout, model tidak tersedia) dipetakan ke `code` yang jelas.
 
 ### Kuota & rate limit
 
-- Kuota harian = jumlah pesan user per hari (Asia/Jakarta). Habis → `429 quota_exceeded`.
+- Kuota harian = jumlah pesan user per hari (Asia/Jakarta) **yang memakai key platform**. Habis →
+  `429 quota_exceeded`, dengan petunjuk bahwa user bisa memasang key sendiri. Pesan dengan key
+  milik user tidak dihitung kuota (tetap kena rate limit).
 - Rate limit login, register, kirim ulang kode, lupa password, dan kirim pesan.
 - User diblokir → semua request `403 account_blocked`.
 
-### Admin pertama
+### Superadmin pertama
 
-- Perintah artisan untuk membuat/menjadikan admin (mis. `php artisan lumi:make-admin email`).
+- Perintah artisan untuk membuat/menjadikan superadmin (mis. `php artisan lumi:make-superadmin email`).
+  Superadmin tidak bisa dibuat lewat pendaftaran.
 
 ## 2. Lumi Console (Inertia + React, `/console`)
 
-Hanya `role=admin`, login dengan sesi web Laravel. Dibangun dengan komponen shadcn/ui,
+Hanya `role=superadmin` (pemilik Lumi), login dengan sesi web Laravel. Dibangun dengan komponen shadcn/ui,
 TanStack Table untuk tabel (cari, filter, paginasi server-side), dan Recharts untuk grafik.
 Tampilan mengikuti identitas Lumi App (mode gelap, aksen lime, font Space Grotesk / Inter /
 JetBrains Mono). Desain Console dibuat dulu di kanvas sebelum diimplementasi.
@@ -141,7 +160,7 @@ JetBrains Mono). Desain Console dibuat dulu di kanvas sebelum diimplementasi.
 | Halaman | Isi |
 |---|---|
 | Dashboard | Kartu ringkasan (user, pesan hari ini, token hari ini, error), grafik pesan & token 14 hari, error terakhir |
-| Users | Daftar, cari, status verifikasi, blokir/buka, atur kuota, ubah peran, lihat & cabut perangkat |
+| Users | Daftar, cari, status verifikasi, blokir/buka, atur kuota, lihat & cabut perangkat, tanda "pakai key sendiri" (key-nya tidak pernah ditampilkan) |
 | Provider AI | CRUD provider + API key (disembunyikan setelah disimpan) + tombol **Tes koneksi** |
 | Model | CRUD model, tandai default, aktif/nonaktif |
 | Pengaturan | Pendaftaran buka/tutup, wajib verifikasi email, kuota default, system prompt |
@@ -153,7 +172,8 @@ JetBrains Mono). Desain Console dibuat dulu di kanvas sebelum diimplementasi.
   (dev: IP laptop di LAN atau `adb reverse tcp:8000 tcp:8000`).
 - **Riverpod** untuk state; `ApiClient` + token di `flutter_secure_storage`; klien Reverb (WebSocket).
 - **Layar baru** (didesain dulu di kanvas): Verifikasi email (input kode 6 digit + kirim ulang),
-  Lupa password (email → kode + password baru), Perangkat aktif, Profil / ganti password.
+  Lupa password (email → kode + password baru), Perangkat aktif, Profil / ganti password,
+  Kunci AI saya.
 - **Masuk/Daftar** memanggil Core; error validasi (`422`) tampil per field; pesan khusus untuk
   `registration_closed`, `account_blocked`, `email_unverified`.
 - **Auth gate:** buka app → token valid & terverifikasi → Chat; belum terverifikasi → Verifikasi
@@ -162,6 +182,9 @@ JetBrains Mono). Desain Console dibuat dulu di kanvas sebelum diimplementasi.
   yang jelas (kuota habis, jaringan, provider).
 - **Riwayat:** daftar dari server, cari, buka percakapan lama, hapus, percakapan baru.
   Ter-update realtime dari perangkat lain; disegarkan saat app kembali aktif.
+- **Kunci AI saya** (Pengaturan): pilih provider (OpenRouter / NVIDIA NIM / kompatibel OpenAI),
+  tempel API key, pilih model, tombol uji; tampil status aktif + 4 karakter terakhir; hapus key.
+  Di layar Chat ada penanda sumber key dan sisa kuota saat memakai key platform.
 - Tombol "sidik jari" dan "Google" di layar Masuk disembunyikan dulu.
 - `DemoAgent` dihapus atau hanya dipakai di test.
 
@@ -202,6 +225,8 @@ sensitif saat uji coba).
 - [ ] Kuota harian, blokir user, sakelar pendaftaran, dan wajib verifikasi dari Console langsung berlaku.
 - [ ] API key tersimpan terenkripsi dan tidak pernah muncul di respons API.
 - [ ] Ganti provider/model default di Console (OpenRouter ↔ NVIDIA NIM) tanpa mengubah kode.
+- [ ] User bisa memasang key sendiri di app; setelah itu chat memakai key-nya dan tidak memotong kuota;
+  key tidak pernah muncul di respons API maupun di Console.
 - [ ] Test Core, Console, dan App lulus; `flutter analyze` bersih.
 
 ## 7. Urutan kerja
@@ -225,4 +250,6 @@ sensitif saat uji coba).
 - [x] State management app: **Riverpod**.
 - [x] Sinkron realtime antar perangkat: **masuk Fase 1** (Reverb).
 - [x] Provider uji coba: **OpenRouter**, lalu **NVIDIA NIM**.
+- [x] BYOK: **campuran** (key platform + kuota, dan key milik user di app), masuk Fase 1.
+- [x] Console hanya untuk **superadmin** (pemilik); peran Fase 1: `superadmin` + `user`.
 - [ ] Layanan SMTP produksi (ditentukan di Fase 3).

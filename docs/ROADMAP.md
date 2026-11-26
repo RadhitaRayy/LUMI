@@ -6,7 +6,7 @@
 | Fase | Tujuan | Status |
 |---|---|---|
 | 0 | Desain UI + aplikasi demo Flutter | ✅ Selesai (2026-11-25) |
-| [1](PHASE-1.md) | Chat sungguhan end-to-end: akun + verifikasi email, riwayat tersinkron realtime antar HP, BYOK provider gratis, Console | ⏳ Berikutnya |
+| [1](PHASE-1.md) | Chat sungguhan end-to-end: akun + verifikasi email, riwayat tersinkron realtime antar HP, BYOK campuran (key platform + key milik user), Console superadmin | ⏳ Sedang berjalan |
 | 2 | Agent, tools, izin aksi, memori | Rencana |
 | 3 | Deploy ke VPS + APK release | Rencana |
 | 4 | Lumi Bridge (laptop) + fitur HP (sidik jari, suara, push) | Rencana |
@@ -28,14 +28,15 @@ Rincian lengkap: [PHASE-1.md](PHASE-1.md).
 - **Core:** daftar bebas + verifikasi email & lupa password (kode 6 digit), sesi per perangkat
   (Sanctum) + daftar perangkat aktif, percakapan & pesan, chat streaming SSE, sinkron realtime
   antar perangkat (Reverb), kuota harian + rate limit, LLM Gateway (Prism) yang diuji dengan
-  OpenRouter lalu NVIDIA NIM.
-- **Console (Inertia + React + shadcn/ui):** provider & API key (terenkripsi), model,
-  user (verifikasi, blokir, kuota, peran, perangkat), pengaturan, log pemakaian.
+  OpenRouter lalu NVIDIA NIM, BYOK campuran (key platform dengan kuota + key milik user).
+- **Console (Inertia + React + shadcn/ui, hanya superadmin):** provider & key platform
+  (terenkripsi), model, user (verifikasi, blokir, kuota, perangkat), pengaturan, log pemakaian.
 - **App:** Riverpod; Masuk/Daftar/Verifikasi/Lupa password terhubung ke Core; chat asli
-  menggantikan `DemoAgent`; Riwayat dari server, ter-update realtime; perangkat aktif.
+  menggantikan `DemoAgent`; Riwayat dari server, ter-update realtime; perangkat aktif;
+  Kunci AI saya.
 
 **Selesai jika:** user baru bisa daftar dan memverifikasi email dari HP, chat dengan model
-gratis yang dipilih admin, jawaban mengalir per potongan, riwayat sama dan ter-update realtime
+gratis yang dipilih superadmin atau dengan key miliknya sendiri, jawaban mengalir per potongan, riwayat sama dan ter-update realtime
 di dua HP dengan akun yang sama, dan kuota/blokir/pengaturan dari Console berlaku.
 
 ## Fase 2 — Agent, tools, dan izin
@@ -83,7 +84,7 @@ dengan persetujuan, dan notifikasi izin masuk walau app tertutup.
 - Channel Telegram (chat dengan Lumi lewat bot Telegram).
 - Konektor: Google Calendar (baca dulu), kemudian lainnya.
 - Knowledge base pribadi (simpan link, ringkas artikel).
-- BYOK per user, routing ke beberapa provider, budget biaya.
+- Routing ke beberapa provider, budget biaya, peran `admin` terbatas bila dibutuhkan.
 
 ## Di luar cakupan (untuk sekarang)
 
