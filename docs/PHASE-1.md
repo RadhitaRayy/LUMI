@@ -159,19 +159,25 @@ event: error           data: {"code":"provider_error","message":"..."}
 
 ## 2. Lumi Console (Inertia + React, `/console`)
 
-Hanya `role=superadmin` (pemilik Lumi), login dengan sesi web Laravel. Dibangun dengan komponen shadcn/ui,
-TanStack Table untuk tabel (cari, filter, paginasi server-side), dan Recharts untuk grafik.
-Tampilan mengikuti identitas Lumi App (mode gelap, aksen lime, font Space Grotesk / Inter /
-JetBrains Mono). Desain Console dibuat dulu di kanvas sebelum diimplementasi.
+Hanya `role=superadmin` (pemilik Lumi), login dengan sesi web Laravel. Dibangun dengan komponen
+shadcn/ui; tabel dan grafik dibuat sendiri (paginasi dan filter di server, grafik batang CSS), jadi
+TanStack Table dan Recharts tidak dipakai. Tampilan gelap saja, mengikuti identitas Lumi
+(`design/brand/README.md`). Desain ada di kanvas, sumbernya di `design/console/`.
+
+Akses:
+- Login web hanya untuk superadmin yang tidak diblokir. User biasa mendapat jawaban yang sama
+  dengan password salah. Middleware `superadmin` di semua route Console dan pengaturan akun juga
+  mengeluarkan siapa pun yang bukan superadmin (termasuk lewat passkey).
+- Tidak ada pendaftaran, reset password lewat email, verifikasi email, atau hapus akun di web.
+  Akun pemilik dibuat dan dipulihkan dengan `php artisan lumi:make-superadmin`.
 
 | Halaman | Isi |
 |---|---|
-| Dashboard | Kartu ringkasan (user, pesan hari ini, token hari ini, error), grafik pesan & token 14 hari, error terakhir |
-| Users | Daftar, cari, status verifikasi, blokir/buka, atur kuota, lihat & cabut perangkat, tanda "pakai key sendiri" (key-nya tidak pernah ditampilkan) |
-| Provider AI | CRUD provider + API key (disembunyikan setelah disimpan) + tombol **Tes koneksi** |
-| Model | CRUD model, tandai default, aktif/nonaktif |
+| Dashboard | Kartu ringkasan (user, jawaban hari ini, token hari ini, error), grafik jawaban/token 14 hari, model default, error terakhir |
+| Users | Daftar, cari, saring (belum verifikasi, diblokir, pakai key sendiri), panel detail: kuota per user, info key AI (tanpa isi key), perangkat aktif + keluarkan, blokir/buka (blokir mencabut semua token dan mengirim `session.revoked`). Superadmin tidak bisa diblokir |
+| Provider & model | Satu halaman (model selalu milik satu provider): tambah provider (key dites dulu), ganti key, tes koneksi (hasilnya disimpan), aktif/nonaktif, hapus; per provider: tambah model (dites dulu), jadikan default, aktif/nonaktif, hapus. Model default tidak bisa dinonaktifkan atau dihapus |
+| Log pemakaian | Filter per user/model/status/tanggal, paginasi; tanpa isi percakapan |
 | Pengaturan | Pendaftaran buka/tutup, wajib verifikasi email, kuota default, system prompt |
-| Log pemakaian | Filter per user/model/tanggal, status & error |
 
 ## 3. Lumi App (Flutter)
 
@@ -249,8 +255,9 @@ sensitif saat uji coba).
 | 2026-11-26 | **LLM Gateway + chat SSE + BYOK user**: Prism (driver OpenRouter dipakai juga untuk NVIDIA NIM lewat base URL kustom, karena driver `openai` Prism memakai Responses API), pemilihan key (key user aktif → key platform), percakapan (CRUD + cari), `POST /conversations/{id}/messages` streaming SSE, kuota harian untuk key platform, log pemakaian, error provider dengan kode jelas, `/me/ai-key` (simpan setelah diuji, uji ulang, nyala/mati, hapus), perintah `lumi:add-provider`. 91 test lulus, PHPStan bersih |
 | 2026-11-26 | **Uji nyata OpenRouter**: daftar → verifikasi kode → percakapan → chat streaming lewat HTTP dengan `nvidia/nemotron-3-ultra-550b-a55b:free` (jawaban ~4 detik, konteks percakapan diingat, token tercatat). Perbaikan dari uji ini: `lumi:add-provider` mengecek bentuk key (paste dengan klik kanan), balasan 429 saat uji key dianggap key valid (juga di `/me/ai-key`), kuota tidak lagi terpotong oleh jawaban gagal dan tidak bisa direset dengan menghapus percakapan. 100 test lulus |
 | 2026-11-26 | **Realtime (Reverb)**: channel privat `private-user.{id}` diotorisasi token Sanctum, event `conversation.created/updated/deleted`, `message.created` (pertanyaan langsung, jawaban saat selesai), `session.revoked` (`token_ids`); `token_id` di respons register/login; perangkat pengirim dilewati lewat `X-Socket-ID`. 111 test lulus. Uji WebSocket nyata 13/13: dua perangkat satu akun + satu akun lain (ditolak join, tidak menerima apa pun), chat dengan AI sungguhan muncul di perangkat lain, perangkat yang dikeluarkan menerima `session.revoked` |
+| 2026-11-26 | **Brand + Lumi Console**: karakter kucing berlentera + logotipe `lumi` geometris (`design/brand/`); Console di `/console` khusus superadmin (Dashboard, Users, Provider & model, Log, Pengaturan), web tanpa pendaftaran/reset/hapus akun, kolom `last_tested_at`/`last_error` di provider. 113 test lulus, PHPStan bersih, type-check dan lint lulus. Dicek di browser (desktop dan lebar HP) dengan akun uji, termasuk tes koneksi sungguhan ke OpenRouter |
 
-Belum: uji dengan NVIDIA NIM sungguhan.
+Belum: uji dengan NVIDIA NIM sungguhan; pekerjaan app Flutter (langkah 8–10).
 
 ## 7. Urutan kerja
 

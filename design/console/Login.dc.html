@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Lumi Console · Masuk</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0E1014}
+a{color:#B5F23D;text-decoration:none}a:hover{color:#D3FF7A}
+button,input{font:inherit}
+</style>
+</helmet>
+<div style="box-sizing: border-box; min-height: 100vh; background: #0E1014; color: #ECEEF1; font-family: Inter, system-ui, sans-serif; display: flex; align-items: center; justify-content: center; padding: 48px 16px">
+
+<main style="width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 28px">
+
+<div style="display: flex; align-items: center; gap: 14px">
+<span aria-hidden="true" style="width: 48px; height: 48px; border-radius: 14px; background: #B5F23D; color: #0E1014; display: flex; align-items: center; justify-content: center">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 4-5 4M12 17h7"></path></svg>
+</span>
+<span style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 20px">Lumi</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #9BA3AF; letter-spacing: 0.08em">CONSOLE</span>
+</span>
+</div>
+
+<section style="background: #171A20; border: 1px solid #23272F; border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 22px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 26px">Masuk ke Console</h1>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; color: #9BA3AF">Khusus pemilik Lumi. Akun user biasa tidak bisa masuk di sini.</p>
+</div>
+
+<sc-if value="{{showError}}" hint-placeholder-val="{{ false }}">
+<p role="alert" style="margin: 0; padding: 12px 14px; border-radius: 12px; background: #2E2410; color: #F5B544; font-size: 14px; line-height: 1.45">Email atau password salah, atau akun ini bukan superadmin.</p>
+</sc-if>
+
+<form style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label for="console-email" style="font-size: 13px; font-weight: 500; color: #9BA3AF">Email</label>
+<input id="console-email" type="email" autocomplete="username" value="rayy@example.com" style="height: 48px; box-sizing: border-box; padding: 0 14px; background: #0E1014; border: 1px solid #2A2F38; border-radius: 12px; color: #ECEEF1; font-size: 15px; outline: none">
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label for="console-pass" style="font-size: 13px; font-weight: 500; color: #9BA3AF">Password</label>
+<input id="console-pass" type="password" autocomplete="current-password" value="rahasia123" style="height: 48px; box-sizing: border-box; padding: 0 14px; background: #0E1014; border: 1px solid #B5F23D; border-radius: 12px; color: #ECEEF1; font-size: 15px; outline: none">
+</div>
+<label style="display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 14px; color: #C9CED6">
+<input type="checkbox" checked style="width: 18px; height: 18px; accent-color: #B5F23D">
+Ingat saya di browser ini
+</label>
+<a href="Main.dc.html" style="height: 48px; border-radius: 12px; background: #B5F23D; color: #0E1014; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 15px">Masuk</a>
+</form>
+</section>
+
+<p style="margin: 0; font-size: 13px; line-height: 1.5; color: #9BA3AF; text-align: center">Lupa password? Jalankan <span style="font-family: 'JetBrains Mono', monospace; color: #C9CED6">php artisan lumi:make-superadmin</span> di server.</p>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"showError":{"editor":"boolean","default":false},"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+renderVals() {
+return { showError: this.props.showError ?? false };
+}
+}
+</script>
+</body>
+</html>

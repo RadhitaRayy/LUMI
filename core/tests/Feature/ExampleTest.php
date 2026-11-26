@@ -9,10 +9,8 @@ class ExampleTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_returns_a_successful_response()
+    public function test_the_home_page_opens_lumi_console()
     {
-        $response = $this->get(route('home'));
-
-        $response->assertOk();
+        $this->get(route('home'))->assertRedirect('/console');
     }
 }

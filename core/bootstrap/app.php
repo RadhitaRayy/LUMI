@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\EnsureEmailIsVerifiedForApi;
 use App\Http\Middleware\EnsureUserIsNotBlocked;
+use App\Http\Middleware\EnsureUserIsSuperadmin;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Auth\AuthenticationException;
@@ -38,6 +39,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'not-blocked' => EnsureUserIsNotBlocked::class,
             'verified.api' => EnsureEmailIsVerifiedForApi::class,
+            'superadmin' => EnsureUserIsSuperadmin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

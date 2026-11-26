@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Lumi Console · Sidebar</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#ECEEF1;text-decoration:none}a:hover{color:#FFFFFF}
+button{font:inherit}
+</style>
+</helmet>
+<nav aria-label="Menu Console" style="box-sizing: border-box; width: 100%; height: 100%; min-height: 560px; padding: 20px 14px; background: #13161B; color: #ECEEF1; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; gap: 6px">
+
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 12px; padding: 4px 8px 22px">
+<span aria-hidden="true" style="width: 36px; height: 36px; border-radius: 11px; background: #B5F23D; color: #0E1014; display: flex; align-items: center; justify-content: center">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 4-5 4M12 17h7"></path></svg>
+</span>
+<span style="display: flex; flex-direction: column; gap: 1px">
+<span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 17px">Lumi</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #9BA3AF; letter-spacing: 0.08em">CONSOLE</span>
+</span>
+</a>
+
+<a href="Main.dc.html" aria-current="{{dash.aria}}" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; font-size: 14px; font-weight: 500; background: {{dash.bg}}; color: {{dash.color}}">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg>
+Dashboard
+</a>
+<a href="Users.dc.html" aria-current="{{users.aria}}" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; font-size: 14px; font-weight: 500; background: {{users.bg}}; color: {{users.color}}">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"></path></svg>
+Users
+</a>
+<a href="Providers.dc.html" aria-current="{{providers.aria}}" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; font-size: 14px; font-weight: 500; background: {{providers.bg}}; color: {{providers.color}}">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"></path><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"></path></svg>
+Provider &amp; model
+</a>
+<a href="Logs.dc.html" aria-current="{{logs.aria}}" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; font-size: 14px; font-weight: 500; background: {{logs.bg}}; color: {{logs.color}}">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"></path></svg>
+Log pemakaian
+</a>
+<a href="Settings.dc.html" aria-current="{{settings.aria}}" style="min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 12px; font-size: 14px; font-weight: 500; background: {{settings.bg}}; color: {{settings.color}}">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg>
+Pengaturan
+</a>
+
+<div style="flex: 1; min-height: 24px"></div>
+
+<div style="display: flex; align-items: center; gap: 10px; padding: 12px 8px; border-top: 1px solid #1F232B">
+<span aria-hidden="true" style="width: 34px; height: 34px; border-radius: 50%; background: #232833; color: #B5F23D; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 14px">R</span>
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 13px; font-weight: 600">Rayy</span>
+<span style="font-size: 12px; color: #9BA3AF">Superadmin</span>
+</span>
+<a href="Login.dc.html" aria-label="Keluar" style="width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #9BA3AF">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 16l4-4-4-4M14 12H4"></path></svg>
+</a>
+</div>
+</nav>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"enum","options":["dashboard","users","providers","logs","settings"],"default":"dashboard"},"$preview":{"width":248,"height":1000}}'>
+class Component extends DCLogic {
+renderVals() {
+const active = this.props.active ?? 'dashboard';
+const item = (key) => active === key
+? { bg: '#1E2A12', color: '#B5F23D', aria: 'page' }
+: { bg: 'transparent', color: '#C9CED6', aria: undefined };
+return {
+dash: item('dashboard'),
+users: item('users'),
+providers: item('providers'),
+logs: item('logs'),
+settings: item('settings'),
+};
+}
+}
+</script>
+</body>
+</html>

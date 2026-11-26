@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Lumi · Karakter, teman pagi</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+@keyframes kid-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes kid-wave{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-18deg)}75%{transform:rotate(10deg)}}
+@keyframes kid-steam{0%{transform:translateY(4px);opacity:0}40%{opacity:1}100%{transform:translateY(-10px);opacity:0}}
+.kid-bob{animation:kid-bob 3.2s ease-in-out infinite}
+.kid-wave{transform-origin:160px 172px;animation:kid-wave 1.6s ease-in-out infinite}
+.kid-steam{animation:kid-steam 2.6s ease-out infinite}
+@media (prefers-reduced-motion: reduce){.kid-bob,.kid-wave,.kid-steam{animation:none}}
+</style>
+</helmet>
+<div style="width: 640px; height: 880px; box-sizing: border-box; padding: 36px; background: #0E1014; color: #ECEEF1; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; gap: 22px">
+
+<header style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 13px; font-weight: 600; color: #B5F23D; letter-spacing: 0.06em">KARAKTER 3</span>
+<h1 style="margin: 0; font-size: 26px; font-weight: 600">Teman pagi</h1>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: #9BA3AF">Teman berhoodie hijau yang menyapa sambil memegang segelas teh hangat. Opsi karakter manusia, dibuat sederhana dan netral, beda dari gaya tinta LISA.</p>
+</header>
+
+<svg width="0" height="0" style="position: absolute" aria-hidden="true">
+<defs>
+<g id="kid-body">
+<path d="M70 232 C 70 176 92 154 120 154 C 148 154 170 176 170 232 Z" fill="#B5F23D"></path>
+<path d="M98 198 H142 V216 H98 Z" fill="#9AD12B"></path>
+<path d="M110 158 V180 M130 158 V180" fill="none"></path>
+<circle cx="110" cy="183" r="3.5" fill="#F2EEE3"></circle>
+<circle cx="130" cy="183" r="3.5" fill="#F2EEE3"></circle>
+<ellipse cx="120" cy="108" rx="54" ry="50" fill="#B5F23D"></ellipse>
+<ellipse cx="120" cy="112" rx="40" ry="38" fill="#D9A27A"></ellipse>
+<path d="M82 106 C 84 78 104 68 122 70 C 142 70 158 82 158 104 C 148 94 134 90 124 94 C 112 86 96 92 82 106 Z" fill="#2B2522"></path>
+<ellipse cx="106" cy="118" rx="4" ry="5.5" fill="#14161A"></ellipse>
+<ellipse cx="134" cy="118" rx="4" ry="5.5" fill="#14161A"></ellipse>
+<ellipse cx="96" cy="130" rx="6" ry="3.5" fill="#E8907A" stroke="none" opacity="0.7"></ellipse>
+<ellipse cx="144" cy="130" rx="6" ry="3.5" fill="#E8907A" stroke="none" opacity="0.7"></ellipse>
+<path d="M111 132 Q120 139 129 132" fill="none"></path>
+<path d="M56 188 H82 V208 C 82 214 78 216 74 216 H64 C 60 216 56 214 56 208 Z" fill="#F2EEE3"></path>
+<path d="M56 194 C 46 194 46 206 56 206" fill="none"></path>
+<path d="M60 194 H78" fill="none"></path>
+<circle cx="86" cy="200" r="9" fill="#D9A27A"></circle>
+</g>
+<g id="kid-arm">
+<ellipse cx="174" cy="150" rx="12" ry="26" fill="#B5F23D" transform="rotate(32 174 150)"></ellipse>
+<circle cx="188" cy="124" r="10" fill="#D9A27A"></circle>
+</g>
+<g id="kid-steam">
+<path d="M64 182 C 60 176 68 172 64 166 M74 182 C 70 176 78 172 74 166" fill="none"></path>
+</g>
+</defs>
+</svg>
+
+<div style="height: 330px; border-radius: 22px; background: #13161B; border: 1px solid #1F232B; display: flex; align-items: center; justify-content: center">
+<svg width="300" height="300" viewBox="0 0 240 240" role="img" aria-label="Karakter Lumi: anak berhoodie hijau limau bergaya stiker yang melambai sambil memegang gelas teh hangat">
+<g class="kid-bob" stroke-linecap="round" stroke-linejoin="round">
+<use href="#kid-body" stroke="#F2EEE3" stroke-width="14"></use>
+<g class="kid-wave">
+<use href="#kid-arm" stroke="#F2EEE3" stroke-width="14"></use>
+<use href="#kid-arm" stroke="#14161A" stroke-width="3.5"></use>
+</g>
+<use href="#kid-body" stroke="#14161A" stroke-width="3.5"></use>
+<g class="kid-steam"><use href="#kid-steam" stroke="#9BA3AF" stroke-width="3"></use></g>
+</g>
+</svg>
+</div>
+
+<section aria-label="Ikon aplikasi" style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 13px; font-weight: 600; color: #9BA3AF">Ikon aplikasi (kepala saja)</h2>
+<div style="display: flex; align-items: flex-end; gap: 22px">
+<svg width="112" height="112" viewBox="0 0 120 120" role="img" aria-label="Ikon aplikasi Lumi, kepala teman pagi, ukuran besar">
+<rect width="120" height="120" rx="28" fill="#0E1014"></rect>
+<svg x="4" y="10" width="112" height="112" viewBox="62 52 116 116"><g stroke-linecap="round" stroke-linejoin="round"><use href="#kid-body" stroke="#14161A" stroke-width="3.5"></use></g></svg>
+</svg>
+<svg width="72" height="72" viewBox="0 0 120 120" role="img" aria-label="Ikon aplikasi Lumi, kepala teman pagi, bentuk lingkaran">
+<circle cx="60" cy="60" r="60" fill="#F2EEE3"></circle>
+<svg x="4" y="12" width="112" height="112" viewBox="62 52 116 116"><g stroke-linecap="round" stroke-linejoin="round"><use href="#kid-body" stroke="#14161A" stroke-width="4"></use></g></svg>
+</svg>
+<svg width="48" height="48" viewBox="0 0 120 120" role="img" aria-label="Ikon aplikasi Lumi, kepala teman pagi, kecil">
+<rect width="120" height="120" rx="28" fill="#0E1014"></rect>
+<svg x="0" y="8" width="120" height="120" viewBox="64 56 112 112"><g stroke-linecap="round" stroke-linejoin="round"><use href="#kid-body" stroke="#14161A" stroke-width="5"></use></g></svg>
+</svg>
+<svg width="24" height="24" viewBox="0 0 120 120" role="img" aria-label="Favicon Lumi, kepala teman pagi">
+<rect width="120" height="120" rx="28" fill="#0E1014"></rect>
+<svg x="-6" y="4" width="132" height="132" viewBox="66 58 108 108"><use href="#kid-body" stroke="#14161A" stroke-width="7"></use></svg>
+</svg>
+</div>
+</section>
+
+<section aria-label="Dengan logotipe" style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 13px; font-weight: 600; color: #9BA3AF">Dengan logotipe</h2>
+<div style="display: flex; align-items: center; gap: 14px">
+<svg width="64" height="64" viewBox="62 52 116 116" aria-hidden="true"><g stroke-linecap="round" stroke-linejoin="round"><use href="#kid-body" stroke="#F2EEE3" stroke-width="12"></use><use href="#kid-body" stroke="#14161A" stroke-width="3.5"></use></g></svg>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 44px; line-height: 1; letter-spacing: -0.05em">lumi</span>
+<span style="font-size: 14px; color: #9BA3AF">Light up your day.</span>
+</div>
+</div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":640,"height":880}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

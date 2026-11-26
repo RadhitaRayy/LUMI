@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Lumi Console · Users</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0E1014}
+a{color:#B5F23D;text-decoration:none}a:hover{color:#D3FF7A}
+button,input{font:inherit}
+</style>
+</helmet>
+<div style="box-sizing: border-box; min-height: 100vh; background: #0E1014; color: #ECEEF1; font-family: Inter, system-ui, sans-serif; display: flex; flex-wrap: wrap">
+
+<div style="flex: 1 1 240px; background: #13161B; border-right: 1px solid #1F232B">
+<dc-import name="Sidebar" active="users" hint-size="100%,1000px"></dc-import>
+</div>
+
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 28px 32px 40px; display: flex; flex-direction: column; gap: 20px">
+
+<header style="display: flex; flex-direction: column; gap: 6px">
+<h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 28px">Users</h1>
+<p style="margin: 0; font-size: 14px; color: #9BA3AF">4 akun · pendaftaran terbuka</p>
+</header>
+
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+<div style="flex: 1 1 280px; display: flex; align-items: center; gap: 10px; height: 44px; box-sizing: border-box; padding: 0 14px; background: #171A20; border: 1px solid #2A2F38; border-radius: 12px; color: #9BA3AF">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+<label for="user-search" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Cari user</label>
+<input id="user-search" type="search" placeholder="Cari nama atau email" style="flex: 1; min-width: 0; height: 40px; border: 0; background: transparent; color: #ECEEF1; font-size: 14px; outline: none">
+</div>
+<div role="group" aria-label="Saring user" style="display: flex; flex-wrap: wrap; gap: 8px">
+<button type="button" aria-pressed="true" style="min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #B5F23D; background: #1E2A12; color: #B5F23D; font-size: 13px; font-weight: 600">Semua · 4</button>
+<button type="button" aria-pressed="false" style="min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #2A2F38; background: transparent; color: #C9CED6; font-size: 13px; font-weight: 500">Belum verifikasi · 1</button>
+<button type="button" aria-pressed="false" style="min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #2A2F38; background: transparent; color: #C9CED6; font-size: 13px; font-weight: 500">Diblokir · 1</button>
+<button type="button" aria-pressed="false" style="min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid #2A2F38; background: transparent; color: #C9CED6; font-size: 13px; font-weight: 500">Pakai key sendiri · 1</button>
+</div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start">
+
+<section aria-label="Daftar user" style="flex: 3 1 560px; min-width: 0; background: #171A20; border: 1px solid #23272F; border-radius: 16px; overflow: hidden">
+<div style="overflow-x: auto">
+<table style="width: 100%; min-width: 680px; border-collapse: collapse; font-size: 13px">
+<thead>
+<tr style="text-align: left; color: #9BA3AF">
+<th scope="col" style="padding: 14px 16px; font-weight: 500; border-bottom: 1px solid #2A2F38">User</th>
+<th scope="col" style="padding: 14px 16px; font-weight: 500; border-bottom: 1px solid #2A2F38">Status</th>
+<th scope="col" style="padding: 14px 16px; font-weight: 500; border-bottom: 1px solid #2A2F38">Kuota hari ini</th>
+<th scope="col" style="padding: 14px 16px; font-weight: 500; border-bottom: 1px solid #2A2F38">Key AI</th>
+<th scope="col" style="padding: 14px 16px; font-weight: 500; border-bottom: 1px solid #2A2F38">Perangkat</th>
+</tr>
+</thead>
+<tbody>
+<sc-for list="{{users}}" as="u" hint-placeholder-count="4">
+<tr style="background: {{u.rowBg}}">
+<td style="padding: 10px 16px; border-bottom: 1px solid #1F232B">
+<button type="button" onClick="{{u.pick}}" aria-pressed="{{u.pressed}}" style="width: 100%; min-height: 44px; border: 0; background: transparent; color: #ECEEF1; text-align: left; display: flex; align-items: center; gap: 12px; padding: 0; cursor: pointer">
+<span aria-hidden="true" style="width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; background: #232833; color: #C9CED6; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-weight: 600">{{u.initial}}</span>
+<span style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<span style="font-weight: 600; font-size: 14px">{{u.name}}</span>
+<span style="color: #9BA3AF">{{u.email}}</span>
+</span>
+</button>
+</td>
+<td style="padding: 10px 16px; border-bottom: 1px solid #1F232B"><span style="display: inline-flex; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: {{u.statusBg}}; color: {{u.statusColor}}">{{u.status}}</span></td>
+<td style="padding: 10px 16px; border-bottom: 1px solid #1F232B">
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 120px">
+<span>{{u.quotaText}}</span>
+<span aria-hidden="true" style="height: 6px; border-radius: 3px; background: #2A2F38; overflow: hidden; display: flex"><span style="width: {{u.quotaPct}}; background: {{u.quotaColor}}"></span></span>
+</div>
+</td>
+<td style="padding: 10px 16px; border-bottom: 1px solid #1F232B; color: {{u.keyColor}}">{{u.keySource}}</td>
+<td style="padding: 10px 16px; border-bottom: 1px solid #1F232B; font-family: 'JetBrains Mono', monospace">{{u.devices}}</td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+</section>
+
+<aside aria-labelledby="detail-title" style="flex: 1 1 320px; min-width: 0; background: #171A20; border: 1px solid #23272F; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; align-items: center; gap: 14px">
+<span aria-hidden="true" style="width: 48px; height: 48px; border-radius: 50%; background: #232833; color: #B5F23D; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 20px">{{sel.initial}}</span>
+<div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+<h2 id="detail-title" style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 19px">{{sel.name}}</h2>
+<span style="font-size: 13px; color: #9BA3AF; overflow-wrap: anywhere">{{sel.email}} · daftar {{sel.joined}}</span>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<label for="quota-input" style="font-size: 13px; font-weight: 500; color: #9BA3AF">Kuota harian (key platform)</label>
+<div style="display: flex; gap: 8px">
+<input id="quota-input" type="number" min="0" value="{{sel.quotaValue}}" placeholder="30 (ikut default)" style="flex: 1; min-width: 0; height: 44px; box-sizing: border-box; padding: 0 14px; background: #0E1014; border: 1px solid #2A2F38; border-radius: 12px; color: #ECEEF1; font-size: 14px; outline: none">
+<button type="button" style="min-height: 44px; padding: 0 16px; border-radius: 12px; border: 0; background: #B5F23D; color: #0E1014; font-weight: 600; font-size: 14px">Simpan</button>
+</div>
+<span style="font-size: 12px; color: #9BA3AF">Kosongkan untuk ikut kuota default (30). Pesan dengan key sendiri tidak dihitung.</span>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 13px; font-weight: 500; color: #9BA3AF">Key AI</span>
+<span style="font-size: 14px">{{sel.keyDetail}}</span>
+<span style="font-size: 12px; color: #9BA3AF">Isi key tidak pernah ditampilkan.</span>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 13px; font-weight: 500; color: #9BA3AF">Perangkat aktif</span>
+<sc-for list="{{sel.deviceList}}" as="d" hint-placeholder-count="2">
+<div style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; background: #0E1014; border: 1px solid #23272F">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9BA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect><path d="M11 18h2"></path></svg>
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 14px; font-weight: 500">{{d.name}}</span>
+<span style="font-size: 12px; color: #9BA3AF">{{d.seen}}</span>
+</span>
+<button type="button" aria-label="Keluarkan {{d.name}}" style="min-height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid #2A2F38; background: transparent; color: #C9CED6; font-size: 13px; font-weight: 500">Keluarkan</button>
+</div>
+</sc-for>
+<sc-if value="{{sel.noDevices}}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 13px; color: #9BA3AF">Tidak ada perangkat yang sedang masuk.</span>
+</sc-if>
+</div>
+
+<div style="height: 1px; background: #23272F"></div>
+
+<button type="button" style="min-height: 44px; border-radius: 12px; border: 1px solid {{sel.blockBorder}}; background: transparent; color: {{sel.blockColor}}; font-weight: 600; font-size: 14px">{{sel.blockLabel}}</button>
+<span style="font-size: 12px; color: #9BA3AF; margin-top: -12px">{{sel.blockHint}}</span>
+</aside>
+</div>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = { picked: 'dita' };
+}
+renderVals() {
+const base = [
+{ id: 'rayy', name: 'Rayy', email: 'rayy@example.com', joined: '25 Nov 2026', status: 'Superadmin', tone: 'lime', used: 12, limit: 30, quotaValue: '', keySource: 'Platform', keyDetail: 'Memakai key platform (OpenRouter).', devices: [{ name: 'Galaxy A56', seen: 'Aktif 2 menit lalu' }, { name: 'Laptop · Chrome', seen: 'Aktif hari ini 09.15' }] },
+{ id: 'dita', name: 'Dita', email: 'dita@example.com', joined: '26 Nov 2026', status: 'Aktif', tone: 'plain', used: 0, limit: 30, quotaValue: '', keySource: 'Key sendiri', keyDetail: 'NVIDIA NIM · meta/llama-3.1-8b-instruct · •••• a91f · diuji 10.12', devices: [{ name: 'iPhone 15', seen: 'Aktif 18 menit lalu' }] },
+{ id: 'bima', name: 'Bima', email: 'bima@example.com', joined: '26 Nov 2026', status: 'Belum verifikasi', tone: 'amber', used: 0, limit: 10, quotaValue: '10', keySource: 'Platform', keyDetail: 'Memakai key platform (OpenRouter).', devices: [{ name: 'Redmi Note 13', seen: 'Aktif 1 jam lalu' }] },
+{ id: 'sari', name: 'Sari', email: 'sari@example.com', joined: '25 Nov 2026', status: 'Diblokir', tone: 'muted', used: 30, limit: 30, quotaValue: '', keySource: 'Platform', keyDetail: 'Memakai key platform (OpenRouter).', devices: [] },
+];
+const tones = {
+lime: { bg: '#1E2A12', color: '#B5F23D' },
+plain: { bg: '#232833', color: '#ECEEF1' },
+amber: { bg: '#2E2410', color: '#F5B544' },
+muted: { bg: '#2A1E1E', color: '#FFA899' },
+};
+const users = base.map((u) => {
+const own = u.keySource === 'Key sendiri';
+const pct = own ? 0 : Math.round((u.used / u.limit) * 100);
+return {
+...u,
+initial: u.name[0],
+statusBg: tones[u.tone].bg,
+statusColor: tones[u.tone].color,
+quotaText: own ? 'Tidak dihitung' : `${u.used} / ${u.limit}`,
+quotaPct: pct + '%',
+quotaColor: pct >= 100 ? '#F5B544' : '#B5F23D',
+keyColor: own ? '#8FB4FF' : '#C9CED6',
+devices: String(u.devices.length),
+rowBg: this.state.picked === u.id ? '#1C2027' : 'transparent',
+pressed: this.state.picked === u.id ? 'true' : 'false',
+pick: () => this.setState({ picked: u.id }),
+};
+});
+const s = base.find((u) => u.id === this.state.picked) || base[0];
+const blocked = s.status === 'Diblokir';
+return {
+users,
+sel: {
+...s,
+initial: s.name[0],
+deviceList: s.devices,
+noDevices: s.devices.length === 0,
+blockLabel: blocked ? 'Buka blokir' : 'Blokir user',
+blockBorder: blocked ? '#2A2F38' : '#5C3A36',
+blockColor: blocked ? '#ECEEF1' : '#FFA899',
+blockHint: blocked ? 'User bisa masuk dan chat lagi.' : 'Semua perangkatnya langsung keluar dan tidak bisa masuk lagi.',
+},
+};
+}
+}
+</script>
+</body>
+</html>

@@ -117,6 +117,17 @@ Apache bawaan Laragon, jadi Reverb lokal memakai port 8090 (`REVERB_PORT=8090` d
 `REVERB_SERVER_PORT=8090` di `.env`). Setelah mengubah `.env`, restart `queue:work`; worker lama
 masih memakai nilai yang lama.
 
+Lumi Console ada di `http://127.0.0.1:8000/console`. Buat akun pemilik dulu (password sekali
+pakai ditampilkan di terminal, ganti setelah masuk di menu Akun saya):
+
+```powershell
+php artisan lumi:make-superadmin email@kamu.com --name="Nama Kamu"
+```
+
+Setelah mengubah file di `resources/js`, jalankan `npm run build` (atau `php artisan dev` untuk
+Vite dengan hot reload). Route TypeScript (`resources/js/routes`, `resources/js/actions`) dibuat
+otomatis oleh Wayfinder saat build dan tidak di-commit.
+
 Menyalakan PostgreSQL kalau belum jalan (atau lewat menu Laragon):
 
 ```powershell

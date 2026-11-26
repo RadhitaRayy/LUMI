@@ -73,7 +73,7 @@ return [
     |
     */
 
-    'home' => '/dashboard',
+    'home' => '/console',
 
     /*
     |--------------------------------------------------------------------------
@@ -160,10 +160,10 @@ return [
     |
     */
 
+    // Lumi Console: only the owner (superadmin) signs in on the web. No sign-up, and no
+    // email-based reset or verification here; the app has its own API for those, and the
+    // owner's account comes from `php artisan lumi:make-superadmin`.
     'features' => [
-        Features::registration(),
-        Features::resetPasswords(),
-        Features::emailVerification(),
         Features::twoFactorAuthentication([
             'confirm' => true,
             'confirmPassword' => true,

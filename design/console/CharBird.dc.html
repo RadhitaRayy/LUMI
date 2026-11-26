@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Lumi · Karakter, kutilang pagi</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+@keyframes bird-hop{0%,70%,100%{transform:translateY(0)}80%{transform:translateY(-10px)}90%{transform:translateY(0)}}
+@keyframes bird-note{0%{transform:translate(0,6px);opacity:0}30%{opacity:1}100%{transform:translate(8px,-14px);opacity:0}}
+.bird-hop{animation:bird-hop 2.4s ease-in-out infinite}
+.bird-note{animation:bird-note 2.4s ease-out infinite}
+@media (prefers-reduced-motion: reduce){.bird-hop,.bird-note{animation:none}}
+</style>
+</helmet>
+<div style="width: 640px; height: 880px; box-sizing: border-box; padding: 36px; background: #0E1014; color: #ECEEF1; font-family: Inter, system-ui, sans-serif; display: flex; flex-direction: column; gap: 22px">
+
+<header style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 13px; font-weight: 600; color: #B5F23D; letter-spacing: 0.06em">KARAKTER 2</span>
+<h1 style="margin: 0; font-size: 26px; font-weight: 600">Kutilang pagi</h1>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: #9BA3AF">Burung kutilang yang bernyanyi tiap pagi: jambul hitam, pipi putih, ekor kuning. Membangunkan dan menyapa harimu, pas dengan "Light up your day."</p>
+</header>
+
+<svg width="0" height="0" style="position: absolute" aria-hidden="true">
+<defs>
+<g id="bird-body">
+<path d="M66 150 L28 166 L36 184 L74 170 Z" fill="#9C8B70"></path>
+<ellipse cx="86" cy="180" rx="15" ry="10" fill="#F5C842"></ellipse>
+<path d="M110 194 V214 M102 216 H118 M134 194 V214 M126 216 H142" fill="none"></path>
+<ellipse cx="120" cy="144" rx="62" ry="54" fill="#C9B79C"></ellipse>
+<ellipse cx="130" cy="162" rx="38" ry="32" fill="#F2EEE3"></ellipse>
+<path d="M78 138 C 88 120 116 118 128 134 C 116 160 92 166 78 150 Z" fill="#9C8B70"></path>
+<path d="M74 118 C 74 82 108 66 138 76 L154 58 L152 86 C 160 96 162 106 160 112 C 140 104 100 110 74 118 Z" fill="#1E2026"></path>
+<ellipse cx="132" cy="118" rx="17" ry="12" fill="#FFFFFF"></ellipse>
+<circle cx="120" cy="98" r="7" fill="#F2EEE3" stroke="none"></circle>
+<circle cx="121" cy="98" r="4" fill="#14161A" stroke="none"></circle>
+<path d="M158 104 L184 108 L160 113 Z" fill="#F5B544"></path>
+<path d="M160 116 L180 122 L158 122 Z" fill="#F5B544"></path>
+</g>
+<g id="bird-note">
+<ellipse cx="198" cy="82" rx="8" ry="6" fill="#B5F23D" transform="rotate(-20 198 82)"></ellipse>
+<path d="M205 79 V52 Q214 56 216 64" fill="none"></path>
+</g>
+</defs>
+</svg>
+
+<div style="height: 330px; border-radius: 22px; background: #13161B; border: 1px solid #1F232B; display: flex; align-items: center; justify-content: center">
+<svg width="300" height="300" viewBox="0 0 240 240" role="img" aria-label="Karakter Lumi: burung kutilang bergaya stiker dengan jambul hitam, pipi putih, ekor kuning, sedang bernyanyi dengan not musik hijau limau">
+<g stroke-linecap="round" stroke-linejoin="round">
+<g class="bird-note">
+<use href="#bird-note" stroke="#F2EEE3" stroke-width="12"></use>
+<use href="#bird-note" stroke="#14161A" stroke-width="3.5"></use>
+</g>
+<g class="bird-hop">
+<use href="#bird-body" stroke="#F2EEE3" stroke-width="14"></use>
+<use href="#bird-body" stroke="#14161A" stroke-width="3.5"></use>
+</g>
+</g>
+</svg>
+</div>
+
+<section aria-label="Ikon aplikasi" style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 13px; font-weight: 600; color: #9BA3AF">Ikon aplikasi</h2>
+<div style="display: flex; align-items: flex-end; gap: 22px">
+<svg width="112" height="112" viewBox="0 0 120 120" role="img" aria-label="Ikon aplikasi Lumi, kutilang, ukuran besar">
+<rect width="120" height="120" rx="28" fill="#B5F23D"></rect>
+<svg x="4" y="6" width="112" height="112" viewBox="40 50 160 160"><g stroke-linecap="round" stroke-linejoin="round"><use href="#bird-body" stroke="#14161A" stroke-width="4"></use></g></svg>
+</svg>
+<svg width="72" height="72" viewBox="0 0 120 120" role="img" aria-label="Ikon aplikasi Lumi, kepala kutilang, bentuk lingkaran">
+<circle cx="60" cy="60" r="60" fill="#0E1014"></circle>
+<svg x="6" y="10" width="108" height="108" viewBox="66 56 124 124"><g stroke-linecap="round" stroke-linejoin="round"><use href="#bird-body" stroke="#F2EEE3" stroke-width="4"></use></g></svg>
+</svg>
+<svg width="48" height="48" viewBox="0 0 120 120" role="img" aria-label="Ikon aplikasi Lumi, kepala kutilang, kecil">
+<rect width="120" height="120" rx="28" fill="#B5F23D"></rect>
+<svg x="0" y="4" width="120" height="120" viewBox="66 58 120 120"><g stroke-linecap="round" stroke-linejoin="round"><use href="#bird-body" stroke="#14161A" stroke-width="5"></use></g></svg>
+</svg>
+<svg width="24" height="24" viewBox="0 0 120 120" role="img" aria-label="Favicon Lumi, kepala kutilang">
+<rect width="120" height="120" rx="28" fill="#B5F23D"></rect>
+<svg x="-6" y="0" width="132" height="132" viewBox="70 60 112 112"><use href="#bird-body" stroke="#14161A" stroke-width="7"></use></svg>
+</svg>
+</div>
+</section>
+
+<section aria-label="Dengan logotipe" style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 13px; font-weight: 600; color: #9BA3AF">Dengan logotipe</h2>
+<div style="display: flex; align-items: center; gap: 14px">
+<svg width="64" height="64" viewBox="40 50 160 160" aria-hidden="true"><g stroke-linecap="round" stroke-linejoin="round"><use href="#bird-body" stroke="#F2EEE3" stroke-width="12"></use><use href="#bird-body" stroke="#14161A" stroke-width="3.5"></use></g></svg>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 44px; line-height: 1; letter-spacing: -0.05em">lumi</span>
+<span style="font-size: 14px; color: #9BA3AF">Light up your day.</span>
+</div>
+</div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":640,"height":880}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

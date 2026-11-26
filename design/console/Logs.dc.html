@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Lumi Console · Log pemakaian</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0E1014}
+a{color:#B5F23D;text-decoration:none}a:hover{color:#D3FF7A}
+button,input,select{font:inherit}
+</style>
+</helmet>
+<div style="box-sizing: border-box; min-height: 100vh; background: #0E1014; color: #ECEEF1; font-family: Inter, system-ui, sans-serif; display: flex; flex-wrap: wrap">
+
+<div style="flex: 1 1 240px; background: #13161B; border-right: 1px solid #1F232B">
+<dc-import name="Sidebar" active="logs" hint-size="100%,1000px"></dc-import>
+</div>
+
+<main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 28px 32px 40px; display: flex; flex-direction: column; gap: 20px">
+
+<header style="display: flex; flex-direction: column; gap: 6px">
+<h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 28px">Log pemakaian</h1>
+<p style="margin: 0; font-size: 14px; color: #9BA3AF">Satu baris per jawaban AI. Isi percakapan tidak ditampilkan di sini.</p>
+</header>
+
+<form aria-label="Saring log" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; align-items: end">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="f-user" style="font-size: 12px; font-weight: 500; color: #9BA3AF">User</label>
+<select id="f-user" style="height: 42px; box-sizing: border-box; padding: 0 12px; background: #171A20; border: 1px solid #2A2F38; border-radius: 10px; color: #ECEEF1; font-size: 14px"><option>Semua user</option><option>Rayy</option><option>Dita</option><option>Bima</option></select>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="f-model" style="font-size: 12px; font-weight: 500; color: #9BA3AF">Model</label>
+<select id="f-model" style="height: 42px; box-sizing: border-box; padding: 0 12px; background: #171A20; border: 1px solid #2A2F38; border-radius: 10px; color: #ECEEF1; font-size: 14px"><option>Semua model</option><option>Nemotron 3 Ultra</option><option>Gemma 4 31B</option></select>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="f-status" style="font-size: 12px; font-weight: 500; color: #9BA3AF">Status</label>
+<select id="f-status" style="height: 42px; box-sizing: border-box; padding: 0 12px; background: #171A20; border: 1px solid #2A2F38; border-radius: 10px; color: #ECEEF1; font-size: 14px"><option>Semua status</option><option>Selesai</option><option>Error</option><option>Dibatalkan</option></select>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="f-date" style="font-size: 12px; font-weight: 500; color: #9BA3AF">Tanggal</label>
+<input id="f-date" type="date" value="2026-11-26" style="height: 42px; box-sizing: border-box; padding: 0 12px; background: #171A20; border: 1px solid #2A2F38; border-radius: 10px; color: #ECEEF1; font-size: 14px; color-scheme: dark">
+</div>
+</form>
+
+<section aria-label="Daftar log" style="background: #171A20; border: 1px solid #23272F; border-radius: 16px; overflow: hidden">
+<div style="overflow-x: auto">
+<table style="width: 100%; min-width: 880px; border-collapse: collapse; font-size: 13px">
+<thead>
+<tr style="text-align: left; color: #9BA3AF">
+<th scope="col" style="padding: 14px 16px; font-weight: 500; border-bottom: 1px solid #2A2F38">Waktu</th>
+<th scope="col" style="padding: 14px 16px; font-weight: 500; border-bottom: 1px solid #2A2F38">User</th>
+<th scope="col" style="padding: 14px 16px; font-weight: 500; border-bottom: 1px solid #2A2F38">Model</th>
+<th scope="col" style="padding: 14px 16px; font-weight: 500; border-bottom: 1px solid #2A2F38">Key</th>
+<th scope="col" style="padding: 14px 16px; font-weight: 500; border-bottom: 1px solid #2A2F38; text-align: right">Token masuk / keluar</th>
+<th scope="col" style="padding: 14px 16px; font-weight: 500; border-bottom: 1px solid #2A2F38; text-align: right">Latensi</th>
+<th scope="col" style="padding: 14px 16px; font-weight: 500; border-bottom: 1px solid #2A2F38">Status</th>
+</tr>
+</thead>
+<tbody>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="9">
+<tr>
+<td style="padding: 12px 16px; border-bottom: 1px solid #1F232B; font-family: 'JetBrains Mono', monospace; color: #9BA3AF">{{r.time}}</td>
+<td style="padding: 12px 16px; border-bottom: 1px solid #1F232B">{{r.user}}</td>
+<td style="padding: 12px 16px; border-bottom: 1px solid #1F232B; font-family: 'JetBrains Mono', monospace">{{r.model}}</td>
+<td style="padding: 12px 16px; border-bottom: 1px solid #1F232B; color: {{r.keyColor}}">{{r.key}}</td>
+<td style="padding: 12px 16px; border-bottom: 1px solid #1F232B; font-family: 'JetBrains Mono', monospace; text-align: right">{{r.tokens}}</td>
+<td style="padding: 12px 16px; border-bottom: 1px solid #1F232B; font-family: 'JetBrains Mono', monospace; text-align: right">{{r.latency}}</td>
+<td style="padding: 12px 16px; border-bottom: 1px solid #1F232B">
+<span style="display: inline-flex; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: {{r.statusBg}}; color: {{r.statusColor}}; font-family: {{r.statusFont}}">{{r.status}}</span>
+</td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; font-size: 13px; color: #9BA3AF">
+<span>Menampilkan 1–9 dari 41 baris hari ini</span>
+<div style="display: flex; gap: 8px">
+<button type="button" disabled style="min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #23272F; background: transparent; color: #6E7681; font-size: 13px">Sebelumnya</button>
+<button type="button" style="min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #2A2F38; background: transparent; color: #ECEEF1; font-size: 13px; font-weight: 600">Berikutnya</button>
+</div>
+</div>
+</section>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+renderVals() {
+const data = [
+['11.48', 'Rayy', 'nvidia/nemotron-3-ultra…', 'Platform', '155 / 298', '6,7 dtk', 'ok'],
+['11.46', 'Rayy', 'nvidia/nemotron-3-ultra…', 'Platform', '84 / 76', '4,0 dtk', 'ok'],
+['11.32', 'Dita', 'meta/llama-3.1-8b-instruct', 'Sendiri', '402 / 351', '2,9 dtk', 'ok'],
+['11.20', 'Bima', 'nvidia/nemotron-3-ultra…', 'Platform', '61 / 0', '0,4 dtk', 'cancelled'],
+['11.01', 'Rayy', 'google/gemma-4-31b-it:free', 'Platform', '0 / 0', '0,6 dtk', 'provider_rate_limited'],
+['10.52', 'Dita', 'meta/llama-3.1-8b-instruct', 'Sendiri', '288 / 190', '2,2 dtk', 'ok'],
+['10.37', 'Dita', 'google/gemma-4-31b-it:free', 'Platform', '0 / 0', '0,5 dtk', 'provider_rate_limited'],
+['10.15', 'Rayy', 'nvidia/nemotron-3-ultra…', 'Platform', '120 / 244', '5,1 dtk', 'ok'],
+['09.58', 'Bima', 'nvidia/nemotron-3-ultra…', 'Platform', '73 / 160', '3,8 dtk', 'ok'],
+];
+const rows = data.map(([time, user, model, key, tokens, latency, st]) => {
+const ok = st === 'ok';
+const cancelled = st === 'cancelled';
+return {
+time, user, model, key, tokens, latency,
+keyColor: key === 'Sendiri' ? '#8FB4FF' : '#C9CED6',
+status: ok ? 'Selesai' : cancelled ? 'Dibatalkan' : st,
+statusBg: ok ? '#1E2A12' : cancelled ? '#232833' : '#2E2410',
+statusColor: ok ? '#B5F23D' : cancelled ? '#C9CED6' : '#F5B544',
+statusFont: ok || cancelled ? 'Inter, sans-serif' : '\'JetBrains Mono\', monospace',
+};
+});
+return { rows };
+}
+}
+</script>
+</body>
+</html>
