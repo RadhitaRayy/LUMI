@@ -44,18 +44,33 @@ Strings live in `app/lib/l10n/app_en.arb` (template) and `app_id.arb`; `flutter 
    ```
 3. Build and install. `API_BASE_URL` defaults to `http://127.0.0.1:8000`; `REVERB_KEY` is
    `REVERB_APP_KEY` from `core\.env` (the public Pusher key, not the secret). Without it the app
-   works but realtime sync is off.
+   works but realtime sync is off. Use a **release** build to judge smoothness: debug builds run
+   unoptimised (JIT) and feel laggy, especially animations.
    ```powershell
    cd C:\Work\lumi\app
-   flutter build apk --debug --dart-define=REVERB_KEY=<REVERB_APP_KEY>
-   adb install -r --user 0 build\app\outputs\flutter-apk\app-debug.apk
+   flutter build apk --release --dart-define=REVERB_KEY=<REVERB_APP_KEY>
+   adb install -r --user 0 build\app\outputs\flutter-apk\app-release.apk
    ```
 
-Unplugging the cable breaks the `adb reverse` link. To use the app over Wi-Fi instead, build with
-`--dart-define=API_BASE_URL=http://<laptop LAN IP>:8000` and run `php artisan serve --host=0.0.0.0`.
+Unplugging the cable breaks the `adb reverse` link. To use the app over Wi-Fi instead, make a
+**debug** build with `--dart-define=API_BASE_URL=http://<laptop LAN IP>:8000` and run
+`php artisan serve --host=0.0.0.0`.
 
-Debug builds allow plain HTTP (`usesCleartextTraffic` in the debug manifest only); release builds
-expect HTTPS.
+Plain HTTP: release builds allow it only to `127.0.0.1`/`localhost`
+(`res/xml/network_security_config.xml`), so they work over `adb reverse` and use HTTPS everywhere
+else; debug builds allow it to any host (`src/debug/res/xml/network_security_config.xml`).
+
+### Email in development (Mailpit)
+
+Core sends verification and reset codes over SMTP to Mailpit (`MAIL_MAILER=smtp`, port 1025 in
+`core\.env`). Mailpit v1.34 lives in `C:\src\mailpit` (Laragon's `bin\mailpit` folder is empty).
+Start it, then read the emails at http://127.0.0.1:8025:
+
+```powershell
+& 'C:\src\mailpit\mailpit.exe' --listen 127.0.0.1:8025 --smtp 127.0.0.1:1025
+```
+
+If Mailpit isn't running, sign-up and "resend code" fail with a mail error.
 
 ## Problems already hit
 

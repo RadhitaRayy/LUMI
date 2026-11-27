@@ -71,6 +71,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final l = context.l10n;
     final peeking = _passwordFocus.hasFocus && !_shown;
+    // While typing, the header shrinks so both fields and the button fit above the keyboard.
+    final typing = keyboardOpen(context);
+    final quick = Motion.of(context, const Duration(milliseconds: 240));
 
     return AuthScaffold(
       footer: FadeSlideIn.step(
@@ -87,7 +90,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ),
       ),
       children: [
-        const SizedBox(height: 40),
+        AnimatedContainer(duration: quick, curve: Motion.ease, height: typing ? 4 : 40),
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -97,13 +100,40 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const FadeSlideIn(child: LumiWordmark(size: 34)),
-                    const SizedBox(height: 18),
-                    FadeSlideIn.step(1, child: Text(l.loginGreeting, style: AppText.heading(30))),
-                    const SizedBox(height: 8),
+                    AnimatedSize(
+                      duration: quick,
+                      curve: Motion.ease,
+                      child: typing
+                          ? const SizedBox(width: double.infinity)
+                          : const Padding(
+                              padding: EdgeInsets.only(bottom: 18),
+                              child: FadeSlideIn(child: LumiWordmark(size: 34)),
+                            ),
+                    ),
                     FadeSlideIn.step(
-                      2,
-                      child: Text(l.loginSubtitle, style: const TextStyle(fontSize: 15, height: 1.5, color: AppColors.muted)),
+                      1,
+                      child: AnimatedDefaultTextStyle(
+                        duration: quick,
+                        curve: Motion.ease,
+                        style: AppText.heading(typing ? 24 : 30),
+                        child: Text(l.loginGreeting),
+                      ),
+                    ),
+                    AnimatedSize(
+                      duration: quick,
+                      curve: Motion.ease,
+                      child: typing
+                          ? const SizedBox(width: double.infinity)
+                          : Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: FadeSlideIn.step(
+                                2,
+                                child: Text(
+                                  l.loginSubtitle,
+                                  style: const TextStyle(fontSize: 15, height: 1.5, color: AppColors.muted),
+                                ),
+                              ),
+                            ),
                     ),
                   ],
                 ),
@@ -115,7 +145,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               duration: const Duration(milliseconds: 650),
               child: Transform.translate(
                 offset: const Offset(0, 18),
-                child: LumiCat(size: 124, eyesClosed: peeking, semanticLabel: l.catWaving),
+                // The cat stays (and still covers its eyes) but gets smaller while typing.
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween(end: typing ? 84 : 124),
+                  duration: quick,
+                  curve: Motion.ease,
+                  builder: (context, size, _) =>
+                      LumiCat(size: size, eyesClosed: peeking, semanticLabel: l.catWaving),
+                ),
               ),
             ),
           ],
@@ -139,6 +176,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       label: l.emailLabel,
                       child: TextFormField(
                         controller: _email,
+                        scrollPadding: fieldScrollPadding,
                         keyboardType: TextInputType.emailAddress,
                         autofillHints: const [AutofillHints.username, AutofillHints.email],
                         textInputAction: TextInputAction.next,
@@ -166,6 +204,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       child: TextFormField(
                         controller: _password,
                         focusNode: _passwordFocus,
+                        scrollPadding: fieldScrollPadding,
                         obscureText: !_shown,
                         autofillHints: const [AutofillHints.password],
                         textInputAction: TextInputAction.done,

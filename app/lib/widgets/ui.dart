@@ -167,13 +167,14 @@ class _FadeSlideInState extends State<FadeSlideIn> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _t,
-      builder: (context, child) => Opacity(
-        opacity: _t.value,
-        child: Transform.translate(offset: widget.offset * (1 - _t.value), child: child),
+    // FadeTransition fades on the compositor; no rebuild of the child per frame.
+    return FadeTransition(
+      opacity: _t,
+      child: AnimatedBuilder(
+        animation: _t,
+        builder: (context, child) => Transform.translate(offset: widget.offset * (1 - _t.value), child: child),
+        child: widget.child,
       ),
-      child: widget.child,
     );
   }
 }

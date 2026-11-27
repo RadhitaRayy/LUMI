@@ -154,9 +154,8 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> with SingleTickerPr
         ],
       ),
       children: [
-        const SizedBox(height: 48),
-        const FadeSlideIn(child: Align(alignment: Alignment.centerLeft, child: SwayingIcon(icon: Icons.mail_outline_rounded))),
         const SizedBox(height: 24),
+        const FadeSlideIn(child: SwayingIcon(icon: Icons.mail_outline_rounded)),
         AuthTitle(title: l.verifyTitle, subtitle: l.verifyBody(email), step: 1),
         const SizedBox(height: 28),
         FadeSlideIn.step(

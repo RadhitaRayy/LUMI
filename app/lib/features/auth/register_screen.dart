@@ -105,6 +105,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   child: LabeledField(
                     label: l.nameLabel,
                     child: TextFormField(
+                      scrollPadding: fieldScrollPadding,
                       controller: _name,
                       textCapitalization: TextCapitalization.words,
                       autofillHints: const [AutofillHints.nickname],
@@ -120,6 +121,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   child: LabeledField(
                     label: l.emailLabel,
                     child: TextFormField(
+                      scrollPadding: fieldScrollPadding,
                       controller: _email,
                       keyboardType: TextInputType.emailAddress,
                       autofillHints: const [AutofillHints.email],
@@ -138,6 +140,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         TextFormField(
+                          scrollPadding: fieldScrollPadding,
                           controller: _password,
                           obscureText: true,
                           autofillHints: const [AutofillHints.newPassword],

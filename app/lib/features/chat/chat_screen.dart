@@ -26,12 +26,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   final _scaffold = GlobalKey<ScaffoldState>();
 
   @override
-  void initState() {
-    super.initState();
-    _input.addListener(() => setState(() {}));
-  }
-
-  @override
   void dispose() {
     _input.dispose();
     super.dispose();
@@ -59,7 +53,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    final chat = ref.watch(chatProvider);
+    // Only what the frame needs; the message list watches the messages itself, so a streaming
+    // answer repaints the list, not the whole screen.
+    final title = ref.watch(chatProvider.select((s) => s.title));
+    final loading = ref.watch(chatProvider.select((s) => s.loading));
+    final streaming = ref.watch(chatProvider.select((s) => s.streaming));
+    final hasMessages = ref.watch(chatProvider.select((s) => s.messages.isNotEmpty));
+    final conversationId = ref.watch(chatProvider.select((s) => s.conversationId));
     final user = ref.watch(sessionProvider.select((s) => s.user));
 
     ref.listen(chatProvider.select((s) => s.gone), (_, gone) {
@@ -69,8 +69,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       }
     });
 
-    final empty = chat.messages.isEmpty && !chat.loading;
-    final canSend = _input.text.trim().isNotEmpty;
+    final empty = !hasMessages && !loading;
 
     return Scaffold(
       key: _scaffold,
@@ -80,7 +79,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         child: Column(
           children: [
             _Header(
-              title: chat.title ?? l.newChatTitle,
+              title: title ?? l.newChatTitle,
               subtitle: user == null
                   ? ''
                   : user.usesOwnKey
@@ -93,11 +92,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             Expanded(
               child: AnimatedSwitcher(
                 duration: Motion.of(context, const Duration(milliseconds: 250)),
-                child: chat.loading
+                child: loading
                     ? const Center(child: CircularProgressIndicator(strokeWidth: 2.5))
                     : empty
                     ? _EmptyChat(key: const ValueKey('empty'), name: user?.name ?? '')
-                    : _Messages(key: ValueKey(chat.conversationId ?? 'new'), state: chat),
+                    : _Messages(key: ValueKey(conversationId ?? 'new')),
               ),
             ),
             if (empty)
@@ -111,8 +110,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               ),
             _Composer(
               controller: _input,
-              busy: chat.streaming,
-              canSend: canSend,
+              busy: streaming,
               onSend: () => _send(),
               onStop: () => ref.read(chatProvider.notifier).stop(),
             ),
@@ -216,14 +214,12 @@ class _Header extends StatelessWidget {
   }
 }
 
-class _Messages extends StatelessWidget {
-  const _Messages({super.key, required this.state});
-
-  final ChatState state;
+class _Messages extends ConsumerWidget {
+  const _Messages({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final messages = state.messages;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final messages = ref.watch(chatProvider.select((s) => s.messages));
     // Reversed so the newest message stays at the bottom while answers stream in.
     return ListView.separated(
       reverse: true,
@@ -325,14 +321,12 @@ class _Composer extends StatelessWidget {
   const _Composer({
     required this.controller,
     required this.busy,
-    required this.canSend,
     required this.onSend,
     required this.onStop,
   });
 
   final TextEditingController controller;
   final bool busy;
-  final bool canSend;
   final VoidCallback onSend;
   final VoidCallback onStop;
 
@@ -393,12 +387,19 @@ class _Composer extends StatelessWidget {
                         decoration: BoxDecoration(color: AppColors.bg, borderRadius: BorderRadius.circular(3)),
                       ),
                     )
-                  : _RoundButton(
+                  // Only the send button listens to typing, not the whole screen.
+                  : ValueListenableBuilder<TextEditingValue>(
                       key: const ValueKey('send'),
-                      tooltip: l.send,
-                      color: canSend ? AppColors.accent : AppColors.lamp,
-                      onTap: canSend ? onSend : null,
-                      child: const Icon(Icons.arrow_upward_rounded, color: AppColors.bg, size: 22),
+                      valueListenable: controller,
+                      builder: (context, value, _) {
+                        final canSend = value.text.trim().isNotEmpty;
+                        return _RoundButton(
+                          tooltip: l.send,
+                          color: canSend ? AppColors.accent : AppColors.lamp,
+                          onTap: canSend ? onSend : null,
+                          child: const Icon(Icons.arrow_upward_rounded, color: AppColors.bg, size: 22),
+                        );
+                      },
                     ),
             ),
           ],

@@ -27,7 +27,7 @@ notifications, VPS deploy.
 - [x] Local PostgreSQL (Laragon 18.7): user `lumi`, databases `lumi` and `lumi_test`.
 - [x] `core/` scaffold: Laravel 13.44 + the React (Inertia) starter kit, connected to PostgreSQL,
   first migrations run, `npm run build` passes, 42 starter tests pass.
-- [ ] Dev email: `MAIL_MAILER=log` for now (codes show up in `storage/logs`); Mailpit later.
+- [x] Dev email: Mailpit (SMTP on 127.0.0.1:1025, inbox at http://127.0.0.1:8025).
 - [x] Pest 5 installed; tests use PostgreSQL `lumi_test` (not SQLite).
 
 ## 1. Lumi Core (Laravel)
@@ -278,7 +278,9 @@ and data policies (free tiers may use data for training — don't send sensitive
 | 2026-11-26 | **Languages in Core**: `users.locale`, `Accept-Language` middleware, English source strings with `lang/id.json`, Indonesian validation messages, code emails in the user's language. 120 tests pass, PHPStan clean |
 | 2026-11-26 | **Lumi App on Core**: every Phase 1 screen in Flutter with Riverpod, SSE chat, Reverb client, English + Indonesian, animated splash and motion; cat launcher icon and a dark launch screen. `flutter analyze` clean; installed on the Galaxy A56 |
 
-Not yet: a real NVIDIA NIM test; app widget tests; Mailpit/SMTP; the two-device end-to-end test.
+| 2026-11-27 | **Smoother app + dev email**: release build that still reaches the laptop over `adb reverse` (cleartext to localhost only); sign-in screens shrink their header and hide the footer while the keyboard is open, keep the button above the keyboard, and close the keyboard on a tap outside; lighter layout (no `IntrinsicHeight`), compositor fades, chat list and send button rebuild on their own. Mailpit for verification and reset emails. NVIDIA NIM provider added in the Console and its connection test passes (`nvidia/nemotron-3.5-super-vl-120b-a12b`) |
+
+Not yet: a chat answered through NVIDIA NIM (make it the default model in the Console, then chat); app widget tests; the two-device end-to-end test.
 
 ## 7. Work order
 

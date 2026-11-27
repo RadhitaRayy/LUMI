@@ -152,13 +152,13 @@ class _ForgotScreenState extends ConsumerState<ForgotScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 12),
-              const Align(alignment: Alignment.centerLeft, child: SwayingIcon(icon: Icons.key_rounded)),
-              const SizedBox(height: 24),
+              const SwayingIcon(icon: Icons.key_rounded),
               AuthTitle(title: t.forgotTitle, subtitle: t.forgotBody),
               const SizedBox(height: 24),
               LabeledField(
                 label: t.emailLabel,
                 child: TextFormField(
+                  scrollPadding: fieldScrollPadding,
                   controller: _email,
                   keyboardType: TextInputType.emailAddress,
                   autofillHints: const [AutofillHints.email],
@@ -185,6 +185,7 @@ class _ForgotScreenState extends ConsumerState<ForgotScreen> {
               LabeledField(
                 label: t.codeLabel,
                 child: TextFormField(
+                  scrollPadding: fieldScrollPadding,
                   controller: _code,
                   keyboardType: TextInputType.number,
                   maxLength: 6,
@@ -199,6 +200,7 @@ class _ForgotScreenState extends ConsumerState<ForgotScreen> {
               LabeledField(
                 label: t.newPasswordLabel,
                 child: TextFormField(
+                  scrollPadding: fieldScrollPadding,
                   controller: _password,
                   obscureText: true,
                   autofillHints: const [AutofillHints.newPassword],
@@ -210,6 +212,7 @@ class _ForgotScreenState extends ConsumerState<ForgotScreen> {
               LabeledField(
                 label: t.repeatPasswordLabel,
                 child: TextFormField(
+                  scrollPadding: fieldScrollPadding,
                   controller: _repeat,
                   obscureText: true,
                   onFieldSubmitted: (_) => _save(),
