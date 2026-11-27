@@ -23,6 +23,7 @@ class ModelResolver
                 baseUrl: $userKey->base_url,
                 apiKey: $userKey->api_key,
                 modelId: $userKey->model_id,
+                supportsTools: $userKey->supports_tools,
             );
         }
 
@@ -39,6 +40,7 @@ class ModelResolver
             baseUrl: $model->provider->base_url,
             apiKey: (string) $model->provider->api_key,
             modelId: $model->model_id,
+            supportsTools: $model->supports_tools,
         );
     }
 }

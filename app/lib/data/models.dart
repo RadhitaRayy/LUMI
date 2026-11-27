@@ -84,6 +84,44 @@ class Conversation {
 
 enum MessageStatus { complete, streaming, error, cancelled }
 
+class ToolCallItem {
+  const ToolCallItem({
+    required this.id,
+    required this.toolName,
+    required this.label,
+    required this.status,
+    this.summary = '',
+  });
+
+  factory ToolCallItem.fromJson(Map<String, dynamic> json) {
+    final tool = json['tool'] as String? ?? '';
+    return ToolCallItem(
+      id: '${json['id'] ?? json['tool_call_id'] ?? tool}',
+      toolName: tool,
+      label: (json['label'] as String?)?.isNotEmpty == true ? json['label'] as String : tool,
+      status: json['status'] as String? ?? 'ok',
+      summary: json['summary'] as String? ?? '',
+    );
+  }
+
+  final String id;
+  final String toolName;
+  final String label;
+  final String status; // running | ok | error
+  final String summary;
+
+  bool get isRunning => status == 'running';
+  bool get isError => status == 'error';
+
+  ToolCallItem copyWith({String? label, String? status, String? summary}) => ToolCallItem(
+    id: id,
+    toolName: toolName,
+    label: label ?? this.label,
+    status: status ?? this.status,
+    summary: summary ?? this.summary,
+  );
+}
+
 class ChatMessage {
   const ChatMessage({
     required this.id,
@@ -91,6 +129,7 @@ class ChatMessage {
     required this.content,
     this.status = MessageStatus.complete,
     this.errorText,
+    this.toolCalls = const [],
   });
 
   factory ChatMessage.fromJson(Map<String, dynamic> json) => ChatMessage(
@@ -103,6 +142,10 @@ class ChatMessage {
       'streaming' => MessageStatus.streaming,
       _ => MessageStatus.complete,
     },
+    toolCalls: [
+      for (final t in (json['tool_calls'] as List? ?? const []))
+        ToolCallItem.fromJson(t as Map<String, dynamic>),
+    ],
   );
 
   final String id;
@@ -113,16 +156,25 @@ class ChatMessage {
   /// Why an answer failed, already in the user's language.
   final String? errorText;
 
+  /// Server-side tool calls executed while producing this assistant message.
+  final List<ToolCallItem> toolCalls;
+
   bool get isUser => role == Role.user;
 
-  ChatMessage copyWith({String? id, String? content, MessageStatus? status, String? errorText}) =>
-      ChatMessage(
-        id: id ?? this.id,
-        role: role,
-        content: content ?? this.content,
-        status: status ?? this.status,
-        errorText: errorText ?? this.errorText,
-      );
+  ChatMessage copyWith({
+    String? id,
+    String? content,
+    MessageStatus? status,
+    String? errorText,
+    List<ToolCallItem>? toolCalls,
+  }) => ChatMessage(
+    id: id ?? this.id,
+    role: role,
+    content: content ?? this.content,
+    status: status ?? this.status,
+    errorText: errorText ?? this.errorText,
+    toolCalls: toolCalls ?? this.toolCalls,
+  );
 }
 
 enum Role { user, assistant }
@@ -174,6 +226,7 @@ class AiKey {
     required this.modelId,
     required this.keyLast4,
     required this.isActive,
+    this.supportsTools = true,
     this.baseUrl,
     this.lastValidatedAt,
     this.lastError,
@@ -185,6 +238,7 @@ class AiKey {
     modelId: json['model_id'] as String? ?? '',
     keyLast4: json['key_last4'] as String? ?? '',
     isActive: json['is_active'] as bool? ?? false,
+    supportsTools: json['supports_tools'] as bool? ?? true,
     lastValidatedAt: _date(json['last_validated_at']),
     lastError: json['last_error'] as String?,
   );
@@ -194,8 +248,32 @@ class AiKey {
   final String modelId;
   final String keyLast4;
   final bool isActive;
+  final bool supportsTools;
   final DateTime? lastValidatedAt;
   final String? lastError;
+}
+
+class AgentToolInfo {
+  const AgentToolInfo({
+    required this.name,
+    required this.label,
+    required this.description,
+    required this.mode,
+  });
+
+  factory AgentToolInfo.fromJson(Map<String, dynamic> json) => AgentToolInfo(
+    name: json['name'] as String? ?? '',
+    label: json['label'] as String? ?? '',
+    description: json['description'] as String? ?? '',
+    mode: json['mode'] as String? ?? 'auto',
+  );
+
+  final String name;
+  final String label;
+  final String description;
+  final String mode; // auto | ask
+
+  bool get asksApproval => mode == 'ask';
 }
 
 class PersonaPreset {

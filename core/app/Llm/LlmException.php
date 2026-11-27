@@ -20,6 +20,8 @@ class LlmException extends RuntimeException
 
     public const UNREACHABLE = 'provider_unreachable';
 
+    public const TOOLS_UNSUPPORTED = 'tools_unsupported';
+
     public const ERROR = 'provider_error';
 
     public function __construct(

@@ -18,6 +18,7 @@ final readonly class ResolvedModel
         public ?string $baseUrl,
         public string $apiKey,
         public string $modelId,
+        public bool $supportsTools = true,
     ) {}
 
     public function isUserKey(): bool

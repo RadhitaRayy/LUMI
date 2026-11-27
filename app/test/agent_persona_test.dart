@@ -41,6 +41,7 @@ void main() {
     api.on('GET', 'conversations', (_) => {'data': const <dynamic>[], 'meta': {'current_page': 1, 'last_page': 1}});
     api.on('GET', 'memories', (_) => {'data': const <dynamic>[], 'count': 0, 'limit': 50});
     api.on('GET', 'notes', (_) => {'data': const <dynamic>[], 'meta': {'current_page': 1, 'last_page': 1, 'total': 0}});
+    api.on('GET', 'tools', (_) => {'data': const <dynamic>[]});
     api.on('GET', 'me/persona', (_) => current);
     api.on('PUT', 'me/persona', (call) {
       expect(call.body?['preset'], 'coding');

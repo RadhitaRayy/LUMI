@@ -18,6 +18,7 @@ class ChatState {
     this.loading = false,
     this.streaming = false,
     this.gone = false,
+    this.notice,
   });
 
   /// `null` for a new chat that has not been sent yet.
@@ -30,6 +31,9 @@ class ChatState {
   /// The open conversation was deleted on another device.
   final bool gone;
 
+  /// Transient server notice (e.g. tools unsupported fallback).
+  final String? notice;
+
   ChatState copyWith({
     String? conversationId,
     String? title,
@@ -37,6 +41,8 @@ class ChatState {
     bool? loading,
     bool? streaming,
     bool? gone,
+    String? notice,
+    bool clearNotice = false,
   }) => ChatState(
     conversationId: conversationId ?? this.conversationId,
     title: title ?? this.title,
@@ -44,6 +50,7 @@ class ChatState {
     loading: loading ?? this.loading,
     streaming: streaming ?? this.streaming,
     gone: gone ?? this.gone,
+    notice: clearNotice ? null : (notice ?? this.notice),
   );
 }
 
@@ -104,6 +111,7 @@ class ChatController extends Notifier<ChatState> {
     final before = state.messages;
     state = state.copyWith(
       streaming: true,
+      clearNotice: true,
       messages: [
         ...before,
         ChatMessage(id: userTemp, role: Role.user, content: content),
@@ -185,6 +193,10 @@ class ChatController extends Notifier<ChatState> {
     }
   }
 
+  void clearNotice() {
+    if (state.notice != null) state = state.copyWith(clearNotice: true);
+  }
+
   bool _isBefore(ApiException e) => e.status >= 400 && e.status != 0;
 
   void _apply(SseEvent event, {required String userTemp, required String botTemp}) {
@@ -195,6 +207,28 @@ class ChatController extends Notifier<ChatState> {
         _replace(userTemp, (m) => m.copyWith(id: userId));
         _replace(botTemp, (m) => m.copyWith(id: botId));
         _botId = botId;
+      case 'notice':
+        final msg = event.data['message'] as String?;
+        if (msg != null && msg.isNotEmpty) state = state.copyWith(notice: msg);
+      case 'tool.start':
+        final item = ToolCallItem(
+          id: '${event.data['tool_call_id'] ?? event.data['tool']}',
+          toolName: event.data['tool'] as String? ?? '',
+          label: event.data['label'] as String? ?? (event.data['tool'] as String? ?? ''),
+          status: 'running',
+        );
+        _replace(_botId ?? botTemp, (m) => m.copyWith(toolCalls: [...m.toolCalls, item]));
+      case 'tool.end':
+        final callId = '${event.data['tool_call_id'] ?? event.data['tool']}';
+        final toolStatus = event.data['status'] as String? ?? 'ok';
+        final summary = event.data['summary'] as String? ?? '';
+        _replace(_botId ?? botTemp, (m) {
+          final updated = [
+            for (final tc in m.toolCalls)
+              tc.id == callId ? tc.copyWith(status: toolStatus, summary: summary) : tc,
+          ];
+          return m.copyWith(toolCalls: updated);
+        });
       case 'delta':
         final text = event.data['text'] as String? ?? '';
         _replace(_botId ?? botTemp, (m) => m.copyWith(content: m.content + text));

@@ -53,7 +53,7 @@ class ConversationController extends Controller
         $this->ensureOwner($request, $conversation);
         Message::expireStale($request->user()->id);
 
-        return new ConversationResource($conversation->load('messages'));
+        return new ConversationResource($conversation->load('messages.toolCalls'));
     }
 
     public function update(Request $request, Conversation $conversation): ConversationResource

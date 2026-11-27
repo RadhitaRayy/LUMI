@@ -288,5 +288,11 @@
   "serverUrlInvalid": "Enter a valid http:// or https:// address.",
   "serverCheckFailed": "That address is not a healthy Lumi Core server.",
   "serverSaved": "Server updated",
-  "serverResetToast": "Using default server"
+  "serverResetToast": "Using default server",
+
+  "toolsSubtitle": "Abilities Lumi can use for your account. Policies are enforced by Lumi Core.",
+  "toolsEmpty": "No tools are currently enabled for your account.",
+  "toolModeAuto": "Auto",
+  "toolModeAsk": "Ask approval",
+  "aiKeySupportsTools": "Model supports tools"
 }

@@ -69,6 +69,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       }
     });
 
+    ref.listen(chatProvider.select((s) => s.notice), (_, notice) {
+      if (notice != null && notice.isNotEmpty) {
+        showToast(context, notice);
+        ref.read(chatProvider.notifier).clearNotice();
+      }
+    });
+
     final empty = !hasMessages && !loading;
 
     return Scaffold(

@@ -99,6 +99,14 @@ class _AiKeyScreenState extends ConsumerState<AiKeyScreen> with SingleTickerProv
     }
   }
 
+  Future<void> _toggleTools(bool supports) async {
+    try {
+      await ref.read(aiKeyProvider.notifier).setSupportsTools(supports);
+    } on ApiException catch (e) {
+      if (mounted) showToast(context, apiErrorText(context.l10n, e), success: false);
+    }
+  }
+
   Future<void> _remove() async {
     final l = context.l10n;
     final limit = ref.read(sessionProvider).user?.quota.dailyLimit ?? 0;
@@ -151,13 +159,14 @@ class _AiKeyScreenState extends ConsumerState<AiKeyScreen> with SingleTickerProv
                     child: saved == null
                         ? const SizedBox(key: ValueKey('none'), width: double.infinity)
                         : Padding(
-                            key: ValueKey('${saved.keyLast4}-${saved.isActive}'),
+                            key: ValueKey('${saved.keyLast4}-${saved.isActive}-${saved.supportsTools}'),
                             padding: const EdgeInsets.only(bottom: 18),
                             child: _StatusCard(
                               keyInfo: saved,
                               testing: _testing,
                               onTest: _test,
                               onToggle: _toggle,
+                              onToggleTools: _toggleTools,
                               onRemove: _remove,
                             ),
                           ),
@@ -358,6 +367,7 @@ class _StatusCard extends StatelessWidget {
     required this.testing,
     required this.onTest,
     required this.onToggle,
+    required this.onToggleTools,
     required this.onRemove,
   });
 
@@ -365,6 +375,7 @@ class _StatusCard extends StatelessWidget {
   final bool testing;
   final VoidCallback onTest;
   final ValueChanged<bool> onToggle;
+  final ValueChanged<bool> onToggleTools;
   final VoidCallback onRemove;
 
   @override
@@ -414,7 +425,19 @@ class _StatusCard extends StatelessWidget {
             const SizedBox(height: 10),
             Text(l.keyLastError(keyInfo.lastError!), style: const TextStyle(fontSize: 12, color: AppColors.danger, height: 1.4)),
           ],
-          const SizedBox(height: 14),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: Text(l.aiKeySupportsTools, style: const TextStyle(fontSize: 13, color: AppColors.muted)),
+              ),
+              Semantics(
+                label: l.aiKeySupportsTools,
+                child: Switch(value: keyInfo.supportsTools, onChanged: onToggleTools),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
           Row(
             children: [
               Expanded(

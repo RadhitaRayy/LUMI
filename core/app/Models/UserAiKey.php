@@ -19,18 +19,24 @@ use Illuminate\Support\Carbon;
  * @property string $key_last4
  * @property string $model_id
  * @property bool $is_active
+ * @property bool $supports_tools
  * @property Carbon|null $last_validated_at
  * @property string|null $last_error
  */
-#[Fillable(['driver', 'base_url', 'api_key', 'key_last4', 'model_id', 'is_active', 'last_validated_at', 'last_error'])]
+#[Fillable(['driver', 'base_url', 'api_key', 'key_last4', 'model_id', 'is_active', 'supports_tools', 'last_validated_at', 'last_error'])]
 #[Hidden(['api_key'])]
 class UserAiKey extends Model
 {
+    protected $attributes = [
+        'supports_tools' => true,
+    ];
+
     protected function casts(): array
     {
         return [
             'api_key' => 'encrypted',
             'is_active' => 'boolean',
+            'supports_tools' => 'boolean',
             'last_validated_at' => 'datetime',
         ];
     }

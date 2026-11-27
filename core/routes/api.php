@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\V1\MessageController;
 use App\Http\Controllers\Api\V1\NoteController;
 use App\Http\Controllers\Api\V1\PasswordResetController;
 use App\Http\Controllers\Api\V1\PersonaController;
+use App\Http\Controllers\Api\V1\ToolController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -82,6 +83,8 @@ Route::prefix('v1')->group(function () {
             Route::post('notes', [NoteController::class, 'store']);
             Route::patch('notes/{note}', [NoteController::class, 'update']);
             Route::delete('notes/{note}', [NoteController::class, 'destroy']);
+
+            Route::get('tools', [ToolController::class, 'index']);
         });
     });
 });

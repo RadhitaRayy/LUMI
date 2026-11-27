@@ -266,5 +266,11 @@
   "serverUrlInvalid": "Masukkan alamat http:// atau https:// yang valid.",
   "serverCheckFailed": "Alamat itu bukan server Lumi Core yang aktif.",
   "serverSaved": "Server diperbarui",
-  "serverResetToast": "Kembali memakai server default"
+  "serverResetToast": "Kembali memakai server default",
+
+  "toolsSubtitle": "Kemampuan yang bisa dipakai Lumi di akunmu. Aturan izin dijaga langsung oleh Lumi Core.",
+  "toolsEmpty": "Belum ada tool yang aktif untuk akunmu.",
+  "toolModeAuto": "Otomatis",
+  "toolModeAsk": "Minta izin",
+  "aiKeySupportsTools": "Model mendukung tools"
 }

@@ -851,4 +851,20 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get serverResetToast => 'Kembali memakai server default';
+
+  @override
+  String get toolsSubtitle =>
+      'Kemampuan yang bisa dipakai Lumi di akunmu. Aturan izin dijaga langsung oleh Lumi Core.';
+
+  @override
+  String get toolsEmpty => 'Belum ada tool yang aktif untuk akunmu.';
+
+  @override
+  String get toolModeAuto => 'Otomatis';
+
+  @override
+  String get toolModeAsk => 'Minta izin';
+
+  @override
+  String get aiKeySupportsTools => 'Model mendukung tools';
 }

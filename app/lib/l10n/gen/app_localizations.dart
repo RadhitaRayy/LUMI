@@ -1591,6 +1591,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Using default server'**
   String get serverResetToast;
+
+  /// No description provided for @toolsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Abilities Lumi can use for your account. Policies are enforced by Lumi Core.'**
+  String get toolsSubtitle;
+
+  /// No description provided for @toolsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No tools are currently enabled for your account.'**
+  String get toolsEmpty;
+
+  /// No description provided for @toolModeAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto'**
+  String get toolModeAuto;
+
+  /// No description provided for @toolModeAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask approval'**
+  String get toolModeAsk;
+
+  /// No description provided for @aiKeySupportsTools.
+  ///
+  /// In en, this message translates to:
+  /// **'Model supports tools'**
+  String get aiKeySupportsTools;
 }
 
 class _AppLocalizationsDelegate

@@ -31,6 +31,7 @@ class AiKeyController extends Controller
             'base_url' => ['nullable', 'required_if:driver,openai_compatible', 'url:https', 'max:255'],
             'api_key' => ['required', 'string', 'min:10', 'max:500'],
             'model_id' => ['required', 'string', 'max:150'],
+            'supports_tools' => ['sometimes', 'boolean'],
         ]);
 
         $apiKey = trim($data['api_key']);
@@ -52,6 +53,7 @@ class AiKeyController extends Controller
             'key_last4' => substr($apiKey, -4),
             'model_id' => $data['model_id'],
             'is_active' => true,
+            'supports_tools' => (bool) ($data['supports_tools'] ?? true),
             'last_validated_at' => now(),
             'last_error' => null,
         ]);
@@ -84,10 +86,15 @@ class AiKeyController extends Controller
 
     public function update(Request $request): JsonResponse
     {
-        $data = $request->validate(['is_active' => ['required', 'boolean']]);
+        $data = $request->validate([
+            'is_active' => ['sometimes', 'boolean'],
+            'supports_tools' => ['sometimes', 'boolean'],
+        ]);
 
         $key = $this->ownKey($request);
-        $key->update($data);
+        if ($data !== []) {
+            $key->update($data);
+        }
 
         return response()->json(['ai_key' => $this->present($key)]);
     }
@@ -132,6 +139,7 @@ class AiKeyController extends Controller
             'model_id' => $key->model_id,
             'key_last4' => $key->key_last4,
             'is_active' => $key->is_active,
+            'supports_tools' => $key->supports_tools,
             'last_validated_at' => $key->last_validated_at?->toIso8601String(),
             'last_error' => $key->last_error,
         ];

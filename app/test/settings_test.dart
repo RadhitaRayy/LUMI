@@ -93,7 +93,7 @@ void main() {
       expect(find.textContaining('••••9876'), findsOneWidget);
       expect(find.text('sk-or-v1-secret9876'), findsNothing);
 
-      await tester.tap(find.byType(Switch));
+      await tester.tap(find.byType(Switch).first);
       await tester.pumpAndSettle();
 
       expect(find.text("Off · using Lumi's key"), findsOneWidget);

@@ -55,6 +55,13 @@ class MessageView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (message.toolCalls.isNotEmpty) ...[
+                  for (final tc in message.toolCalls)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: ToolCallCard(call: tc),
+                    ),
+                ],
                 if (waiting || message.content.isNotEmpty)
                   // Lumi's answer in a bubble; the corner by the cat is the small one.
                   AnimatedSize(
@@ -253,4 +260,83 @@ class _HopState extends State<_Hop> with SingleTickerProviderStateMixin {
     ),
     child: widget.child,
   );
+}
+
+/// Compact inline card showing an agent tool execution inside a chat message.
+class ToolCallCard extends StatefulWidget {
+  const ToolCallCard({super.key, required this.call});
+
+  final ToolCallItem call;
+
+  @override
+  State<ToolCallCard> createState() => _ToolCallCardState();
+}
+
+class _ToolCallCardState extends State<ToolCallCard> {
+  var _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final call = widget.call;
+    final hasSummary = call.summary.isNotEmpty;
+    final color = call.isError ? AppColors.danger : AppColors.accent;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: call.isError ? AppColors.danger.withValues(alpha: 0.35) : AppColors.border),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: hasSummary ? () => setState(() => _expanded = !_expanded) : null,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (call.isRunning)
+                    const SizedBox.square(
+                      dimension: 14,
+                      child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.accent),
+                    )
+                  else
+                    Icon(
+                      call.isError ? Icons.error_outline_rounded : Icons.check_circle_rounded,
+                      size: 16,
+                      color: color,
+                    ),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      call.label,
+                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.text),
+                    ),
+                  ),
+                  if (hasSummary) ...[
+                    const SizedBox(width: 6),
+                    Icon(
+                      _expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+                      size: 16,
+                      color: AppColors.muted,
+                    ),
+                  ],
+                ],
+              ),
+              if (_expanded && hasSummary) ...[
+                const SizedBox(height: 6),
+                Text(
+                  call.summary,
+                  style: const TextStyle(fontSize: 12, height: 1.4, color: AppColors.muted),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

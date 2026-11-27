@@ -884,4 +884,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get serverResetToast => 'Using default server';
+
+  @override
+  String get toolsSubtitle =>
+      'Abilities Lumi can use for your account. Policies are enforced by Lumi Core.';
+
+  @override
+  String get toolsEmpty => 'No tools are currently enabled for your account.';
+
+  @override
+  String get toolModeAuto => 'Auto';
+
+  @override
+  String get toolModeAsk => 'Ask approval';
+
+  @override
+  String get aiKeySupportsTools => 'Model supports tools';
 }

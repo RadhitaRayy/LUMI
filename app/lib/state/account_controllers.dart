@@ -22,12 +22,14 @@ class AiKeyController extends AsyncNotifier<AiKey?> {
     required String apiKey,
     required String modelId,
     String? baseUrl,
+    bool supportsTools = true,
   }) async {
     final body = await _api.put('me/ai-key', {
       'driver': provider.driver,
       'base_url': provider.fixedBaseUrl ?? (provider == AiProvider.other ? baseUrl?.trim() : null),
       'api_key': apiKey.trim(),
       'model_id': modelId.trim(),
+      'supports_tools': supportsTools,
     });
     _apply(body);
   }
@@ -35,6 +37,9 @@ class AiKeyController extends AsyncNotifier<AiKey?> {
   Future<void> test() async => _apply(await _api.post('me/ai-key/test'));
 
   Future<void> setActive(bool active) async => _apply(await _api.patch('me/ai-key', {'is_active': active}));
+
+  Future<void> setSupportsTools(bool supportsTools) async =>
+      _apply(await _api.patch('me/ai-key', {'supports_tools': supportsTools}));
 
   Future<void> remove() async {
     await _api.delete('me/ai-key');

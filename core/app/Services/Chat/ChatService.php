@@ -5,19 +5,17 @@ namespace App\Services\Chat;
 use App\Events\ConversationUpdated;
 use App\Events\MessageCreated;
 use App\Exceptions\ApiException;
-use App\Llm\ChatDriver;
-use App\Llm\LlmException;
 use App\Llm\ModelResolver;
 use App\Models\Conversation;
 use App\Models\LlmUsage;
 use App\Models\Message;
 use App\Models\User;
-use App\Services\Agent\PromptAssembler;
+use App\Services\Agent\AgentOrchestrator;
 use Closure;
 use Illuminate\Support\Str;
 
 /**
- * Runs one chat turn: checks quota, stores messages, streams the answer, logs usage.
+ * Runs one chat turn: checks quota, stores messages, runs the AgentOrchestrator, logs usage.
  */
 class ChatService
 {
@@ -26,8 +24,7 @@ class ChatService
 
     public function __construct(
         private readonly ModelResolver $resolver,
-        private readonly ChatDriver $driver,
-        private readonly PromptAssembler $prompts,
+        private readonly AgentOrchestrator $orchestrator,
     ) {}
 
     /**
@@ -108,49 +105,18 @@ class ChatService
             'key_source' => $turn->model->keySource,
         ]);
 
-        $text = '';
-        $inputTokens = 0;
-        $outputTokens = 0;
-        $status = 'complete';
-        $errorCode = null;
         $startedAt = hrtime(true);
-
-        try {
-            foreach ($this->driver->stream($turn->model, $this->prompts->assemble($turn->user), $turn->history) as $event) {
-                if ($event->isDelta()) {
-                    $text .= $event->text;
-                    $emit('delta', ['text' => $event->text]);
-                } else {
-                    $inputTokens = $event->inputTokens;
-                    $outputTokens = $event->outputTokens;
-                }
-
-                if ($aborted()) {
-                    $status = 'cancelled';
-                    break;
-                }
-            }
-        } catch (LlmException $e) {
-            $status = 'error';
-            $errorCode = $turn->model->isUserKey() && $e->errorCode === LlmException::KEY_INVALID
-                ? 'user_key_invalid'
-                : $e->errorCode;
-
-            if ($turn->model->isUserKey()) {
-                $turn->user->aiKey?->forceFill(['last_error' => $e->userMessage(true)])->save();
-            }
-
-            report($e);
-            $emit('error', ['code' => $errorCode, 'message' => $e->userMessage($turn->model->isUserKey())]);
-        }
+        $result = $this->orchestrator->run($turn, $emit, $aborted);
 
         $turn->assistant->update([
-            'content' => $text,
-            'status' => $status,
-            'input_tokens' => $inputTokens ?: null,
-            'output_tokens' => $outputTokens ?: null,
-            'error_code' => $errorCode,
+            'content' => $result->text,
+            'status' => $result->status,
+            'input_tokens' => $result->inputTokens ?: null,
+            'output_tokens' => $result->outputTokens ?: null,
+            'error_code' => $result->errorCode,
         ]);
+
+        $turn->assistant->load('toolCalls');
 
         $turn->conversation->forceFill(['last_message_at' => now()])->save();
 
@@ -164,18 +130,18 @@ class ChatService
             'key_source' => $turn->model->keySource,
             'provider' => $turn->model->providerName,
             'model' => $turn->model->modelId,
-            'input_tokens' => $inputTokens,
-            'output_tokens' => $outputTokens,
+            'input_tokens' => $result->inputTokens,
+            'output_tokens' => $result->outputTokens,
             'latency_ms' => (int) ((hrtime(true) - $startedAt) / 1_000_000),
-            'status' => $status,
-            'error_code' => $errorCode,
+            'status' => $result->status,
+            'error_code' => $result->errorCode,
         ]);
 
-        if ($status === 'complete') {
+        if ($result->status === 'complete') {
             $emit('message.end', [
                 'message_id' => $turn->assistant->id,
-                'input_tokens' => $inputTokens,
-                'output_tokens' => $outputTokens,
+                'input_tokens' => $result->inputTokens,
+                'output_tokens' => $result->outputTokens,
             ]);
         }
     }
