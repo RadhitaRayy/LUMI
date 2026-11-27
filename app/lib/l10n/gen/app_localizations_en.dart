@@ -840,4 +840,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noteDeleted => 'Note deleted';
+
+  @override
+  String get serverButton => 'Server';
+
+  @override
+  String get serverTitle => 'Server address';
+
+  @override
+  String get serverSubtitle =>
+      'Change this for network testing (e.g. Cloudflare Tunnel) or your own Lumi Core VPS.';
+
+  @override
+  String get serverUrlLabel => 'Lumi Core URL';
+
+  @override
+  String get serverBadgeDefault => 'Default';
+
+  @override
+  String get serverBadgeCustom => 'Custom';
+
+  @override
+  String get serverTestAndSave => 'Test and save';
+
+  @override
+  String get serverTesting => 'Checking server…';
+
+  @override
+  String get serverResetDefault => 'Reset to default';
+
+  @override
+  String get serverChangeLink => 'Change server address';
+
+  @override
+  String get serverUrlInvalid => 'Enter a valid http:// or https:// address.';
+
+  @override
+  String get serverCheckFailed =>
+      'That address is not a healthy Lumi Core server.';
+
+  @override
+  String get serverSaved => 'Server updated';
+
+  @override
+  String get serverResetToast => 'Using default server';
 }

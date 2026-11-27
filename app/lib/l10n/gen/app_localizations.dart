@@ -1507,6 +1507,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Note deleted'**
   String get noteDeleted;
+
+  /// No description provided for @serverButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Server'**
+  String get serverButton;
+
+  /// No description provided for @serverTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Server address'**
+  String get serverTitle;
+
+  /// No description provided for @serverSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change this for network testing (e.g. Cloudflare Tunnel) or your own Lumi Core VPS.'**
+  String get serverSubtitle;
+
+  /// No description provided for @serverUrlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Lumi Core URL'**
+  String get serverUrlLabel;
+
+  /// No description provided for @serverBadgeDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get serverBadgeDefault;
+
+  /// No description provided for @serverBadgeCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get serverBadgeCustom;
+
+  /// No description provided for @serverTestAndSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Test and save'**
+  String get serverTestAndSave;
+
+  /// No description provided for @serverTesting.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking server…'**
+  String get serverTesting;
+
+  /// No description provided for @serverResetDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset to default'**
+  String get serverResetDefault;
+
+  /// No description provided for @serverChangeLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Change server address'**
+  String get serverChangeLink;
+
+  /// No description provided for @serverUrlInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid http:// or https:// address.'**
+  String get serverUrlInvalid;
+
+  /// No description provided for @serverCheckFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'That address is not a healthy Lumi Core server.'**
+  String get serverCheckFailed;
+
+  /// No description provided for @serverSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Server updated'**
+  String get serverSaved;
+
+  /// No description provided for @serverResetToast.
+  ///
+  /// In en, this message translates to:
+  /// **'Using default server'**
+  String get serverResetToast;
 }
 
 class _AppLocalizationsDelegate

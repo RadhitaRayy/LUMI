@@ -13,7 +13,7 @@ abstract final class AppConfig {
 
   /// Reverb (Pusher protocol). Realtime stays off when the key is empty.
   static const reverbKey = String.fromEnvironment('REVERB_KEY');
-  static const _reverbHost = String.fromEnvironment('REVERB_HOST');
+  static const reverbHostOverride = String.fromEnvironment('REVERB_HOST');
   static const reverbPort = int.fromEnvironment('REVERB_PORT', defaultValue: 8090);
   static const reverbScheme = String.fromEnvironment(
     'REVERB_SCHEME',
@@ -21,7 +21,7 @@ abstract final class AppConfig {
   );
 
   static String get reverbHost =>
-      _reverbHost.isNotEmpty ? _reverbHost : Uri.parse(apiBaseUrl).host;
+      reverbHostOverride.isNotEmpty ? reverbHostOverride : Uri.parse(apiBaseUrl).host;
 
   static bool get realtimeEnabled => reverbKey.isNotEmpty;
 

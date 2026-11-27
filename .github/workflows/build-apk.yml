@@ -1,0 +1,101 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      api_base_url:
+        description: Default Lumi Core URL (can still be changed inside the app via Server switcher)
+        required: false
+        default: http://127.0.0.1:8000
+      reverb_key:
+        description: Optional Reverb public app key (falls back to REVERB_APP_KEY secret)
+        required: false
+        default: ''
+  push:
+    branches:
+      - main
+      - phase-2/orchestrator
+    paths:
+      - app/**
+      - .github/workflows/build-apk.yml
+
+concurrency:
+  group: build-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android-apk:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.50.1'
+          channel: stable
+          cache: true
+
+      - name: Install dependencies and generate localizations
+        run: flutter pub get
+
+      - name: Analyze and run widget tests
+        run: |
+          flutter analyze
+          flutter test
+
+      - name: Build release APK
+        env:
+          INPUT_API_URL: ${{ inputs.api_base_url }}
+          SECRET_API_URL: ${{ secrets.LUMI_API_BASE_URL }}
+          INPUT_REVERB_KEY: ${{ inputs.reverb_key }}
+          SECRET_REVERB_KEY: ${{ secrets.REVERB_APP_KEY }}
+        run: |
+          API_URL="${INPUT_API_URL:-${SECRET_API_URL:-http://127.0.0.1:8000}}"
+          REVERB_KEY="${INPUT_REVERB_KEY:-$SECRET_REVERB_KEY}"
+          ARGS=(--release "--dart-define=API_BASE_URL=$API_URL")
+          if [ -n "$REVERB_KEY" ]; then
+            ARGS+=("--dart-define=REVERB_KEY=$REVERB_KEY")
+          fi
+          flutter build apk "${ARGS[@]}"
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lumi-android-apk
+          path: app/build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 14
+
+      - name: Check Firebase distribution config
+        id: firebase
+        env:
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          FIREBASE_SERVICE_CREDENTIALS: ${{ secrets.FIREBASE_SERVICE_CREDENTIALS }}
+        run: |
+          if [ -n "$FIREBASE_APP_ID" ] && [ -n "$FIREBASE_SERVICE_CREDENTIALS" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Distribute via Firebase App Distribution (optional)
+        if: steps.firebase.outputs.enabled == 'true'
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_CREDENTIALS }}
+          groups: testers
+          file: app/build/app/outputs/flutter-apk/app-release.apk
+          releaseNotes: "Lumi ${{ github.ref_name }} (${{ github.sha }})"

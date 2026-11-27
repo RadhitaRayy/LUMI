@@ -14,11 +14,12 @@ import 'package:material_ui/material_ui.dart';
 
 /// In-memory storage so tests never touch platform keystore or SharedPreferences.
 class MemoryStorage extends AppStorage {
-  MemoryStorage({this.savedToken, this.savedTokenId, this.savedLocale});
+  MemoryStorage({this.savedToken, this.savedTokenId, this.savedLocale, this.savedServerUrl});
 
   String? savedToken;
   int? savedTokenId;
   String? savedLocale;
+  String? savedServerUrl;
 
   @override
   Future<({String token, int tokenId})?> readSession() async {
@@ -43,6 +44,12 @@ class MemoryStorage extends AppStorage {
 
   @override
   Future<void> saveLocale(String? code) async => savedLocale = code;
+
+  @override
+  Future<String?> readServerUrl() async => savedServerUrl;
+
+  @override
+  Future<void> saveServerUrl(String? url) async => savedServerUrl = url;
 }
 
 typedef ApiHandler = FutureOr<Map<String, dynamic>> Function(ApiCall call);
@@ -64,6 +71,14 @@ class FakeApiClient extends ApiClient {
   final List<ApiCall> calls = [];
   final Map<String, ApiHandler> _handlers = {};
   StreamHandler? onStream;
+  FutureOr<void> Function(String url)? onProbeHealth;
+
+  @override
+  Future<void> probeHealth(String url) async {
+    calls.add(ApiCall('HEALTH', url));
+    final handler = onProbeHealth;
+    if (handler != null) await handler(url);
+  }
 
   void on(String method, String path, ApiHandler handler) {
     _handlers['${method.toUpperCase()} $path'] = handler;

@@ -33,11 +33,43 @@ class ApiException implements Exception {
 /// Small JSON client for `/api/v1`. Holds the device token, the language and the Reverb socket id.
 class ApiClient {
   ApiClient({required String baseUrl, http.Client? client})
-    : _base = Uri.parse(baseUrl.endsWith('/') ? baseUrl : '$baseUrl/'),
+    : _base = _parseBase(baseUrl),
       _client = client ?? http.Client();
 
-  final Uri _base;
+  Uri _base;
   final http.Client _client;
+
+  static Uri _parseBase(String url) => Uri.parse(url.endsWith('/') ? url : '$url/');
+
+  String get baseUrl => _base.toString().replaceFirst(RegExp(r'/$'), '');
+
+  void setBaseUrl(String url) => _base = _parseBase(url);
+
+  /// Checks whether [url] hosts a reachable Lumi Core instance (`/api/v1/health`).
+  Future<void> probeHealth(String url) async {
+    final target = _parseBase(url).resolve('api/v1/health');
+    final http.Response response;
+    try {
+      response = await _client
+          .get(target, headers: const {'Accept': 'application/json'})
+          .timeout(const Duration(seconds: 10));
+    } catch (_) {
+      throw ApiException(status: 0, code: 'network');
+    }
+    if (response.statusCode != 200) {
+      throw ApiException(status: response.statusCode, code: 'server_invalid');
+    }
+    try {
+      final decoded = jsonDecode(utf8.decode(response.bodyBytes));
+      if (decoded is! Map<String, dynamic> || decoded['status'] != 'ok') {
+        throw ApiException(status: response.statusCode, code: 'server_invalid');
+      }
+    } on ApiException {
+      rethrow;
+    } catch (_) {
+      throw ApiException(status: response.statusCode, code: 'server_invalid');
+    }
+  }
 
   String? token;
 

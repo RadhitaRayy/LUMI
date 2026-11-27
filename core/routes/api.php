@@ -19,6 +19,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('v1')->group(function () {
+    // Public health check for the app's server connection tester
+    Route::get('health', fn () => response()->json([
+        'status' => 'ok',
+        'app' => 'Lumi Core',
+        'time' => now()->toIso8601String(),
+    ]))->middleware('throttle:60,1');
+
     // Guests
     Route::middleware('throttle:api-auth')->group(function () {
         Route::post('auth/register', [AuthController::class, 'register']);

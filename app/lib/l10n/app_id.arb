@@ -251,5 +251,20 @@
   "noteDeleteTitle": "Hapus catatan ini?",
   "noteDeleteBody": "“{title}” akan dihapus permanen.",
   "noteSaved": "Catatan disimpan",
-  "noteDeleted": "Catatan dihapus"
+  "noteDeleted": "Catatan dihapus",
+
+  "serverButton": "Server",
+  "serverTitle": "Alamat server",
+  "serverSubtitle": "Ubah alamat ini untuk tes lewat jaringan (mis. Cloudflare Tunnel) atau VPS Lumi Core milikmu.",
+  "serverUrlLabel": "URL Lumi Core",
+  "serverBadgeDefault": "Default",
+  "serverBadgeCustom": "Custom",
+  "serverTestAndSave": "Uji dan simpan",
+  "serverTesting": "Mengecek server…",
+  "serverResetDefault": "Kembali ke default",
+  "serverChangeLink": "Ganti alamat server",
+  "serverUrlInvalid": "Masukkan alamat http:// atau https:// yang valid.",
+  "serverCheckFailed": "Alamat itu bukan server Lumi Core yang aktif.",
+  "serverSaved": "Server diperbarui",
+  "serverResetToast": "Kembali memakai server default"
 }

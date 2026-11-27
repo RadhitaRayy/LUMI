@@ -6,11 +6,13 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../app.dart';
 import '../../state/locale_controller.dart';
+import '../../state/server_url_controller.dart';
 import '../../state/session_controller.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/motion.dart';
 import '../../widgets/lumi_cat.dart';
 import '../../widgets/ui.dart';
+import '../auth/server_sheet.dart';
 
 /// The cat pops in, its lantern lights up, the wordmark rises and the i-dot drops in.
 /// Meanwhile the saved session is checked; tap anywhere to skip once it is ready.
@@ -55,6 +57,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
   }
 
   Future<void> _restore() async {
+    await ref.read(serverUrlProvider.notifier).load();
     await ref.read(localeProvider.notifier).load();
     await ref.read(sessionProvider.notifier).restore();
     if (!mounted) return;
@@ -172,6 +175,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                                 ),
                                 const SizedBox(height: 12),
                                 PrimaryButton(label: l.retry, onPressed: _retry),
+                                const SizedBox(height: 6),
+                                TextButton(
+                                  onPressed: () async {
+                                    if (await showServerSheet(context) && mounted) _retry();
+                                  },
+                                  child: Text(l.serverChangeLink),
+                                ),
                               ],
                             )
                           : Opacity(

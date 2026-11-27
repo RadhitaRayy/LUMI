@@ -806,4 +806,49 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get noteDeleted => 'Catatan dihapus';
+
+  @override
+  String get serverButton => 'Server';
+
+  @override
+  String get serverTitle => 'Alamat server';
+
+  @override
+  String get serverSubtitle =>
+      'Ubah alamat ini untuk tes lewat jaringan (mis. Cloudflare Tunnel) atau VPS Lumi Core milikmu.';
+
+  @override
+  String get serverUrlLabel => 'URL Lumi Core';
+
+  @override
+  String get serverBadgeDefault => 'Default';
+
+  @override
+  String get serverBadgeCustom => 'Custom';
+
+  @override
+  String get serverTestAndSave => 'Uji dan simpan';
+
+  @override
+  String get serverTesting => 'Mengecek server…';
+
+  @override
+  String get serverResetDefault => 'Kembali ke default';
+
+  @override
+  String get serverChangeLink => 'Ganti alamat server';
+
+  @override
+  String get serverUrlInvalid =>
+      'Masukkan alamat http:// atau https:// yang valid.';
+
+  @override
+  String get serverCheckFailed =>
+      'Alamat itu bukan server Lumi Core yang aktif.';
+
+  @override
+  String get serverSaved => 'Server diperbarui';
+
+  @override
+  String get serverResetToast => 'Kembali memakai server default';
 }

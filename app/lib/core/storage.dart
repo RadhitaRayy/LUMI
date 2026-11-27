@@ -17,6 +17,7 @@ class AppStorage {
   static const _tokenKey = 'lumi.token';
   static const _tokenIdKey = 'lumi.token_id';
   static const _localeKey = 'lumi.locale';
+  static const _serverUrlKey = 'lumi.server_url';
 
   Future<({String token, int tokenId})?> readSession() async {
     final token = await _secure.read(key: _tokenKey);
@@ -40,4 +41,10 @@ class AppStorage {
 
   Future<void> saveLocale(String? code) =>
       code == null ? _prefs.remove(_localeKey) : _prefs.setString(_localeKey, code);
+
+  /// `null` means "use AppConfig.apiBaseUrl".
+  Future<String?> readServerUrl() => _prefs.getString(_serverUrlKey);
+
+  Future<void> saveServerUrl(String? url) =>
+      url == null ? _prefs.remove(_serverUrlKey) : _prefs.setString(_serverUrlKey, url);
 }

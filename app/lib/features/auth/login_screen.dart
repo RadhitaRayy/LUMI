@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../core/api_client.dart';
+import '../../state/server_url_controller.dart';
 import '../../state/session_controller.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/motion.dart';
@@ -10,6 +11,7 @@ import '../../widgets/ui.dart';
 import 'auth_widgets.dart';
 import 'forgot_screen.dart';
 import 'register_screen.dart';
+import 'server_sheet.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key, this.email});
@@ -74,8 +76,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     // While typing, the header shrinks so both fields and the button fit above the keyboard.
     final typing = keyboardOpen(context);
     final quick = Motion.of(context, const Duration(milliseconds: 240));
+    final customServer = ref.watch(serverUrlProvider.select((s) => s.isCustom));
 
     return AuthScaffold(
+      header: Align(
+        alignment: Alignment.centerRight,
+        child: TextButton.icon(
+          style: TextButton.styleFrom(
+            foregroundColor: customServer ? AppColors.accent : AppColors.muted,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            minimumSize: const Size(0, 36),
+          ),
+          onPressed: () => showServerSheet(context),
+          icon: Icon(Icons.dns_outlined, size: 17, color: customServer ? AppColors.accent : AppColors.muted),
+          label: Text(l.serverButton, style: const TextStyle(fontSize: 13)),
+        ),
+      ),
       footer: FadeSlideIn.step(
         6,
         child: Wrap(

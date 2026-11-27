@@ -41,9 +41,16 @@ class RealtimeController extends Notifier<bool> {
 
   void _connect(int userId) {
     if (!AppConfig.realtimeEnabled) return;
+    final api = ref.read(apiClientProvider);
+    final activeUri = Uri.tryParse(api.baseUrl);
+    final host = AppConfig.reverbHostOverride.isNotEmpty
+        ? AppConfig.reverbHostOverride
+        : (activeUri?.host.isNotEmpty ?? false)
+        ? activeUri!.host
+        : AppConfig.reverbHost;
     _client = ReverbClient(
-      api: ref.read(apiClientProvider),
-      host: AppConfig.reverbHost,
+      api: api,
+      host: host,
       port: AppConfig.reverbPort,
       key: AppConfig.reverbKey,
       secure: AppConfig.reverbScheme == 'https',
