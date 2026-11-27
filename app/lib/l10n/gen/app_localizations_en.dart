@@ -900,4 +900,88 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiKeySupportsTools => 'Model supports tools';
+
+  @override
+  String get actionApprovalBadge => 'Approval required';
+
+  @override
+  String get actionApprove => 'Approve';
+
+  @override
+  String get actionReject => 'Reject';
+
+  @override
+  String get actionExpiryHint =>
+      'This request expires automatically in 10 minutes if not answered.';
+
+  @override
+  String actionToolMeta(String tool) {
+    return 'Tool: $tool';
+  }
+
+  @override
+  String get networkInspectorTitle => 'Network inspector';
+
+  @override
+  String get networkInspectorSubtitle =>
+      'Inspect recent REST & SSE traffic. Tokens, passwords, and API keys are masked.';
+
+  @override
+  String get networkInspectorFloating => 'Floating button';
+
+  @override
+  String get networkInspectorFloatingHint =>
+      'Show a quick HTTP badge over every screen while testing.';
+
+  @override
+  String get networkInspectorClear => 'Clear';
+
+  @override
+  String get networkInspectorCleared => 'Network logs cleared';
+
+  @override
+  String get networkInspectorEmpty => 'No requests captured yet';
+
+  @override
+  String get networkInspectorEmptyBody =>
+      'API calls and chat streams will appear here automatically.';
+
+  @override
+  String get networkInspectorFilterAll => 'All';
+
+  @override
+  String get networkInspectorFilterRest => 'REST';
+
+  @override
+  String get networkInspectorFilterSse => 'SSE';
+
+  @override
+  String get networkInspectorFilterErrors => 'Errors';
+
+  @override
+  String get networkInspectorOverview => 'Overview';
+
+  @override
+  String get networkInspectorRequest => 'Request';
+
+  @override
+  String get networkInspectorResponse => 'Response';
+
+  @override
+  String get networkInspectorCopyCurl => 'Copy cURL';
+
+  @override
+  String get networkInspectorCopyBody => 'Copy body';
+
+  @override
+  String get networkInspectorHeaders => 'Headers';
+
+  @override
+  String get networkInspectorBody => 'Body';
+
+  @override
+  String get networkInspectorSseEvents => 'SSE events';
+
+  @override
+  String get networkInspectorNoBody => 'Empty body';
 }

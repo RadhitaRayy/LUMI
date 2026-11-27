@@ -108,28 +108,34 @@ describe('agent orchestrator', function () {
         expect($conv['messages'][1]['tool_calls'])->toHaveCount(2);
     });
 
-    it('refuses auto-executing ask or disabled tools in PHP and logs denial to audit_logs', function () {
+    it('refuses disabled tools in PHP and logs denial to audit_logs', function () {
         withPlatformModel();
+        ToolPolicy::create([
+            'tool_name' => 'save_note',
+            'role' => 'user',
+            'mode' => ToolPolicy::MODE_DISABLED,
+            'is_enabled' => false,
+        ]);
+
         $fake = fakeLlm();
         [$user, $token] = userWithToken();
-        $note = $user->notes()->create(['title' => 'Penting', 'content' => 'Jangan dihapus', 'tags' => []]);
 
         $fake->steps = [
             [
-                'tool_calls' => [new LlmToolCall('call-del', 'delete_note', ['note_id' => $note->id])],
+                'tool_calls' => [new LlmToolCall('call-dis', 'save_note', ['title' => 'Nope', 'content' => 'Blocked'])],
             ],
             [
-                'chunks' => ['Penghapusan butuh persetujuanmu dulu.'],
+                'chunks' => ['Tool simpan catatan sedang dinonaktifkan.'],
             ],
         ];
 
         $conversation = $user->conversations()->create();
         $this->withToken($token)->post("/api/v1/conversations/{$conversation->id}/messages", [
-            'content' => 'Hapus catatan pentingku',
+            'content' => 'Simpan catatan',
         ])->assertOk()->streamedContent();
 
-        expect(UserNote::find($note->id))->not->toBeNull()
-            ->and(AuditLog::where('tool_name', 'delete_note')->where('status', AuditLog::STATUS_DENIED)->count())->toBe(1);
+        expect(UserNote::where('user_id', $user->id)->count())->toBe(0)
+            ->and(AuditLog::where('tool_name', 'save_note')->where('status', AuditLog::STATUS_DENIED)->count())->toBe(1);
     });
 
     it('skips tools when supports_tools is false and falls back gracefully on tools_unsupported error', function () {

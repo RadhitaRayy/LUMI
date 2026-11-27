@@ -14,12 +14,19 @@ import 'package:material_ui/material_ui.dart';
 
 /// In-memory storage so tests never touch platform keystore or SharedPreferences.
 class MemoryStorage extends AppStorage {
-  MemoryStorage({this.savedToken, this.savedTokenId, this.savedLocale, this.savedServerUrl});
+  MemoryStorage({
+    this.savedToken,
+    this.savedTokenId,
+    this.savedLocale,
+    this.savedServerUrl,
+    this.savedInspectorOverlay = false,
+  });
 
   String? savedToken;
   int? savedTokenId;
   String? savedLocale;
   String? savedServerUrl;
+  bool savedInspectorOverlay;
 
   @override
   Future<({String token, int tokenId})?> readSession() async {
@@ -50,6 +57,12 @@ class MemoryStorage extends AppStorage {
 
   @override
   Future<void> saveServerUrl(String? url) async => savedServerUrl = url;
+
+  @override
+  Future<bool> readInspectorOverlay() async => savedInspectorOverlay;
+
+  @override
+  Future<void> saveInspectorOverlay(bool enabled) async => savedInspectorOverlay = enabled;
 }
 
 typedef ApiHandler = FutureOr<Map<String, dynamic>> Function(ApiCall call);

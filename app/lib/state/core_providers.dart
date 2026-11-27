@@ -5,12 +5,44 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../config.dart';
 import '../core/api_client.dart';
+import '../core/http_log.dart';
 import '../core/storage.dart';
 
 final storageProvider = Provider<AppStorage>((ref) => AppStorage());
 
+final httpLogStoreProvider = Provider<HttpLogStore>((ref) {
+  final store = HttpLogStore();
+  ref.onDispose(store.dispose);
+  return store;
+});
+
 final apiClientProvider = Provider<ApiClient>(
-  (ref) => ApiClient(baseUrl: AppConfig.apiBaseUrl),
+  (ref) => ApiClient(baseUrl: AppConfig.apiBaseUrl, logger: ref.read(httpLogStoreProvider)),
+);
+
+/// Persists whether the floating Chucker-style network inspector pill is shown over the app.
+class InspectorOverlayController extends Notifier<bool> {
+  @override
+  bool build() {
+    _load();
+    return false;
+  }
+
+  Future<void> _load() async {
+    try {
+      final enabled = await ref.read(storageProvider).readInspectorOverlay();
+      state = enabled;
+    } catch (_) {}
+  }
+
+  Future<void> setEnabled(bool enabled) async {
+    state = enabled;
+    await ref.read(storageProvider).saveInspectorOverlay(enabled);
+  }
+}
+
+final inspectorOverlayProvider = NotifierProvider<InspectorOverlayController, bool>(
+  InspectorOverlayController.new,
 );
 
 /// The name Core shows in "Active devices", e.g. "Samsung SM-A566B".

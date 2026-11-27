@@ -18,6 +18,7 @@ class AppStorage {
   static const _tokenIdKey = 'lumi.token_id';
   static const _localeKey = 'lumi.locale';
   static const _serverUrlKey = 'lumi.server_url';
+  static const _inspectorOverlayKey = 'lumi.inspector_overlay';
 
   Future<({String token, int tokenId})?> readSession() async {
     final token = await _secure.read(key: _tokenKey);
@@ -47,4 +48,8 @@ class AppStorage {
 
   Future<void> saveServerUrl(String? url) =>
       url == null ? _prefs.remove(_serverUrlKey) : _prefs.setString(_serverUrlKey, url);
+
+  Future<bool> readInspectorOverlay() async => (await _prefs.getBool(_inspectorOverlayKey)) ?? false;
+
+  Future<void> saveInspectorOverlay(bool enabled) => _prefs.setBool(_inspectorOverlayKey, enabled);
 }

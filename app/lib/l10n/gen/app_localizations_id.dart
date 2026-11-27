@@ -867,4 +867,88 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get aiKeySupportsTools => 'Model mendukung tools';
+
+  @override
+  String get actionApprovalBadge => 'Butuh persetujuan';
+
+  @override
+  String get actionApprove => 'Setujui';
+
+  @override
+  String get actionReject => 'Tolak';
+
+  @override
+  String get actionExpiryHint =>
+      'Permintaan ini kedaluwarsa otomatis dalam 10 menit jika tidak dijawab.';
+
+  @override
+  String actionToolMeta(String tool) {
+    return 'Tool: $tool';
+  }
+
+  @override
+  String get networkInspectorTitle => 'Inspektor jaringan';
+
+  @override
+  String get networkInspectorSubtitle =>
+      'Pantau traffic REST & SSE terbaru. Token, password, dan API key otomatis disamarkan.';
+
+  @override
+  String get networkInspectorFloating => 'Tombol mengambang';
+
+  @override
+  String get networkInspectorFloatingHint =>
+      'Tampilkan tombol cepat HTTP di atas layar saat testing.';
+
+  @override
+  String get networkInspectorClear => 'Bersihkan';
+
+  @override
+  String get networkInspectorCleared => 'Log jaringan dibersihkan';
+
+  @override
+  String get networkInspectorEmpty => 'Belum ada request terekam';
+
+  @override
+  String get networkInspectorEmptyBody =>
+      'Panggilan API dan stream chat akan muncul di sini otomatis.';
+
+  @override
+  String get networkInspectorFilterAll => 'Semua';
+
+  @override
+  String get networkInspectorFilterRest => 'REST';
+
+  @override
+  String get networkInspectorFilterSse => 'SSE';
+
+  @override
+  String get networkInspectorFilterErrors => 'Error';
+
+  @override
+  String get networkInspectorOverview => 'Ringkasan';
+
+  @override
+  String get networkInspectorRequest => 'Request';
+
+  @override
+  String get networkInspectorResponse => 'Response';
+
+  @override
+  String get networkInspectorCopyCurl => 'Salin cURL';
+
+  @override
+  String get networkInspectorCopyBody => 'Salin body';
+
+  @override
+  String get networkInspectorHeaders => 'Header';
+
+  @override
+  String get networkInspectorBody => 'Body';
+
+  @override
+  String get networkInspectorSseEvents => 'Event SSE';
+
+  @override
+  String get networkInspectorNoBody => 'Body kosong';
 }

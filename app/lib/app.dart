@@ -5,8 +5,10 @@ import 'features/auth/login_screen.dart';
 import 'features/auth/verify_screen.dart';
 import 'features/chat/chat_screen.dart';
 import 'features/session_ended_dialog.dart';
+import 'features/settings/network_log_screen.dart';
 import 'features/splash/splash_screen.dart';
 import 'l10n/gen/app_localizations.dart' show AppLocalizations;
+import 'state/core_providers.dart';
 import 'state/locale_controller.dart';
 import 'state/realtime_controller.dart';
 import 'state/session_controller.dart';
@@ -85,6 +87,8 @@ class _LumiAppState extends ConsumerState<LumiApp> with WidgetsBindingObserver {
     ref.watch(realtimeProvider);
     ref.listen(sessionProvider, _onSession);
     final locale = ref.watch(localeProvider).locale;
+    final showInspectorPill = ref.watch(inspectorOverlayProvider);
+    final logStore = ref.watch(httpLogStoreProvider);
 
     return MaterialApp(
       title: 'Lumi',
@@ -95,6 +99,61 @@ class _LumiAppState extends ConsumerState<LumiApp> with WidgetsBindingObserver {
       locale: locale,
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: const [AppLocalizations.delegate, ...GlobalMaterialLocalizations.delegates],
+      builder: (context, child) {
+        if (!showInspectorPill || child == null) return child ?? const SizedBox.shrink();
+        return Stack(
+          children: [
+            child,
+            Positioned(
+              right: 12,
+              bottom: 88 + MediaQuery.paddingOf(context).bottom,
+              child: ListenableBuilder(
+                listenable: logStore,
+                builder: (context, _) {
+                  final hasErrors = logStore.errorCount > 0;
+                  return Material(
+                    color: AppColors.surfaceHigh,
+                    elevation: 6,
+                    shape: StadiumBorder(
+                      side: BorderSide(
+                        color: hasErrors ? AppColors.danger : AppColors.accent.withValues(alpha: 0.7),
+                      ),
+                    ),
+                    child: InkWell(
+                      customBorder: const StadiumBorder(),
+                      onTap: () {
+                        if (NetworkLogScreen.isOpen) return;
+                        navigatorKey.currentState?.push(lumiRoute<void>(const NetworkLogScreen()));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: hasErrors ? AppColors.danger : AppColors.accent,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              'HTTP · ${logStore.count}',
+                              style: AppText.mono(12, weight: FontWeight.w700, color: AppColors.text),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
       home: const SplashScreen(),
     );
   }

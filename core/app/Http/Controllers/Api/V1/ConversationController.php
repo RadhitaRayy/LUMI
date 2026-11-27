@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ConversationResource;
 use App\Models\Conversation;
 use App\Models\Message;
+use App\Models\PendingAction;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -52,8 +53,9 @@ class ConversationController extends Controller
     {
         $this->ensureOwner($request, $conversation);
         Message::expireStale($request->user()->id);
+        PendingAction::expireOverdue($request->user()->id);
 
-        return new ConversationResource($conversation->load('messages.toolCalls'));
+        return new ConversationResource($conversation->load(['messages.toolCalls', 'messages.pendingActions']));
     }
 
     public function update(Request $request, Conversation $conversation): ConversationResource

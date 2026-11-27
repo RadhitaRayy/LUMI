@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../core/api_client.dart';
+import '../../data/models.dart';
 import '../../state/chat_controller.dart';
 import '../../state/session_controller.dart';
 import '../../theme/app_theme.dart';
@@ -224,6 +225,16 @@ class _Header extends StatelessWidget {
 class _Messages extends ConsumerWidget {
   const _Messages({super.key});
 
+  Future<void> _resolve(BuildContext context, WidgetRef ref, PendingActionItem action, bool approve) async {
+    try {
+      await ref.read(chatProvider.notifier).resolveAction(action, approve: approve);
+    } on ApiException catch (e) {
+      if (context.mounted) {
+        showToast(context, apiErrorText(context.l10n, e), success: false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final messages = ref.watch(chatProvider.select((s) => s.messages));
@@ -239,7 +250,11 @@ class _Messages extends ConsumerWidget {
           key: ValueKey('m$position'),
           duration: Motion.message,
           offset: const Offset(0, 14),
-          child: MessageView(message: messages[position]),
+          child: MessageView(
+            message: messages[position],
+            onApproveAction: (action) => _resolve(context, ref, action, true),
+            onRejectAction: (action) => _resolve(context, ref, action, false),
+          ),
         );
       },
     );

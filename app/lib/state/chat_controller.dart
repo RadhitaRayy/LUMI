@@ -167,6 +167,91 @@ class ChatController extends Notifier<ChatState> {
     _stream?.close();
   }
 
+  /// Approves or rejects a paused `ask`-mode action and streams the resumed orchestrator turn.
+  Future<void> resolveAction(PendingActionItem action, {required bool approve}) async {
+    if (state.streaming) return;
+
+    final targetMessageId = action.messageId;
+    final previousMessages = state.messages;
+
+    state = state.copyWith(streaming: true, clearNotice: true);
+    _replace(
+      targetMessageId,
+      (m) => m.copyWith(status: MessageStatus.streaming, clearPendingAction: true),
+    );
+
+    final client = http.Client();
+    _stream = client;
+    _stopped = false;
+    _botId = targetMessageId;
+
+    try {
+      final verb = approve ? 'approve' : 'reject';
+      final response = await _api.openStream(client, 'actions/${action.id}/$verb', const {});
+      await for (final event in parseSse(response.stream)) {
+        _apply(event, userTemp: '', botTemp: targetMessageId);
+      }
+      _finishBot(targetMessageId, _stopped ? MessageStatus.cancelled : null);
+    } on ApiException catch (e) {
+      if (_stopped) {
+        _finishBot(targetMessageId, MessageStatus.cancelled);
+      } else if (e.status == 409 || e.status == 410 || e.status == 404) {
+        // Already handled elsewhere or expired: keep the pending card cleared and let the screen notify.
+        _replace(
+          targetMessageId,
+          (m) => m.copyWith(
+            status: m.content.isNotEmpty ? MessageStatus.complete : MessageStatus.cancelled,
+            clearPendingAction: true,
+          ),
+        );
+        rethrow;
+      } else if (_isBefore(e)) {
+        // Restore the pending card so the user can retry.
+        state = state.copyWith(messages: previousMessages, streaming: false);
+        rethrow;
+      } else {
+        _finishBot(targetMessageId, MessageStatus.error, error: e.message);
+      }
+    } catch (_) {
+      _finishBot(targetMessageId, _stopped ? MessageStatus.cancelled : MessageStatus.error);
+    } finally {
+      if (identical(_stream, client)) _stream = null;
+      client.close();
+      state = state.copyWith(streaming: false);
+      unawaited(ref.read(sessionProvider.notifier).refreshUser());
+    }
+  }
+
+  /// A pending approval arrived on another device (`action.pending`).
+  void remoteActionPending(PendingActionItem action) {
+    if (state.conversationId != action.conversationId || state.streaming) return;
+    _replace(
+      action.messageId,
+      (m) => m.copyWith(status: MessageStatus.awaitingApproval, pendingAction: action),
+    );
+  }
+
+  /// A pending approval was approved/rejected on another device (`action.resolved`).
+  void remoteActionResolved({
+    required String actionId,
+    required String conversationId,
+    required String messageId,
+  }) {
+    if (state.conversationId != conversationId || state.streaming) return;
+    state = state.copyWith(
+      messages: [
+        for (final m in state.messages)
+          if (m.id == messageId || m.pendingAction?.id == actionId)
+            m.copyWith(
+              clearPendingAction: true,
+              status: m.status == MessageStatus.awaitingApproval ? MessageStatus.streaming : m.status,
+            )
+          else
+            m,
+      ],
+    );
+  }
+
   /// A message saved on another device (realtime `message.created`).
   void remoteMessage(String conversationId, ChatMessage message) {
     if (state.conversationId != conversationId) return;
@@ -202,14 +287,26 @@ class ChatController extends Notifier<ChatState> {
   void _apply(SseEvent event, {required String userTemp, required String botTemp}) {
     switch (event.event) {
       case 'message.start':
-        final userId = '${event.data['user_message_id']}';
+        final rawUserId = event.data['user_message_id'];
         final botId = '${event.data['message_id']}';
-        _replace(userTemp, (m) => m.copyWith(id: userId));
+        if (userTemp.isNotEmpty && rawUserId != null) {
+          _replace(userTemp, (m) => m.copyWith(id: '$rawUserId'));
+        }
         _replace(botTemp, (m) => m.copyWith(id: botId));
         _botId = botId;
       case 'notice':
         final msg = event.data['message'] as String?;
         if (msg != null && msg.isNotEmpty) state = state.copyWith(notice: msg);
+      case 'action.pending':
+        final action = PendingActionItem.fromJson(event.data);
+        final targetId = action.messageId.isNotEmpty ? action.messageId : (_botId ?? botTemp);
+        _replace(
+          targetId,
+          (m) => m.copyWith(
+            status: MessageStatus.awaitingApproval,
+            pendingAction: action,
+          ),
+        );
       case 'tool.start':
         final item = ToolCallItem(
           id: '${event.data['tool_call_id'] ?? event.data['tool']}',

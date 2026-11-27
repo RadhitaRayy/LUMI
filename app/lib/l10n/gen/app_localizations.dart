@@ -1621,6 +1621,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Model supports tools'**
   String get aiKeySupportsTools;
+
+  /// No description provided for @actionApprovalBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Approval required'**
+  String get actionApprovalBadge;
+
+  /// No description provided for @actionApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get actionApprove;
+
+  /// No description provided for @actionReject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get actionReject;
+
+  /// No description provided for @actionExpiryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This request expires automatically in 10 minutes if not answered.'**
+  String get actionExpiryHint;
+
+  /// No description provided for @actionToolMeta.
+  ///
+  /// In en, this message translates to:
+  /// **'Tool: {tool}'**
+  String actionToolMeta(String tool);
+
+  /// No description provided for @networkInspectorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Network inspector'**
+  String get networkInspectorTitle;
+
+  /// No description provided for @networkInspectorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspect recent REST & SSE traffic. Tokens, passwords, and API keys are masked.'**
+  String get networkInspectorSubtitle;
+
+  /// No description provided for @networkInspectorFloating.
+  ///
+  /// In en, this message translates to:
+  /// **'Floating button'**
+  String get networkInspectorFloating;
+
+  /// No description provided for @networkInspectorFloatingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Show a quick HTTP badge over every screen while testing.'**
+  String get networkInspectorFloatingHint;
+
+  /// No description provided for @networkInspectorClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get networkInspectorClear;
+
+  /// No description provided for @networkInspectorCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Network logs cleared'**
+  String get networkInspectorCleared;
+
+  /// No description provided for @networkInspectorEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No requests captured yet'**
+  String get networkInspectorEmpty;
+
+  /// No description provided for @networkInspectorEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'API calls and chat streams will appear here automatically.'**
+  String get networkInspectorEmptyBody;
+
+  /// No description provided for @networkInspectorFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get networkInspectorFilterAll;
+
+  /// No description provided for @networkInspectorFilterRest.
+  ///
+  /// In en, this message translates to:
+  /// **'REST'**
+  String get networkInspectorFilterRest;
+
+  /// No description provided for @networkInspectorFilterSse.
+  ///
+  /// In en, this message translates to:
+  /// **'SSE'**
+  String get networkInspectorFilterSse;
+
+  /// No description provided for @networkInspectorFilterErrors.
+  ///
+  /// In en, this message translates to:
+  /// **'Errors'**
+  String get networkInspectorFilterErrors;
+
+  /// No description provided for @networkInspectorOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get networkInspectorOverview;
+
+  /// No description provided for @networkInspectorRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Request'**
+  String get networkInspectorRequest;
+
+  /// No description provided for @networkInspectorResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'Response'**
+  String get networkInspectorResponse;
+
+  /// No description provided for @networkInspectorCopyCurl.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy cURL'**
+  String get networkInspectorCopyCurl;
+
+  /// No description provided for @networkInspectorCopyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy body'**
+  String get networkInspectorCopyBody;
+
+  /// No description provided for @networkInspectorHeaders.
+  ///
+  /// In en, this message translates to:
+  /// **'Headers'**
+  String get networkInspectorHeaders;
+
+  /// No description provided for @networkInspectorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Body'**
+  String get networkInspectorBody;
+
+  /// No description provided for @networkInspectorSseEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'SSE events'**
+  String get networkInspectorSseEvents;
+
+  /// No description provided for @networkInspectorNoBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty body'**
+  String get networkInspectorNoBody;
 }
 
 class _AppLocalizationsDelegate

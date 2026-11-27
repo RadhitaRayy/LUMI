@@ -83,6 +83,20 @@ class RealtimeController extends Notifier<bool> {
         final raw = data['message'];
         if (id == null || raw is! Map<String, dynamic>) return;
         chat.remoteMessage(id, ChatMessage.fromJson(raw));
+      case 'action.pending':
+        final raw = data['action'];
+        if (raw is! Map<String, dynamic>) return;
+        chat.remoteActionPending(PendingActionItem.fromJson(raw));
+      case 'action.resolved':
+        final actionId = data['action_id'] as String?;
+        final conversationId = data['conversation_id'] as String?;
+        final messageId = data['message_id'] as String?;
+        if (actionId == null || conversationId == null || messageId == null) return;
+        chat.remoteActionResolved(
+          actionId: actionId,
+          conversationId: conversationId,
+          messageId: messageId,
+        );
       case 'persona.updated':
         final raw = data['persona'];
         if (raw is! Map<String, dynamic>) return;

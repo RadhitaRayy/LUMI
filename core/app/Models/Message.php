@@ -67,4 +67,10 @@ class Message extends Model
     {
         return $this->hasMany(ToolCallRecord::class)->orderBy('created_at')->orderBy('id');
     }
+
+    /** @return HasMany<PendingAction, $this> */
+    public function pendingActions(): HasMany
+    {
+        return $this->hasMany(PendingAction::class)->orderBy('created_at')->orderBy('id');
+    }
 }

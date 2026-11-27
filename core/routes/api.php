@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\ActionController;
 use App\Http\Controllers\Api\V1\AiKeyController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ConversationController;
@@ -85,6 +86,12 @@ Route::prefix('v1')->group(function () {
             Route::delete('notes/{note}', [NoteController::class, 'destroy']);
 
             Route::get('tools', [ToolController::class, 'index']);
+
+            Route::get('actions/pending', [ActionController::class, 'index']);
+            Route::post('actions/{action}/approve', [ActionController::class, 'approve'])
+                ->middleware('throttle:api-chat');
+            Route::post('actions/{action}/reject', [ActionController::class, 'reject'])
+                ->middleware('throttle:api-chat');
         });
     });
 });

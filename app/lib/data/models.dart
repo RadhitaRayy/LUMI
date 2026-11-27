@@ -82,7 +82,53 @@ class Conversation {
   );
 }
 
-enum MessageStatus { complete, streaming, error, cancelled }
+enum MessageStatus { complete, streaming, awaitingApproval, error, cancelled }
+
+class PendingActionItem {
+  const PendingActionItem({
+    required this.id,
+    required this.conversationId,
+    required this.messageId,
+    required this.tool,
+    required this.title,
+    required this.summary,
+    required this.status,
+    this.expiresAt,
+  });
+
+  factory PendingActionItem.fromJson(Map<String, dynamic> json) => PendingActionItem(
+    id: '${json['id']}',
+    conversationId: '${json['conversation_id'] ?? ''}',
+    messageId: '${json['message_id'] ?? ''}',
+    tool: json['tool'] as String? ?? '',
+    title: json['title'] as String? ?? (json['tool'] as String? ?? ''),
+    summary: json['summary'] as String? ?? '',
+    status: json['status'] as String? ?? 'pending',
+    expiresAt: _date(json['expires_at']),
+  );
+
+  final String id;
+  final String conversationId;
+  final String messageId;
+  final String tool;
+  final String title;
+  final String summary;
+  final String status; // pending | approved | rejected | expired
+  final DateTime? expiresAt;
+
+  bool get isPending => status == 'pending';
+
+  PendingActionItem copyWith({String? status}) => PendingActionItem(
+    id: id,
+    conversationId: conversationId,
+    messageId: messageId,
+    tool: tool,
+    title: title,
+    summary: summary,
+    status: status ?? this.status,
+    expiresAt: expiresAt,
+  );
+}
 
 class ToolCallItem {
   const ToolCallItem({
@@ -130,23 +176,29 @@ class ChatMessage {
     this.status = MessageStatus.complete,
     this.errorText,
     this.toolCalls = const [],
+    this.pendingAction,
   });
 
-  factory ChatMessage.fromJson(Map<String, dynamic> json) => ChatMessage(
-    id: '${json['id']}',
-    role: json['role'] == 'user' ? Role.user : Role.assistant,
-    content: json['content'] as String? ?? '',
-    status: switch (json['status']) {
-      'error' => MessageStatus.error,
-      'cancelled' => MessageStatus.cancelled,
-      'streaming' => MessageStatus.streaming,
-      _ => MessageStatus.complete,
-    },
-    toolCalls: [
-      for (final t in (json['tool_calls'] as List? ?? const []))
-        ToolCallItem.fromJson(t as Map<String, dynamic>),
-    ],
-  );
+  factory ChatMessage.fromJson(Map<String, dynamic> json) {
+    final rawPending = json['pending_action'];
+    return ChatMessage(
+      id: '${json['id']}',
+      role: json['role'] == 'user' ? Role.user : Role.assistant,
+      content: json['content'] as String? ?? '',
+      status: switch (json['status']) {
+        'error' => MessageStatus.error,
+        'cancelled' => MessageStatus.cancelled,
+        'streaming' => MessageStatus.streaming,
+        'awaiting_approval' => MessageStatus.awaitingApproval,
+        _ => MessageStatus.complete,
+      },
+      toolCalls: [
+        for (final t in (json['tool_calls'] as List? ?? const []))
+          ToolCallItem.fromJson(t as Map<String, dynamic>),
+      ],
+      pendingAction: rawPending is Map<String, dynamic> ? PendingActionItem.fromJson(rawPending) : null,
+    );
+  }
 
   final String id;
   final Role role;
@@ -159,6 +211,9 @@ class ChatMessage {
   /// Server-side tool calls executed while producing this assistant message.
   final List<ToolCallItem> toolCalls;
 
+  /// An `ask`-mode tool action paused waiting for user approval.
+  final PendingActionItem? pendingAction;
+
   bool get isUser => role == Role.user;
 
   ChatMessage copyWith({
@@ -167,6 +222,8 @@ class ChatMessage {
     MessageStatus? status,
     String? errorText,
     List<ToolCallItem>? toolCalls,
+    PendingActionItem? pendingAction,
+    bool clearPendingAction = false,
   }) => ChatMessage(
     id: id ?? this.id,
     role: role,
@@ -174,6 +231,7 @@ class ChatMessage {
     status: status ?? this.status,
     errorText: errorText ?? this.errorText,
     toolCalls: toolCalls ?? this.toolCalls,
+    pendingAction: clearPendingAction ? null : (pendingAction ?? this.pendingAction),
   );
 }
 

@@ -11,9 +11,16 @@ import '../../widgets/ui.dart';
 
 /// One chat message. User messages sit right in a bubble; Lumi's answers sit left with the cat.
 class MessageView extends StatelessWidget {
-  const MessageView({super.key, required this.message});
+  const MessageView({
+    super.key,
+    required this.message,
+    this.onApproveAction,
+    this.onRejectAction,
+  });
 
   final ChatMessage message;
+  final ValueChanged<PendingActionItem>? onApproveAction;
+  final ValueChanged<PendingActionItem>? onRejectAction;
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +98,14 @@ class MessageView extends StatelessWidget {
                             ),
                     ),
                   ),
+                if (message.pendingAction != null) ...[
+                  if (message.content.isNotEmpty || message.toolCalls.isNotEmpty) const SizedBox(height: 8),
+                  PendingActionCard(
+                    action: message.pendingAction!,
+                    onApprove: onApproveAction == null ? null : () => onApproveAction!(message.pendingAction!),
+                    onReject: onRejectAction == null ? null : () => onRejectAction!(message.pendingAction!),
+                  ),
+                ],
                 if (message.status == MessageStatus.cancelled) ...[
                   const SizedBox(height: 6),
                   Text(l.stopped, style: const TextStyle(fontSize: 12, color: AppColors.warn)),
@@ -339,4 +354,201 @@ class _ToolCallCardState extends State<ToolCallCard> {
       ),
     );
   }
+}
+
+/// Inline amber approval card for paused `ask`-mode tool actions.
+/// Users can approve/reject directly or tap the card to inspect full details in [ConfirmActionSheet].
+class PendingActionCard extends StatelessWidget {
+  const PendingActionCard({
+    super.key,
+    required this.action,
+    this.onApprove,
+    this.onReject,
+  });
+
+  static const amber = Color(0xFFF5B544);
+
+  final PendingActionItem action;
+  final VoidCallback? onApprove;
+  final VoidCallback? onReject;
+
+  Future<void> _openSheet(BuildContext context) async {
+    final decision = await showConfirmActionSheet(context, action: action);
+    if (decision == true) {
+      onApprove?.call();
+    } else if (decision == false) {
+      onReject?.call();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    return Container(
+      decoration: BoxDecoration(
+        color: amber.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: amber.withValues(alpha: 0.45)),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: () => _openSheet(context),
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      color: amber.withValues(alpha: 0.18),
+                      borderRadius: BorderRadius.circular(9),
+                    ),
+                    child: const Icon(Icons.shield_outlined, size: 16, color: amber),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l.actionApprovalBadge,
+                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: amber),
+                        ),
+                        Text(
+                          action.title,
+                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.text),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Icon(Icons.chevron_right_rounded, size: 18, color: amber),
+                ],
+              ),
+              if (action.summary.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(
+                  action.summary,
+                  style: const TextStyle(fontSize: 13, height: 1.45, color: AppColors.text),
+                ),
+              ],
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size(0, 44),
+                        foregroundColor: AppColors.text,
+                        side: const BorderSide(color: AppColors.border),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      onPressed: onReject,
+                      child: Text(l.actionReject),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: FilledButton(
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size(0, 44),
+                        backgroundColor: amber,
+                        foregroundColor: AppColors.bg,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      onPressed: onApprove,
+                      child: Text(l.actionApprove),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Bottom sheet displaying full approval details before approving or rejecting a paused tool call.
+/// Returns `true` to approve, `false` to reject, or `null` if dismissed.
+Future<bool?> showConfirmActionSheet(
+  BuildContext context, {
+  required PendingActionItem action,
+}) {
+  final l = context.l10n;
+  return showModalBottomSheet<bool>(
+    context: context,
+    useSafeArea: true,
+    sheetAnimationStyle: const AnimationStyle(duration: Motion.sheet),
+    builder: (context) => Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              const TintIcon(icon: Icons.shield_outlined, color: PendingActionCard.amber, size: 42),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l.actionApprovalBadge,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: PendingActionCard.amber,
+                      ),
+                    ),
+                    Text(action.title, style: AppText.heading(19)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Panel(
+            padding: const EdgeInsets.all(14),
+            borderColor: PendingActionCard.amber.withValues(alpha: 0.4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  action.summary,
+                  style: const TextStyle(fontSize: 15, height: 1.5, color: AppColors.text),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  l.actionToolMeta(action.tool),
+                  style: AppText.mono(12, color: AppColors.muted),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            l.actionExpiryHint,
+            style: const TextStyle(fontSize: 12, height: 1.45, color: AppColors.muted),
+          ),
+          const SizedBox(height: 18),
+          PrimaryButton(
+            label: l.actionApprove,
+            color: PendingActionCard.amber,
+            onPressed: () => Navigator.of(context).pop(true),
+          ),
+          const SizedBox(height: 10),
+          SecondaryButton(
+            label: l.actionReject,
+            onPressed: () => Navigator.of(context).pop(false),
+          ),
+        ],
+      ),
+    ),
+  );
 }

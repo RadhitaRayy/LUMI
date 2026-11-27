@@ -2,6 +2,7 @@
 
 namespace App\Services\Chat;
 
+use App\Events\ActionResolved;
 use App\Events\ConversationUpdated;
 use App\Events\MessageCreated;
 use App\Exceptions\ApiException;
@@ -9,8 +10,10 @@ use App\Llm\ModelResolver;
 use App\Models\Conversation;
 use App\Models\LlmUsage;
 use App\Models\Message;
+use App\Models\PendingAction;
 use App\Models\User;
 use App\Services\Agent\AgentOrchestrator;
+use App\Services\Agent\OrchestratorResult;
 use Closure;
 use Illuminate\Support\Str;
 
@@ -108,7 +111,98 @@ class ChatService
         $startedAt = hrtime(true);
         $result = $this->orchestrator->run($turn, $emit, $aborted);
 
-        $turn->assistant->update([
+        $this->finalizeAssistant(
+            user: $turn->user,
+            conversation: $turn->conversation,
+            assistant: $turn->assistant,
+            modelKeySource: $turn->model->keySource,
+            providerName: $turn->model->providerName,
+            modelId: $turn->model->modelId,
+            result: $result,
+            startedAt: $startedAt,
+            emit: $emit,
+        );
+    }
+
+    /**
+     * Validates a pending action and marks it approved/rejected before opening the SSE resume stream.
+     */
+    public function prepareResume(User $user, PendingAction $action, bool $approved): PendingAction
+    {
+        PendingAction::expireOverdue($user->id);
+        $action->refresh();
+
+        if ($action->status === PendingAction::STATUS_EXPIRED || $action->isExpired()) {
+            throw new ApiException('action_expired', __('This approval request has expired.'), 410);
+        }
+
+        if ($action->status !== PendingAction::STATUS_PENDING) {
+            throw new ApiException('action_already_resolved', __('This approval request was already handled.'), 409);
+        }
+
+        $action->forceFill([
+            'status' => $approved ? PendingAction::STATUS_APPROVED : PendingAction::STATUS_REJECTED,
+            'resolved_at' => now(),
+        ])->save();
+
+        broadcast(ActionResolved::for($action))->toOthers();
+
+        return $action;
+    }
+
+    /**
+     * Resumes a resolved `ask` action and streams the remaining orchestrator turn via SSE.
+     *
+     * @param  Closure(string, array<string, mixed>): void  $emit
+     * @param  Closure(): bool  $aborted
+     */
+    public function streamResume(User $user, PendingAction $action, bool $approved, Closure $emit, Closure $aborted): void
+    {
+        /** @var Conversation $conversation */
+        $conversation = $action->conversation()->firstOrFail();
+        /** @var Message $assistant */
+        $assistant = $action->message()->firstOrFail();
+        $model = $this->resolver->for($user);
+
+        $assistant->update(['status' => 'streaming']);
+
+        $emit('message.start', [
+            'message_id' => $assistant->id,
+            'model' => $model->modelId,
+            'key_source' => $model->keySource,
+        ]);
+
+        $startedAt = hrtime(true);
+        $result = $this->orchestrator->resume($user, $conversation, $assistant, $model, $action, $approved, $emit, $aborted);
+
+        $this->finalizeAssistant(
+            user: $user,
+            conversation: $conversation,
+            assistant: $assistant,
+            modelKeySource: $model->keySource,
+            providerName: $model->providerName,
+            modelId: $model->modelId,
+            result: $result,
+            startedAt: $startedAt,
+            emit: $emit,
+        );
+    }
+
+    /**
+     * @param  Closure(string, array<string, mixed>): void  $emit
+     */
+    private function finalizeAssistant(
+        User $user,
+        Conversation $conversation,
+        Message $assistant,
+        string $modelKeySource,
+        string $providerName,
+        string $modelId,
+        OrchestratorResult $result,
+        int $startedAt,
+        Closure $emit,
+    ): void {
+        $assistant->update([
             'content' => $result->text,
             'status' => $result->status,
             'input_tokens' => $result->inputTokens ?: null,
@@ -116,30 +210,32 @@ class ChatService
             'error_code' => $result->errorCode,
         ]);
 
-        $turn->assistant->load('toolCalls');
+        $assistant->load(['toolCalls', 'pendingActions']);
 
-        $turn->conversation->forceFill(['last_message_at' => now()])->save();
+        $conversation->forceFill(['last_message_at' => now()])->save();
 
-        broadcast(MessageCreated::for($turn->conversation, $turn->assistant))->toOthers();
-        broadcast(ConversationUpdated::for($turn->conversation))->toOthers();
+        broadcast(MessageCreated::for($conversation, $assistant))->toOthers();
+        broadcast(ConversationUpdated::for($conversation))->toOthers();
 
-        LlmUsage::create([
-            'user_id' => $turn->user->id,
-            'conversation_id' => $turn->conversation->id,
-            'message_id' => $turn->assistant->id,
-            'key_source' => $turn->model->keySource,
-            'provider' => $turn->model->providerName,
-            'model' => $turn->model->modelId,
-            'input_tokens' => $result->inputTokens,
-            'output_tokens' => $result->outputTokens,
-            'latency_ms' => (int) ((hrtime(true) - $startedAt) / 1_000_000),
-            'status' => $result->status,
-            'error_code' => $result->errorCode,
-        ]);
+        if ($result->status !== 'awaiting_approval') {
+            LlmUsage::create([
+                'user_id' => $user->id,
+                'conversation_id' => $conversation->id,
+                'message_id' => $assistant->id,
+                'key_source' => $modelKeySource,
+                'provider' => $providerName,
+                'model' => $modelId,
+                'input_tokens' => $result->inputTokens,
+                'output_tokens' => $result->outputTokens,
+                'latency_ms' => (int) ((hrtime(true) - $startedAt) / 1_000_000),
+                'status' => $result->status,
+                'error_code' => $result->errorCode,
+            ]);
+        }
 
         if ($result->status === 'complete') {
             $emit('message.end', [
-                'message_id' => $turn->assistant->id,
+                'message_id' => $assistant->id,
                 'input_tokens' => $result->inputTokens,
                 'output_tokens' => $result->outputTokens,
             ]);

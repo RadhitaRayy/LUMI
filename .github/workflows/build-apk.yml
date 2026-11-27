@@ -11,6 +11,10 @@ on:
         description: Optional Reverb public app key (falls back to REVERB_APP_KEY secret)
         required: false
         default: ''
+      release_notes:
+        description: Optional custom release notes (auto-generated from recent commits if empty)
+        required: false
+        default: ''
   push:
     branches:
       - main
@@ -32,10 +36,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 20
 
       - name: Set up Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
@@ -71,8 +77,34 @@ jobs:
           fi
           flutter build apk "${ARGS[@]}"
 
+      - name: Generate release notes from recent commits
+        working-directory: .
+        env:
+          CUSTOM_NOTES: ${{ inputs.release_notes }}
+          BEFORE_SHA: ${{ github.event.before }}
+          CURRENT_SHA: ${{ github.sha }}
+          BRANCH_NAME: ${{ github.ref_name }}
+        run: |
+          SHORT_SHA="${CURRENT_SHA:0:7}"
+          {
+            echo "Lumi ($BRANCH_NAME · $SHORT_SHA)"
+            echo ""
+            if [ -n "$CUSTOM_NOTES" ]; then
+              echo "$CUSTOM_NOTES"
+            else
+              echo "Update terbaru:"
+              if [ -n "$BEFORE_SHA" ] && [ "$BEFORE_SHA" != "0000000000000000000000000000000000000000" ] && git cat-file -e "$BEFORE_SHA^{commit}" 2>/dev/null; then
+                git log --no-merges --pretty=format:"- %s" "$BEFORE_SHA..$CURRENT_SHA" | head -n 10
+              else
+                git log --no-merges -n 6 --pretty=format:"- %s"
+              fi
+              echo ""
+            fi
+          } > release_notes.txt
+          cat release_notes.txt
+
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: lumi-android-apk
           path: app/build/app/outputs/flutter-apk/app-release.apk
@@ -98,4 +130,4 @@ jobs:
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_CREDENTIALS }}
           groups: testers
           file: app/build/app/outputs/flutter-apk/app-release.apk
-          releaseNotes: "Lumi ${{ github.ref_name }} (${{ github.sha }})"
+          releaseNotesFile: release_notes.txt

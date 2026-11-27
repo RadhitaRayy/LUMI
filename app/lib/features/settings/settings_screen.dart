@@ -14,6 +14,7 @@ import '../../theme/motion.dart';
 import '../../widgets/ui.dart';
 import 'ai_key_screen.dart';
 import 'devices_screen.dart';
+import 'network_log_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -125,6 +126,19 @@ class SettingsScreen extends ConsumerWidget {
                     color: AppColors.warn,
                     label: l.changePassword,
                     onTap: () => _changePassword(context, ref),
+                  ),
+                  ListenableBuilder(
+                    listenable: ref.watch(httpLogStoreProvider),
+                    builder: (context, _) {
+                      final count = ref.read(httpLogStoreProvider).count;
+                      return _Row(
+                        icon: Icons.bug_report_outlined,
+                        color: AppColors.info,
+                        label: l.networkInspectorTitle,
+                        value: count == 0 ? '' : '$count',
+                        onTap: () => Navigator.of(context).push(lumiRoute<void>(const NetworkLogScreen())),
+                      );
+                    },
                   ),
                 ],
               ),
