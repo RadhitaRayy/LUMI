@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Console;
 
 use App\Http\Controllers\Controller;
 use App\Models\AppSetting;
+use App\Services\Agent\PromptAssembler;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -11,7 +12,7 @@ use Inertia\Response;
 
 class SettingsController extends Controller
 {
-    public function edit(): Response
+    public function edit(PromptAssembler $prompts): Response
     {
         $settings = AppSetting::current();
 
@@ -22,6 +23,10 @@ class SettingsController extends Controller
                 'default_daily_quota' => $settings->default_daily_quota,
                 'system_prompt' => $settings->system_prompt,
                 'updated_at' => $settings->updated_at?->toIso8601String(),
+            ],
+            'promptLayers' => [
+                'core' => $prompts->corePrompt(),
+                'orchestrator' => $prompts->orchestratorPrompt(),
             ],
         ]);
     }

@@ -86,7 +86,8 @@ describe('chat streaming', function () {
         expect($usage->key_source)->toBe('platform')->and($usage->status)->toBe('complete')->and($usage->input_tokens)->toBe(12);
 
         expect($fake->calls[0]['model']->apiKey)->toBe('sk-or-platform-key-1234')
-            ->and($fake->calls[0]['system'])->toContain('Nama pengguna: Rayy');
+            ->and($fake->calls[0]['system'])->toContain('<core_rules>')
+            ->and($fake->calls[0]['system'])->toContain('User account name: Rayy');
     });
 
     it('sends earlier complete messages as context, oldest first', function () {

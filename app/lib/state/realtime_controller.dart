@@ -7,6 +7,7 @@ import '../data/models.dart';
 import 'chat_controller.dart';
 import 'conversations_controller.dart';
 import 'core_providers.dart';
+import 'persona_controller.dart';
 import 'session_controller.dart';
 
 /// Connects to Reverb while signed in and routes events from other devices into the app state.
@@ -73,6 +74,10 @@ class RealtimeController extends Notifier<bool> {
         final raw = data['message'];
         if (id == null || raw is! Map<String, dynamic>) return;
         chat.remoteMessage(id, ChatMessage.fromJson(raw));
+      case 'persona.updated':
+        final raw = data['persona'];
+        if (raw is! Map<String, dynamic>) return;
+        ref.read(personaProvider.notifier).applyRemote(raw);
       case 'session.revoked':
         final ids = (data['token_ids'] as List? ?? const []).whereType<int>();
         final mine = ref.read(sessionProvider).tokenId;

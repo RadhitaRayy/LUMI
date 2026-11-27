@@ -1201,6 +1201,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Lumi the cat, asleep'**
   String get catSleeping;
+
+  /// No description provided for @agentMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent'**
+  String get agentMenu;
+
+  /// No description provided for @agentSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shape Lumi\'s personality, memory, notes, and tools.'**
+  String get agentSubtitle;
+
+  /// No description provided for @agentPersona.
+  ///
+  /// In en, this message translates to:
+  /// **'Persona'**
+  String get agentPersona;
+
+  /// No description provided for @agentMemory.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory'**
+  String get agentMemory;
+
+  /// No description provided for @agentNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get agentNotes;
+
+  /// No description provided for @agentTools.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools'**
+  String get agentTools;
+
+  /// No description provided for @comingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Soon'**
+  String get comingSoon;
+
+  /// No description provided for @personaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Persona'**
+  String get personaTitle;
+
+  /// No description provided for @personaSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how Lumi speaks and addresses you. Core safety rules always stay protected.'**
+  String get personaSubtitle;
+
+  /// No description provided for @personaActiveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Use persona'**
+  String get personaActiveLabel;
+
+  /// No description provided for @personaActiveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off to use Lumi\'s neutral default style.'**
+  String get personaActiveHint;
+
+  /// No description provided for @personaPresetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Style preset'**
+  String get personaPresetLabel;
+
+  /// No description provided for @personaCallMeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Call me'**
+  String get personaCallMeLabel;
+
+  /// No description provided for @personaCallMeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional nickname (defaults to your account name)'**
+  String get personaCallMeHint;
+
+  /// No description provided for @personaInstructionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom instructions'**
+  String get personaInstructionsLabel;
+
+  /// No description provided for @personaInstructionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Explain step by step, use simple examples, avoid slang…'**
+  String get personaInstructionsHint;
+
+  /// No description provided for @personaGuardrailNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Persona only shapes tone, nickname, and style — it never overrides Lumi\'s safety or tool permission rules.'**
+  String get personaGuardrailNote;
+
+  /// No description provided for @personaSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Persona saved'**
+  String get personaSaved;
 }
 
 class _AppLocalizationsDelegate

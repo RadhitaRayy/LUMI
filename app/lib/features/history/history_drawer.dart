@@ -12,6 +12,7 @@ import '../../state/session_controller.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/motion.dart';
 import '../../widgets/ui.dart';
+import '../agent/agent_screen.dart';
 import '../settings/settings_screen.dart';
 
 /// Slides in from the left: search, conversations grouped by day, delete with a confirm sheet.
@@ -150,36 +151,80 @@ class _HistoryDrawerState extends ConsumerState<HistoryDrawer> {
             ),
             if (user != null)
               Container(
-                padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
                 decoration: const BoxDecoration(border: Border(top: BorderSide(color: AppColors.line))),
-                child: Row(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    CircleAvatar(
-                      radius: 18,
-                      backgroundColor: AppColors.border,
-                      child: Text(user.initial, style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.text)),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(user.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w500)),
-                          Text(
-                            user.usesOwnKey ? l.usingOwnKey : l.quotaLeft(user.quota.remaining),
-                            style: const TextStyle(fontSize: 12, color: AppColors.muted),
-                          ),
-                        ],
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).push(lumiRoute<void>(const AgentScreen()));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
+                        child: Row(
+                          children: [
+                            const TintIcon(icon: Icons.auto_awesome_rounded, color: AppColors.accent, size: 34),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                l.agentMenu,
+                                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                            const Icon(Icons.chevron_right_rounded, color: AppColors.faint, size: 20),
+                          ],
+                        ),
                       ),
                     ),
-                    IconButton(
-                      tooltip: l.openSettings,
-                      color: AppColors.muted,
-                      onPressed: () {
+                    const Divider(height: 1, color: AppColors.divider),
+                    InkWell(
+                      onTap: () {
                         Navigator.of(context).pop();
                         Navigator.of(context).push(lumiRoute<void>(const SettingsScreen()));
                       },
-                      icon: const Icon(Icons.tune_rounded),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 12, 12, 12),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 18,
+                              backgroundColor: AppColors.border,
+                              child: Text(
+                                user.initial,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.text),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    user.name,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(fontWeight: FontWeight.w500),
+                                  ),
+                                  Text(
+                                    user.usesOwnKey ? l.usingOwnKey : l.quotaLeft(user.quota.remaining),
+                                    style: const TextStyle(fontSize: 12, color: AppColors.muted),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            IconButton(
+                              tooltip: l.openSettings,
+                              color: AppColors.muted,
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                Navigator.of(context).push(lumiRoute<void>(const SettingsScreen()));
+                              },
+                              icon: const Icon(Icons.tune_rounded),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),

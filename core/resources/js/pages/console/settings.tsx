@@ -16,7 +16,18 @@ type Settings = {
     updated_at: string | null;
 };
 
-export default function SettingsPage({ settings }: { settings: Settings }) {
+type PromptLayers = {
+    core: string;
+    orchestrator: string;
+};
+
+export default function SettingsPage({
+    settings,
+    promptLayers,
+}: {
+    settings: Settings;
+    promptLayers: PromptLayers;
+}) {
     const form = useForm({
         registration_open: settings.registration_open,
         require_email_verification: settings.require_email_verification,
@@ -128,7 +139,7 @@ export default function SettingsPage({ settings }: { settings: Settings }) {
                         </div>
                         <div className="flex flex-col gap-2">
                             <Label htmlFor="prompt" className="text-sm">
-                                System prompt
+                                Kebijakan platform (Layer 2 — System prompt)
                             </Label>
                             <textarea
                                 id="prompt"
@@ -144,10 +155,37 @@ export default function SettingsPage({ settings }: { settings: Settings }) {
                             />
                             <InputError message={form.errors.system_prompt} />
                             <span className="text-xs text-muted-foreground">
-                                Nama pengguna ditambahkan otomatis di akhir
-                                prompt.
+                                Dirakit otomatis di bawah Layer 1 (core.md) dan
+                                di atas Layer 3 (orchestrator + memori) serta
+                                Layer 4 (persona user, tidak bisa menimpa aturan
+                                ini).
                             </span>
                         </div>
+                        <details className="rounded-xl border border-border/70 bg-background/60 px-4 py-3">
+                            <summary className="cursor-pointer text-xs font-medium text-muted-foreground select-none">
+                                Lihat aturan terkunci: Layer 1 (core.md) &amp;
+                                Layer 3 (orchestrator.md)
+                            </summary>
+                            <div className="mt-3 flex flex-col gap-3">
+                                <div className="flex flex-col gap-1">
+                                    <span className="font-mono text-[11px] font-medium text-primary">
+                                        Layer 1 — core/resources/prompts/core.md
+                                    </span>
+                                    <pre className="max-h-48 overflow-auto rounded-lg border bg-card p-3 font-mono text-[11px] leading-relaxed whitespace-pre-wrap text-muted-foreground">
+                                        {promptLayers.core}
+                                    </pre>
+                                </div>
+                                <div className="flex flex-col gap-1">
+                                    <span className="font-mono text-[11px] font-medium text-primary">
+                                        Layer 3 —
+                                        core/resources/prompts/orchestrator.md
+                                    </span>
+                                    <pre className="max-h-48 overflow-auto rounded-lg border bg-card p-3 font-mono text-[11px] leading-relaxed whitespace-pre-wrap text-muted-foreground">
+                                        {promptLayers.orchestrator}
+                                    </pre>
+                                </div>
+                            </div>
+                        </details>
                     </section>
 
                     <div className="flex flex-wrap items-center gap-3">

@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\EmailVerificationController;
 use App\Http\Controllers\Api\V1\MeController;
 use App\Http\Controllers\Api\V1\MessageController;
 use App\Http\Controllers\Api\V1\PasswordResetController;
+use App\Http\Controllers\Api\V1\PersonaController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -39,6 +40,8 @@ Route::prefix('v1')->group(function () {
         Route::get('me', [MeController::class, 'show']);
         Route::patch('me', [MeController::class, 'update']);
         Route::put('me/password', [MeController::class, 'updatePassword']);
+        Route::get('me/persona', [PersonaController::class, 'show']);
+        Route::put('me/persona', [PersonaController::class, 'update']);
 
         Route::get('devices', [DeviceController::class, 'index']);
         Route::delete('devices/{device}', [DeviceController::class, 'destroy'])->whereNumber('device');

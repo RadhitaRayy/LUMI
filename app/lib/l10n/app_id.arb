@@ -197,5 +197,24 @@
   "quotaTitle": "Kuota hari ini habis",
   "quotaBody": "Lumi istirahat dulu, kuota reset pukul 00.00 WIB. Pakai key AI sendiri supaya bisa lanjut tanpa batas.",
   "setUpAiKey": "Atur Kunci AI",
-  "catSleeping": "Lumi si kucing tertidur"
+  "catSleeping": "Lumi si kucing tertidur",
+
+  "agentMenu": "Agent",
+  "agentSubtitle": "Atur karakter, memori, catatan, dan kemampuan Lumi.",
+  "agentPersona": "Persona",
+  "agentMemory": "Memori",
+  "agentNotes": "Catatan",
+  "agentTools": "Tools",
+  "comingSoon": "Segera",
+  "personaTitle": "Persona",
+  "personaSubtitle": "Atur gaya bicara dan panggilan Lumi untukmu. Aturan keamanan inti tetap terjaga.",
+  "personaActiveLabel": "Aktifkan persona",
+  "personaActiveHint": "Matikan untuk memakai gaya netral bawaan Lumi.",
+  "personaPresetLabel": "Preset gaya",
+  "personaCallMeLabel": "Panggil saya",
+  "personaCallMeHint": "Nama panggilan opsional (default: nama akunmu)",
+  "personaInstructionsLabel": "Instruksi tambahan",
+  "personaInstructionsHint": "contoh: Jelaskan langkah demi langkah, pakai contoh simpel, tanpa bahasa gaul…",
+  "personaGuardrailNote": "Persona hanya mengatur gaya bicara, panggilan, dan nada — tidak pernah menimpa aturan keamanan atau izin tool Lumi.",
+  "personaSaved": "Persona disimpan"
 }

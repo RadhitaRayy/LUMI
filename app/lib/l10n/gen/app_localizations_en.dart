@@ -674,4 +674,64 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get catSleeping => 'Lumi the cat, asleep';
+
+  @override
+  String get agentMenu => 'Agent';
+
+  @override
+  String get agentSubtitle =>
+      'Shape Lumi\'s personality, memory, notes, and tools.';
+
+  @override
+  String get agentPersona => 'Persona';
+
+  @override
+  String get agentMemory => 'Memory';
+
+  @override
+  String get agentNotes => 'Notes';
+
+  @override
+  String get agentTools => 'Tools';
+
+  @override
+  String get comingSoon => 'Soon';
+
+  @override
+  String get personaTitle => 'Persona';
+
+  @override
+  String get personaSubtitle =>
+      'Choose how Lumi speaks and addresses you. Core safety rules always stay protected.';
+
+  @override
+  String get personaActiveLabel => 'Use persona';
+
+  @override
+  String get personaActiveHint =>
+      'Turn off to use Lumi\'s neutral default style.';
+
+  @override
+  String get personaPresetLabel => 'Style preset';
+
+  @override
+  String get personaCallMeLabel => 'Call me';
+
+  @override
+  String get personaCallMeHint =>
+      'Optional nickname (defaults to your account name)';
+
+  @override
+  String get personaInstructionsLabel => 'Custom instructions';
+
+  @override
+  String get personaInstructionsHint =>
+      'e.g. Explain step by step, use simple examples, avoid slang…';
+
+  @override
+  String get personaGuardrailNote =>
+      'Persona only shapes tone, nickname, and style — it never overrides Lumi\'s safety or tool permission rules.';
+
+  @override
+  String get personaSaved => 'Persona saved';
 }

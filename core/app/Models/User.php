@@ -35,6 +35,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property int|null $daily_quota
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read UserPersona|null $persona
  */
 #[Fillable(['name', 'email', 'password', 'locale'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
@@ -115,6 +116,12 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
     public function aiKey(): HasOne
     {
         return $this->hasOne(UserAiKey::class);
+    }
+
+    /** @return HasOne<UserPersona, $this> */
+    public function persona(): HasOne
+    {
+        return $this->hasOne(UserPersona::class);
     }
 
     /**

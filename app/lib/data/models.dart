@@ -197,3 +197,58 @@ class AiKey {
   final DateTime? lastValidatedAt;
   final String? lastError;
 }
+
+class PersonaPreset {
+  const PersonaPreset({required this.id, required this.name, required this.description});
+
+  factory PersonaPreset.fromJson(Map<String, dynamic> json) => PersonaPreset(
+    id: json['id'] as String? ?? 'santai',
+    name: json['name'] as String? ?? '',
+    description: json['description'] as String? ?? '',
+  );
+
+  final String id;
+  final String name;
+  final String description;
+}
+
+class UserPersona {
+  const UserPersona({
+    required this.preset,
+    required this.isActive,
+    this.callMe,
+    this.customInstructions,
+    this.updatedAt,
+  });
+
+  factory UserPersona.fromJson(Map<String, dynamic> json) => UserPersona(
+    preset: json['preset'] as String? ?? 'santai',
+    callMe: json['call_me'] as String?,
+    customInstructions: json['custom_instructions'] as String?,
+    isActive: json['is_active'] as bool? ?? true,
+    updatedAt: _date(json['updated_at']),
+  );
+
+  final String preset;
+  final String? callMe;
+  final String? customInstructions;
+  final bool isActive;
+  final DateTime? updatedAt;
+}
+
+class PersonaBundle {
+  const PersonaBundle({required this.persona, required this.presets});
+
+  factory PersonaBundle.fromJson(Map<String, dynamic> json) => PersonaBundle(
+    persona: UserPersona.fromJson(json['persona'] as Map<String, dynamic>? ?? const {}),
+    presets: [
+      for (final p in (json['presets'] as List? ?? const []))
+        PersonaPreset.fromJson(p as Map<String, dynamic>),
+    ],
+  );
+
+  final UserPersona persona;
+  final List<PersonaPreset> presets;
+
+  PersonaPreset? get activePreset => presets.where((p) => p.id == persona.preset).firstOrNull;
+}

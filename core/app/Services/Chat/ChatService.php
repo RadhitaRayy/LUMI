@@ -8,11 +8,11 @@ use App\Exceptions\ApiException;
 use App\Llm\ChatDriver;
 use App\Llm\LlmException;
 use App\Llm\ModelResolver;
-use App\Models\AppSetting;
 use App\Models\Conversation;
 use App\Models\LlmUsage;
 use App\Models\Message;
 use App\Models\User;
+use App\Services\Agent\PromptAssembler;
 use Closure;
 use Illuminate\Support\Str;
 
@@ -27,6 +27,7 @@ class ChatService
     public function __construct(
         private readonly ModelResolver $resolver,
         private readonly ChatDriver $driver,
+        private readonly PromptAssembler $prompts,
     ) {}
 
     /**
@@ -115,7 +116,7 @@ class ChatService
         $startedAt = hrtime(true);
 
         try {
-            foreach ($this->driver->stream($turn->model, $this->systemPrompt($turn->user), $turn->history) as $event) {
+            foreach ($this->driver->stream($turn->model, $this->prompts->assemble($turn->user), $turn->history) as $event) {
                 if ($event->isDelta()) {
                     $text .= $event->text;
                     $emit('delta', ['text' => $event->text]);
@@ -177,13 +178,5 @@ class ChatService
                 'output_tokens' => $outputTokens,
             ]);
         }
-    }
-
-    private function systemPrompt(User $user): string
-    {
-        $base = AppSetting::current()->system_prompt
-            ?: 'Kamu adalah Lumi, asisten pribadi yang ramah dan ringkas.';
-
-        return $base."\n\nNama pengguna: {$user->name}.";
     }
 }

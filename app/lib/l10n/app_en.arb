@@ -217,5 +217,24 @@
   "quotaTitle": "Today's quota is used up",
   "quotaBody": "Lumi is taking a break; the quota resets at 00:00 WIB. Use your own AI key to keep going without limits.",
   "setUpAiKey": "Set up AI key",
-  "catSleeping": "Lumi the cat, asleep"
+  "catSleeping": "Lumi the cat, asleep",
+
+  "agentMenu": "Agent",
+  "agentSubtitle": "Shape Lumi's personality, memory, notes, and tools.",
+  "agentPersona": "Persona",
+  "agentMemory": "Memory",
+  "agentNotes": "Notes",
+  "agentTools": "Tools",
+  "comingSoon": "Soon",
+  "personaTitle": "Persona",
+  "personaSubtitle": "Choose how Lumi speaks and addresses you. Core safety rules always stay protected.",
+  "personaActiveLabel": "Use persona",
+  "personaActiveHint": "Turn off to use Lumi's neutral default style.",
+  "personaPresetLabel": "Style preset",
+  "personaCallMeLabel": "Call me",
+  "personaCallMeHint": "Optional nickname (defaults to your account name)",
+  "personaInstructionsLabel": "Custom instructions",
+  "personaInstructionsHint": "e.g. Explain step by step, use simple examples, avoid slang…",
+  "personaGuardrailNote": "Persona only shapes tone, nickname, and style — it never overrides Lumi's safety or tool permission rules.",
+  "personaSaved": "Persona saved"
 }

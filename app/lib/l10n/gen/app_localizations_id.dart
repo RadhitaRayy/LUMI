@@ -639,4 +639,64 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get catSleeping => 'Lumi si kucing tertidur';
+
+  @override
+  String get agentMenu => 'Agent';
+
+  @override
+  String get agentSubtitle =>
+      'Atur karakter, memori, catatan, dan kemampuan Lumi.';
+
+  @override
+  String get agentPersona => 'Persona';
+
+  @override
+  String get agentMemory => 'Memori';
+
+  @override
+  String get agentNotes => 'Catatan';
+
+  @override
+  String get agentTools => 'Tools';
+
+  @override
+  String get comingSoon => 'Segera';
+
+  @override
+  String get personaTitle => 'Persona';
+
+  @override
+  String get personaSubtitle =>
+      'Atur gaya bicara dan panggilan Lumi untukmu. Aturan keamanan inti tetap terjaga.';
+
+  @override
+  String get personaActiveLabel => 'Aktifkan persona';
+
+  @override
+  String get personaActiveHint =>
+      'Matikan untuk memakai gaya netral bawaan Lumi.';
+
+  @override
+  String get personaPresetLabel => 'Preset gaya';
+
+  @override
+  String get personaCallMeLabel => 'Panggil saya';
+
+  @override
+  String get personaCallMeHint =>
+      'Nama panggilan opsional (default: nama akunmu)';
+
+  @override
+  String get personaInstructionsLabel => 'Instruksi tambahan';
+
+  @override
+  String get personaInstructionsHint =>
+      'contoh: Jelaskan langkah demi langkah, pakai contoh simpel, tanpa bahasa gaul…';
+
+  @override
+  String get personaGuardrailNote =>
+      'Persona hanya mengatur gaya bicara, panggilan, dan nada — tidak pernah menimpa aturan keamanan atau izin tool Lumi.';
+
+  @override
+  String get personaSaved => 'Persona disimpan';
 }
