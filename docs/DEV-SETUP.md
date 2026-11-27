@@ -166,6 +166,11 @@ Notes:
   `meta-llama/llama-3.3-70b-instruct:free` was no longer free as of 2026-11-26. Check the current
   list (no key needed): `curl -s https://openrouter.ai/api/v1/models`, then pick an id ending in `:free`.
 
+`PHP_CLI_SERVER_WORKERS=4` in `.env` lets `php artisan serve` handle several requests at once;
+with a single worker, one slow streaming answer blocks every other request from the app. Chat
+streams lift PHP's 30-second limit to 180 seconds (the provider call times out at 120 seconds), and
+answers left `streaming` for over 5 minutes are marked `error` / `interrupted`.
+
 Realtime (Reverb) needs three processes: the API server, `reverb:start` and `queue:work` (events go
 through the queue). `php artisan dev` runs them all at once. On this laptop port 8080 is taken by
 Laragon's Apache, so local Reverb uses port 8090 (`REVERB_PORT=8090` and `REVERB_SERVER_PORT=8090`

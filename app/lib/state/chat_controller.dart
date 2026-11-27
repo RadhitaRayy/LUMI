@@ -162,9 +162,13 @@ class ChatController extends Notifier<ChatState> {
   /// A message saved on another device (realtime `message.created`).
   void remoteMessage(String conversationId, ChatMessage message) {
     if (state.conversationId != conversationId) return;
-    if (state.messages.any((m) => m.id == message.id)) return;
     // While this device streams, its own answer arrives through SSE.
     if (state.streaming) return;
+    if (state.messages.any((m) => m.id == message.id)) {
+      // An answer that was still being written elsewhere when this chat opened is now finished.
+      _replace(message.id, (_) => message);
+      return;
+    }
     state = state.copyWith(messages: [...state.messages, message]);
   }
 

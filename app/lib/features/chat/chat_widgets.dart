@@ -6,6 +6,7 @@ import '../../data/models.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/motion.dart';
 import '../../widgets/lumi_cat.dart';
+import '../../widgets/markdown_view.dart';
 import '../../widgets/ui.dart';
 
 /// One chat message. User messages sit right in a bubble; Lumi's answers sit left with the cat.
@@ -41,27 +42,54 @@ class MessageView extends StatelessWidget {
 
     final streaming = message.status == MessageStatus.streaming;
     final waiting = streaming && message.content.isEmpty;
+    final failed = message.status == MessageStatus.error;
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _Hop(active: streaming, child: const LumiCatIcon(size: 30)),
-        const SizedBox(width: 10),
-        Expanded(
+        const SizedBox(width: 8),
+        Flexible(
           child: Padding(
-            padding: const EdgeInsets.only(top: 4, right: 16),
+            padding: const EdgeInsets.only(right: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (waiting)
-                  Semantics(label: l.typing, child: const TypingDots())
-                else if (message.content.isNotEmpty)
-                  _StreamingText(text: message.content, streaming: streaming),
+                if (waiting || message.content.isNotEmpty)
+                  // Lumi's answer in a bubble; the corner by the cat is the small one.
+                  AnimatedSize(
+                    duration: Motion.of(context, const Duration(milliseconds: 160)),
+                    alignment: Alignment.topLeft,
+                    child: Container(
+                      padding: waiting
+                          ? const EdgeInsets.symmetric(horizontal: 14, vertical: 6)
+                          : const EdgeInsets.fromLTRB(15, 11, 15, 12),
+                      decoration: BoxDecoration(
+                        color: AppColors.card,
+                        border: Border.all(color: AppColors.line),
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(6),
+                          topRight: Radius.circular(20),
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
+                        ),
+                      ),
+                      child: waiting
+                          ? Semantics(label: l.typing, child: const TypingDots())
+                          : SelectionArea(
+                              child: MarkdownView(
+                                data: message.content,
+                                trailing: streaming ? const _Caret() : null,
+                              ),
+                            ),
+                    ),
+                  ),
                 if (message.status == MessageStatus.cancelled) ...[
                   const SizedBox(height: 6),
                   Text(l.stopped, style: const TextStyle(fontSize: 12, color: AppColors.warn)),
                 ],
-                if (message.status == MessageStatus.error) ...[
-                  const SizedBox(height: 6),
+                if (failed) ...[
+                  if (message.content.isNotEmpty) const SizedBox(height: 6),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                     decoration: BoxDecoration(
@@ -80,29 +108,6 @@ class MessageView extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-/// Answer text with a blinking lime caret while it streams in.
-class _StreamingText extends StatelessWidget {
-  const _StreamingText({required this.text, required this.streaming});
-
-  final String text;
-  final bool streaming;
-
-  @override
-  Widget build(BuildContext context) {
-    const style = TextStyle(fontSize: 15, height: 1.55);
-    if (!streaming) return SelectableText(text, style: style);
-    return Text.rich(
-      TextSpan(
-        style: style,
-        children: [
-          TextSpan(text: text),
-          const WidgetSpan(alignment: PlaceholderAlignment.middle, child: _Caret()),
-        ],
-      ),
     );
   }
 }

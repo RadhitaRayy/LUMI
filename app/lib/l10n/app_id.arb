@@ -103,6 +103,8 @@
   "suggestionEmailPrompt": "Bantu aku tulis email sopan untuk minta izin cuti sehari.",
   "suggestionExplainPrompt": "Jelaskan cara kerja internet dengan sederhana.",
   "chatGone": "Percakapan ini dihapus dari perangkat lain.",
+  "copyCode": "Salin",
+  "copied": "Tersalin",
 
   "historyTitle": "Riwayat",
   "newChatShort": "Baru",

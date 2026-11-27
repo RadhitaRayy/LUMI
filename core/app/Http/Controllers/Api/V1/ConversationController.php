@@ -8,6 +8,7 @@ use App\Events\ConversationUpdated;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ConversationResource;
 use App\Models\Conversation;
+use App\Models\Message;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -50,6 +51,7 @@ class ConversationController extends Controller
     public function show(Request $request, Conversation $conversation): ConversationResource
     {
         $this->ensureOwner($request, $conversation);
+        Message::expireStale($request->user()->id);
 
         return new ConversationResource($conversation->load('messages'));
     }

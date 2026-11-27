@@ -31,6 +31,22 @@ class Message extends Model
 
     public const ROLE_ASSISTANT = 'assistant';
 
+    /** An answer still `streaming` after this long was cut off (the PHP process died mid-answer). */
+    public const STALE_AFTER_MINUTES = 5;
+
+    /**
+     * Marks answers that never finished as failed, so apps stop waiting for them and they no
+     * longer count toward the daily quota. Returns how many were marked.
+     */
+    public static function expireStale(?int $userId = null): int
+    {
+        return static::query()
+            ->where('status', 'streaming')
+            ->where('updated_at', '<', now()->subMinutes(self::STALE_AFTER_MINUTES))
+            ->when($userId !== null, fn ($q) => $q->whereHas('conversation', fn ($c) => $c->where('user_id', $userId)))
+            ->update(['status' => 'error', 'error_code' => 'interrupted', 'updated_at' => now()]);
+    }
+
     protected function casts(): array
     {
         return [

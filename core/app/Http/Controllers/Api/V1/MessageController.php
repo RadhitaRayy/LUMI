@@ -28,6 +28,9 @@ class MessageController extends Controller
 
         return response()->stream(function () use ($chat, $turn) {
             ignore_user_abort(true); // always finish saving the answer
+            // Free models can take well over PHP's default 30 s; the provider call itself times out
+            // at 120 s (PrismChatDriver), which then ends the answer with an error instead of a fatal.
+            set_time_limit(180);
 
             $chat->stream(
                 $turn,

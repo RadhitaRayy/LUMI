@@ -280,7 +280,9 @@ and data policies (free tiers may use data for training — don't send sensitive
 
 | 2026-11-27 | **Smoother app + dev email**: release build that still reaches the laptop over `adb reverse` (cleartext to localhost only); sign-in screens shrink their header and hide the footer while the keyboard is open, keep the button above the keyboard, and close the keyboard on a tap outside; lighter layout (no `IntrinsicHeight`), compositor fades, chat list and send button rebuild on their own. Mailpit for verification and reset emails. NVIDIA NIM provider added in the Console and its connection test passes (`nvidia/nemotron-3.5-super-vl-120b-a12b`) |
 
-Not yet: a chat answered through NVIDIA NIM (make it the default model in the Console, then chat); app widget tests; the two-device end-to-end test.
+| 2026-11-27 | **Stuck answers + richer chat**: slow free models hit PHP's 30-second limit mid-answer and left the answer `streaming` forever (endless typing dots). Streams now get 180 s, stale answers are marked `interrupted`, and the dev server runs 4 workers. Lumi's answers sit in bubbles and render Markdown (headings, lists, tables that scroll sideways, code blocks with a copy button); a finished answer from another device replaces its placeholder. NVIDIA NIM now answers chats (`nvidia/nemotron-3.5-super-vl-120b-a12b` as default). 121 Core tests pass |
+
+Not yet: app widget tests beyond Markdown; the two-device end-to-end test.
 
 ## 7. Work order
 

@@ -156,6 +156,20 @@ describe('chat streaming', function () {
         $this->withToken($token)->getJson('/api/v1/me')->assertJsonPath('user.quota.used_today', 0);
     });
 
+    it('marks answers that were cut off as failed, so they stop counting and stop "typing"', function () {
+        [$user, $token] = userWithToken();
+        $conversation = $user->conversations()->create(['title' => 'Bot']);
+        $stale = $conversation->messages()->create(['role' => 'assistant', 'content' => '', 'status' => 'streaming', 'key_source' => 'platform']);
+        $stale->forceFill(['updated_at' => now()->subMinutes(10)])->saveQuietly();
+        $live = $conversation->messages()->create(['role' => 'assistant', 'content' => '', 'status' => 'streaming', 'key_source' => 'platform']);
+
+        $this->withToken($token)->getJson("/api/v1/conversations/{$conversation->id}")->assertOk();
+
+        expect($stale->fresh()->status)->toBe('error')
+            ->and($stale->fresh()->error_code)->toBe('interrupted')
+            ->and($live->fresh()->status)->toBe('streaming');
+    });
+
     it('keeps counting the quota after the conversation is deleted', function () {
         withPlatformModel();
         fakeLlm(['ok']);

@@ -341,6 +341,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chatGone => 'This chat was deleted on another device.';
 
   @override
+  String get copyCode => 'Copy';
+
+  @override
+  String get copied => 'Copied';
+
+  @override
   String get historyTitle => 'History';
 
   @override

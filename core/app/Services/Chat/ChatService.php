@@ -36,6 +36,9 @@ class ChatService
     {
         $model = $this->resolver->for($user);
 
+        // Answers cut off earlier must not keep counting as "in progress" toward the quota.
+        Message::expireStale($user->id);
+
         if (! $model->isUserKey()) {
             $limit = $user->effectiveDailyQuota();
             if ($user->platformMessagesToday() >= $limit) {

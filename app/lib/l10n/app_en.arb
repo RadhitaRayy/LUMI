@@ -111,6 +111,8 @@
   "suggestionEmailPrompt": "Help me write a polite email asking for a day off.",
   "suggestionExplainPrompt": "Explain how the internet works, simply.",
   "chatGone": "This chat was deleted on another device.",
+  "copyCode": "Copy",
+  "copied": "Copied",
 
   "historyTitle": "History",
   "newChatShort": "New",

@@ -668,6 +668,18 @@ abstract class AppLocalizations {
   /// **'This chat was deleted on another device.'**
   String get chatGone;
 
+  /// No description provided for @copyCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copyCode;
+
+  /// No description provided for @copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get copied;
+
   /// No description provided for @historyTitle.
   ///
   /// In en, this message translates to:

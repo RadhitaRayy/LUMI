@@ -329,6 +329,12 @@ class AppLocalizationsId extends AppLocalizations {
   String get chatGone => 'Percakapan ini dihapus dari perangkat lain.';
 
   @override
+  String get copyCode => 'Salin';
+
+  @override
+  String get copied => 'Tersalin';
+
+  @override
   String get historyTitle => 'Riwayat';
 
   @override
