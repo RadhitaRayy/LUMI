@@ -11,6 +11,10 @@ The design sources and the concepts that weren't picked are on the Lumi Console 
 - `lumi-cat.svg`: the full character (sign-in screen, empty states, stickers).
 - `lumi-icon.svg`: the app icon, the cat's head on a lime tile (also the Console favicon).
 - `lumi-icon-foreground.svg`: the foreground layer of the Android adaptive icon (background `#B5F23D`).
+- `png/`: ready-made PNGs rendered from these SVGs: `lumi-icon` and `lumi-cat` (1024×1024),
+  `lumi-wordmark-dark` / `-light` (1200×520, transparent), and the cat + wordmark lockup
+  `lumi-logo-dark` / `-light` (1600×640, transparent) and `lumi-logo-on-dark` (on `#0E1014`).
+  "dark" / "light" names the background the logo is meant to sit on.
 - The app draws the cat in code (`app/lib/widgets/lumi_cat.dart`) so the lantern, paw and eyes can
   animate; its launcher icons are rendered from these SVGs into `app/assets/icon/`.
 

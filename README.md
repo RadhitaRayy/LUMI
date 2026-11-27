@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="design/brand/png/lumi-logo-dark.png">
+    <img src="design/brand/png/lumi-logo-light.png" alt="Lumi, the cat with a lantern" width="440">
+  </picture>
+</p>
+
 # Lumi — Personal AI Agent
 
 > **Light up your day.**
