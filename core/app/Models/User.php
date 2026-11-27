@@ -124,6 +124,18 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
         return $this->hasOne(UserPersona::class);
     }
 
+    /** @return HasMany<UserMemory, $this> */
+    public function memories(): HasMany
+    {
+        return $this->hasMany(UserMemory::class);
+    }
+
+    /** @return HasMany<UserNote, $this> */
+    public function notes(): HasMany
+    {
+        return $this->hasMany(UserNote::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *

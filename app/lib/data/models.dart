@@ -252,3 +252,59 @@ class PersonaBundle {
 
   PersonaPreset? get activePreset => presets.where((p) => p.id == persona.preset).firstOrNull;
 }
+
+class UserMemory {
+  const UserMemory({
+    required this.id,
+    required this.category,
+    required this.content,
+    required this.source,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  factory UserMemory.fromJson(Map<String, dynamic> json) => UserMemory(
+    id: '${json['id']}',
+    category: json['category'] as String? ?? 'fact',
+    content: json['content'] as String? ?? '',
+    source: json['source'] as String? ?? 'user',
+    createdAt: _date(json['created_at']),
+    updatedAt: _date(json['updated_at']),
+  );
+
+  final String id;
+  final String category;
+  final String content;
+  final String source;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+
+  bool get fromAgent => source == 'agent';
+}
+
+class UserNote {
+  const UserNote({
+    required this.id,
+    required this.title,
+    required this.content,
+    this.tags = const [],
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  factory UserNote.fromJson(Map<String, dynamic> json) => UserNote(
+    id: '${json['id']}',
+    title: json['title'] as String? ?? '',
+    content: json['content'] as String? ?? '',
+    tags: [for (final t in (json['tags'] as List? ?? const [])) '$t'],
+    createdAt: _date(json['created_at']),
+    updatedAt: _date(json['updated_at']),
+  );
+
+  final String id;
+  final String title;
+  final String content;
+  final List<String> tags;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+}

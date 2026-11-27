@@ -6,7 +6,9 @@ use App\Http\Controllers\Api\V1\ConversationController;
 use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\EmailVerificationController;
 use App\Http\Controllers\Api\V1\MeController;
+use App\Http\Controllers\Api\V1\MemoryController;
 use App\Http\Controllers\Api\V1\MessageController;
+use App\Http\Controllers\Api\V1\NoteController;
 use App\Http\Controllers\Api\V1\PasswordResetController;
 use App\Http\Controllers\Api\V1\PersonaController;
 use Illuminate\Support\Facades\Route;
@@ -62,6 +64,17 @@ Route::prefix('v1')->group(function () {
             Route::delete('conversations/{conversation}', [ConversationController::class, 'destroy']);
             Route::post('conversations/{conversation}/messages', [MessageController::class, 'store'])
                 ->middleware('throttle:api-chat');
+
+            // Agent memory & personal notes
+            Route::get('memories', [MemoryController::class, 'index']);
+            Route::post('memories', [MemoryController::class, 'store']);
+            Route::patch('memories/{memory}', [MemoryController::class, 'update']);
+            Route::delete('memories/{memory}', [MemoryController::class, 'destroy']);
+
+            Route::get('notes', [NoteController::class, 'index']);
+            Route::post('notes', [NoteController::class, 'store']);
+            Route::patch('notes/{note}', [NoteController::class, 'update']);
+            Route::delete('notes/{note}', [NoteController::class, 'destroy']);
         });
     });
 });

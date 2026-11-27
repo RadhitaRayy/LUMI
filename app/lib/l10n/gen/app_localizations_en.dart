@@ -734,4 +734,110 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get personaSaved => 'Persona saved';
+
+  @override
+  String memorySubtitle(int limit) {
+    return 'Facts Lumi remembers across chats. Up to $limit items; the latest 20 are active in context.';
+  }
+
+  @override
+  String get memorySearchHint => 'Search memories';
+
+  @override
+  String get memoryAdd => 'Add memory';
+
+  @override
+  String get memoryEdit => 'Edit memory';
+
+  @override
+  String get memoryContentLabel => 'What should Lumi remember?';
+
+  @override
+  String get memoryContentHint => 'e.g. Prefers concise Laravel code examples';
+
+  @override
+  String get memoryCategoryLabel => 'Category';
+
+  @override
+  String get memoryCategoryFact => 'Fact';
+
+  @override
+  String get memoryCategoryPreference => 'Preference';
+
+  @override
+  String get memoryCategoryContext => 'Context';
+
+  @override
+  String get memorySourceLumi => 'Lumi';
+
+  @override
+  String get memorySourceYou => 'You';
+
+  @override
+  String get memoryEmptyTitle => 'No memories yet';
+
+  @override
+  String get memoryEmptyBody =>
+      'Add a lasting preference or fact here, and Lumi will remember it in every chat.';
+
+  @override
+  String get memoryDeleteTitle => 'Delete this memory?';
+
+  @override
+  String get memoryDeleteBody =>
+      'Lumi will forget this item across all your devices.';
+
+  @override
+  String get memorySaved => 'Memory saved';
+
+  @override
+  String get memoryDeleted => 'Memory deleted';
+
+  @override
+  String get notesSearchHint => 'Search notes';
+
+  @override
+  String get noteAdd => 'New note';
+
+  @override
+  String get noteEdit => 'Edit note';
+
+  @override
+  String get noteTitleLabel => 'Title';
+
+  @override
+  String get noteTitleHint => 'Short title for your note';
+
+  @override
+  String get noteContentLabel => 'Content';
+
+  @override
+  String get noteContentHint => 'Write anything you want to keep handy…';
+
+  @override
+  String get noteTagsLabel => 'Tags (optional)';
+
+  @override
+  String get noteTagsHint => 'Separate with commas, e.g. work, ideas';
+
+  @override
+  String get notesEmptyTitle => 'No notes yet';
+
+  @override
+  String get notesEmptyBody =>
+      'Save checklists, snippets, or ideas here so both you and Lumi can find them anytime.';
+
+  @override
+  String get noteDeleteTitle => 'Delete this note?';
+
+  @override
+  String noteDeleteBody(String title) {
+    return '“$title” will be permanently removed.';
+  }
+
+  @override
+  String get noteSaved => 'Note saved';
+
+  @override
+  String get noteDeleted => 'Note deleted';
 }

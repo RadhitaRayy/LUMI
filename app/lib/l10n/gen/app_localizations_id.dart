@@ -699,4 +699,111 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get personaSaved => 'Persona disimpan';
+
+  @override
+  String memorySubtitle(int limit) {
+    return 'Fakta yang diingat Lumi antar percakapan. Maksimal $limit item; 20 terbaru otomatis masuk konteks.';
+  }
+
+  @override
+  String get memorySearchHint => 'Cari memori';
+
+  @override
+  String get memoryAdd => 'Tambah memori';
+
+  @override
+  String get memoryEdit => 'Ubah memori';
+
+  @override
+  String get memoryContentLabel => 'Apa yang perlu Lumi ingat?';
+
+  @override
+  String get memoryContentHint =>
+      'contoh: Lebih suka contoh kode Laravel yang ringkas';
+
+  @override
+  String get memoryCategoryLabel => 'Kategori';
+
+  @override
+  String get memoryCategoryFact => 'Fakta';
+
+  @override
+  String get memoryCategoryPreference => 'Preferensi';
+
+  @override
+  String get memoryCategoryContext => 'Konteks';
+
+  @override
+  String get memorySourceLumi => 'Lumi';
+
+  @override
+  String get memorySourceYou => 'Kamu';
+
+  @override
+  String get memoryEmptyTitle => 'Belum ada memori';
+
+  @override
+  String get memoryEmptyBody =>
+      'Tambah preferensi atau fakta penting di sini supaya Lumi mengingatnya di tiap percakapan.';
+
+  @override
+  String get memoryDeleteTitle => 'Hapus memori ini?';
+
+  @override
+  String get memoryDeleteBody =>
+      'Lumi akan melupakan catatan ini di semua perangkatmu.';
+
+  @override
+  String get memorySaved => 'Memori disimpan';
+
+  @override
+  String get memoryDeleted => 'Memori dihapus';
+
+  @override
+  String get notesSearchHint => 'Cari catatan';
+
+  @override
+  String get noteAdd => 'Catatan baru';
+
+  @override
+  String get noteEdit => 'Ubah catatan';
+
+  @override
+  String get noteTitleLabel => 'Judul';
+
+  @override
+  String get noteTitleHint => 'Judul singkat catatan';
+
+  @override
+  String get noteContentLabel => 'Isi';
+
+  @override
+  String get noteContentHint => 'Tulis apa saja yang ingin kamu simpan…';
+
+  @override
+  String get noteTagsLabel => 'Tag (opsional)';
+
+  @override
+  String get noteTagsHint => 'Pisahkan dengan koma, mis. kerja, ide';
+
+  @override
+  String get notesEmptyTitle => 'Belum ada catatan';
+
+  @override
+  String get notesEmptyBody =>
+      'Simpan checklist, potongan kode, atau ide di sini agar mudah dicari kamu maupun Lumi.';
+
+  @override
+  String get noteDeleteTitle => 'Hapus catatan ini?';
+
+  @override
+  String noteDeleteBody(String title) {
+    return '“$title” akan dihapus permanen.';
+  }
+
+  @override
+  String get noteSaved => 'Catatan disimpan';
+
+  @override
+  String get noteDeleted => 'Catatan dihapus';
 }

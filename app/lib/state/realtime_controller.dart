@@ -7,6 +7,8 @@ import '../data/models.dart';
 import 'chat_controller.dart';
 import 'conversations_controller.dart';
 import 'core_providers.dart';
+import 'memories_controller.dart';
+import 'notes_controller.dart';
 import 'persona_controller.dart';
 import 'session_controller.dart';
 
@@ -78,6 +80,10 @@ class RealtimeController extends Notifier<bool> {
         final raw = data['persona'];
         if (raw is! Map<String, dynamic>) return;
         ref.read(personaProvider.notifier).applyRemote(raw);
+      case 'memory.changed':
+        ref.read(memoriesProvider.notifier).applyRemote(data);
+      case 'note.changed':
+        ref.read(notesProvider.notifier).applyRemote(data);
       case 'session.revoked':
         final ids = (data['token_ids'] as List? ?? const []).whereType<int>();
         final mine = ref.read(sessionProvider).tokenId;

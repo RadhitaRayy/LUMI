@@ -4,6 +4,7 @@ namespace App\Services\Agent;
 
 use App\Models\AppSetting;
 use App\Models\User;
+use App\Models\UserMemory;
 use App\Models\UserPersona;
 use Illuminate\Support\Str;
 
@@ -85,9 +86,9 @@ class PromptAssembler
     /**
      * Assemble the complete 4-layer system prompt for a user turn.
      *
-     * @param  list<string>  $memories  Up to 20 sanitized memory snippets (Phase 2 Slice 2)
+     * @param  list<string>|null  $memories  Explicit memory snippets, or null to load the user's latest 20 from DB
      */
-    public function assemble(User $user, array $memories = []): string
+    public function assemble(User $user, ?array $memories = null): string
     {
         $blocks = [];
 
@@ -111,9 +112,10 @@ class PromptAssembler
             "Current time: {$now}\nUser preferred app language: {$locale}\nUser account name: {$safeName}",
         ];
 
+        $rawMemories = $memories ?? $this->recentMemoriesFor($user);
         $cleanMemories = array_values(array_filter(array_map(
-            fn (string $m) => $this->sanitize($m, 300),
-            array_slice($memories, 0, 20),
+            fn (string $m) => $this->sanitize($m, UserMemory::MAX_CONTENT_LENGTH),
+            array_slice($rawMemories, 0, UserMemory::CONTEXT_LIMIT),
         )));
         if ($cleanMemories !== []) {
             $memoryLines = implode("\n", array_map(fn (string $m) => "- {$m}", $cleanMemories));
@@ -129,6 +131,18 @@ class PromptAssembler
         }
 
         return implode("\n\n", $blocks);
+    }
+
+    /** @return list<string> */
+    private function recentMemoriesFor(User $user): array
+    {
+        /** @var list<string> */
+        return $user->memories()
+            ->latest('updated_at')
+            ->latest('id')
+            ->limit(UserMemory::CONTEXT_LIMIT)
+            ->pluck('content')
+            ->all();
     }
 
     /**

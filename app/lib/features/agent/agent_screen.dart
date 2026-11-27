@@ -1,21 +1,41 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../state/memories_controller.dart';
+import '../../state/notes_controller.dart';
 import '../../state/persona_controller.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/motion.dart';
 import '../../widgets/lumi_cat.dart';
 import '../../widgets/ui.dart';
+import 'memory_screen.dart';
+import 'notes_screen.dart';
 import 'persona_screen.dart';
 
 /// Dedicated Agent hub: Persona, Memory, Notes, and Tools — cleanly separate from account Settings.
-class AgentScreen extends ConsumerWidget {
+class AgentScreen extends ConsumerStatefulWidget {
   const AgentScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AgentScreen> createState() => _AgentScreenState();
+}
+
+class _AgentScreenState extends ConsumerState<AgentScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      if (!ref.read(memoriesProvider).loaded) ref.read(memoriesProvider.notifier).load();
+      if (!ref.read(notesProvider).loaded) ref.read(notesProvider.notifier).load();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l = context.l10n;
     final personaAsync = ref.watch(personaProvider);
+    final memories = ref.watch(memoriesProvider);
+    final notes = ref.watch(notesProvider);
     final personaValue = personaAsync.when(
       data: (bundle) {
         if (!bundle.persona.isActive) return l.statusOff;
@@ -71,14 +91,16 @@ class AgentScreen extends ConsumerWidget {
                     icon: Icons.psychology_alt_rounded,
                     color: AppColors.info,
                     label: l.agentMemory,
-                    badge: l.comingSoon,
+                    value: memories.loaded ? '${memories.count}/${memories.limit}' : '',
+                    onTap: () => Navigator.of(context).push(lumiRoute<void>(const MemoryScreen())),
                     divider: true,
                   ),
                   _AgentRow(
                     icon: Icons.sticky_note_2_outlined,
                     color: AppColors.warn,
                     label: l.agentNotes,
-                    badge: l.comingSoon,
+                    value: notes.loaded ? '${notes.total}' : '',
+                    onTap: () => Navigator.of(context).push(lumiRoute<void>(const NotesScreen())),
                     divider: true,
                   ),
                   _AgentRow(

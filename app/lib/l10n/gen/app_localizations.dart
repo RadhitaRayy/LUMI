@@ -1309,6 +1309,204 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Persona saved'**
   String get personaSaved;
+
+  /// No description provided for @memorySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Facts Lumi remembers across chats. Up to {limit} items; the latest 20 are active in context.'**
+  String memorySubtitle(int limit);
+
+  /// No description provided for @memorySearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search memories'**
+  String get memorySearchHint;
+
+  /// No description provided for @memoryAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add memory'**
+  String get memoryAdd;
+
+  /// No description provided for @memoryEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit memory'**
+  String get memoryEdit;
+
+  /// No description provided for @memoryContentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'What should Lumi remember?'**
+  String get memoryContentLabel;
+
+  /// No description provided for @memoryContentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Prefers concise Laravel code examples'**
+  String get memoryContentHint;
+
+  /// No description provided for @memoryCategoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get memoryCategoryLabel;
+
+  /// No description provided for @memoryCategoryFact.
+  ///
+  /// In en, this message translates to:
+  /// **'Fact'**
+  String get memoryCategoryFact;
+
+  /// No description provided for @memoryCategoryPreference.
+  ///
+  /// In en, this message translates to:
+  /// **'Preference'**
+  String get memoryCategoryPreference;
+
+  /// No description provided for @memoryCategoryContext.
+  ///
+  /// In en, this message translates to:
+  /// **'Context'**
+  String get memoryCategoryContext;
+
+  /// No description provided for @memorySourceLumi.
+  ///
+  /// In en, this message translates to:
+  /// **'Lumi'**
+  String get memorySourceLumi;
+
+  /// No description provided for @memorySourceYou.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get memorySourceYou;
+
+  /// No description provided for @memoryEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No memories yet'**
+  String get memoryEmptyTitle;
+
+  /// No description provided for @memoryEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a lasting preference or fact here, and Lumi will remember it in every chat.'**
+  String get memoryEmptyBody;
+
+  /// No description provided for @memoryDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this memory?'**
+  String get memoryDeleteTitle;
+
+  /// No description provided for @memoryDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Lumi will forget this item across all your devices.'**
+  String get memoryDeleteBody;
+
+  /// No description provided for @memorySaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory saved'**
+  String get memorySaved;
+
+  /// No description provided for @memoryDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory deleted'**
+  String get memoryDeleted;
+
+  /// No description provided for @notesSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search notes'**
+  String get notesSearchHint;
+
+  /// No description provided for @noteAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'New note'**
+  String get noteAdd;
+
+  /// No description provided for @noteEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit note'**
+  String get noteEdit;
+
+  /// No description provided for @noteTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get noteTitleLabel;
+
+  /// No description provided for @noteTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Short title for your note'**
+  String get noteTitleHint;
+
+  /// No description provided for @noteContentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Content'**
+  String get noteContentLabel;
+
+  /// No description provided for @noteContentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write anything you want to keep handy…'**
+  String get noteContentHint;
+
+  /// No description provided for @noteTagsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags (optional)'**
+  String get noteTagsLabel;
+
+  /// No description provided for @noteTagsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Separate with commas, e.g. work, ideas'**
+  String get noteTagsHint;
+
+  /// No description provided for @notesEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No notes yet'**
+  String get notesEmptyTitle;
+
+  /// No description provided for @notesEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Save checklists, snippets, or ideas here so both you and Lumi can find them anytime.'**
+  String get notesEmptyBody;
+
+  /// No description provided for @noteDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this note?'**
+  String get noteDeleteTitle;
+
+  /// No description provided for @noteDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'“{title}” will be permanently removed.'**
+  String noteDeleteBody(String title);
+
+  /// No description provided for @noteSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Note saved'**
+  String get noteSaved;
+
+  /// No description provided for @noteDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Note deleted'**
+  String get noteDeleted;
 }
 
 class _AppLocalizationsDelegate
