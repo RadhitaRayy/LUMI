@@ -78,8 +78,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return AuthScaffold(
       footer: FadeSlideIn.step(
         6,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             Text(l.noAccount, style: const TextStyle(color: AppColors.muted, fontSize: 14)),
             TextButton(

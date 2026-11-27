@@ -6,7 +6,7 @@
 | Phase | Goal | Status |
 |---|---|---|
 | 0 | UI design + Flutter demo app | ✅ Done (2026-11-25) |
-| [1](PHASE-1.md) | Real chat end to end: accounts + email verification, history synced in realtime across phones, hybrid BYOK (platform key + the user's own key), superadmin Console | ⏳ In progress |
+| [1](PHASE-1.md) | Real chat end to end: accounts + email verification, history synced in realtime across phones, hybrid BYOK (platform key + the user's own key), superadmin Console | ✅ Done (2026-11-27) |
 | 2 | Agent, tools, action approval, memory | Planned |
 | 3 | Deploy to the VPS + release APK | Planned |
 | 4 | Lumi Bridge (laptop) + phone features (fingerprint, voice, push) | Planned |

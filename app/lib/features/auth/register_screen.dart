@@ -83,8 +83,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
     return AuthScaffold(
       onBack: () => Navigator.of(context).pop(),
-      footer: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      footer: Wrap(
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           Text(l.haveAccount, style: const TextStyle(color: AppColors.muted, fontSize: 14)),
           TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l.signIn)),

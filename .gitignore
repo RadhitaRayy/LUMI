@@ -3,6 +3,7 @@
 Thumbs.db
 .idea/
 .vscode/
+.claude/
 *.iml
 
 # Local env & secrets (each sub-project has its own ignore rules too)

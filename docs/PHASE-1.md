@@ -1,6 +1,6 @@
 # Phase 1 — Real chat (MVP)
 
-> Status: in progress. Environment: laptop (Laragon + PostgreSQL), no VPS yet.
+> Status: done (2026-11-27). Environment: laptop (Laragon + PostgreSQL), no VPS yet.
 > Context: [ARCHITECTURE.md](ARCHITECTURE.md) · [ROADMAP.md](ROADMAP.md)
 
 ## Goal
@@ -244,25 +244,26 @@ and data policies (free tiers may use data for training — don't send sensitive
 - **Console:** feature tests for admin-only access and the main actions (block a user, save a
   provider, change settings); `npm run build` and the TypeScript type-check pass.
 - **App:** widget tests with a fake `ApiClient` (sign-in, verification, errors, streaming chat,
-  history, realtime events) — still to write.
-- **Manual:** two devices (phone + browser/emulator) on the same account → chat on one, it shows on
-  the other; sign one device out from the other.
+  quota dialog, history search/open/delete, realtime events, language switch, My AI key, active
+  devices, Markdown rendering) — 14 tests passing, `flutter analyze` clean.
+- **Manual:** two devices (Galaxy A56 + Poco X3 NFC) on the same account and Reverb WebSocket test
+  (13/13) verified.
 
 ## 6. Definition of Done
 
-- [ ] A new user can sign up, receive a code, verify their email and sign in from a phone.
-- [ ] Forgotten password with a code works and signs every device out.
-- [ ] The token is stored securely; signing out revokes it; other devices can be signed out from the device list.
-- [ ] Chat with the free model chosen in the Console, answers stream in piece by piece.
-- [ ] The same history on two devices with the same account, updated in realtime.
-- [ ] Users can't see anyone else's data (neither through the API nor the realtime channel).
-- [ ] Daily quota, user blocking, the sign-up switch and required verification from the Console take effect at once.
-- [ ] API keys are stored encrypted and never appear in API responses.
-- [ ] Switching the default provider/model in the Console (OpenRouter ↔ NVIDIA NIM) needs no code change.
-- [ ] Users can add their own key in the app; chat then uses it and doesn't use up the quota;
+- [x] A new user can sign up, receive a code, verify their email and sign in from a phone.
+- [x] Forgotten password with a code works and signs every device out.
+- [x] The token is stored securely; signing out revokes it; other devices can be signed out from the device list.
+- [x] Chat with the free model chosen in the Console, answers stream in piece by piece.
+- [x] The same history on two devices with the same account, updated in realtime.
+- [x] Users can't see anyone else's data (neither through the API nor the realtime channel).
+- [x] Daily quota, user blocking, the sign-up switch and required verification from the Console take effect at once.
+- [x] API keys are stored encrypted and never appear in API responses.
+- [x] Switching the default provider/model in the Console (OpenRouter ↔ NVIDIA NIM) needs no code change.
+- [x] Users can add their own key in the app; chat then uses it and doesn't use up the quota;
   the key never appears in API responses or in the Console.
-- [ ] The app works in Indonesian and English, and server messages and emails follow the chosen language.
-- [ ] Core, Console and App tests pass; `flutter analyze` is clean.
+- [x] The app works in Indonesian and English, and server messages and emails follow the chosen language.
+- [x] Core, Console and App tests pass; `flutter analyze` is clean.
 
 ## Progress
 
@@ -281,8 +282,7 @@ and data policies (free tiers may use data for training — don't send sensitive
 | 2026-11-27 | **Smoother app + dev email**: release build that still reaches the laptop over `adb reverse` (cleartext to localhost only); sign-in screens shrink their header and hide the footer while the keyboard is open, keep the button above the keyboard, and close the keyboard on a tap outside; lighter layout (no `IntrinsicHeight`), compositor fades, chat list and send button rebuild on their own. Mailpit for verification and reset emails. NVIDIA NIM provider added in the Console and its connection test passes (`nvidia/nemotron-3.5-super-vl-120b-a12b`) |
 
 | 2026-11-27 | **Stuck answers + richer chat**: slow free models hit PHP's 30-second limit mid-answer and left the answer `streaming` forever (endless typing dots). Streams now get 180 s, stale answers are marked `interrupted`, and the dev server runs 4 workers. Lumi's answers sit in bubbles and render Markdown (headings, lists, tables that scroll sideways, code blocks with a copy button); a finished answer from another device replaces its placeholder. NVIDIA NIM now answers chats (`nvidia/nemotron-3.5-super-vl-120b-a12b` as default). 121 Core tests pass |
-
-Not yet: app widget tests beyond Markdown; the two-device end-to-end test.
+| 2026-11-27 | **Phase 1 finished**: added Flutter widget tests with a fake `ApiClient` (14 tests covering auth, verification, errors, SSE streaming, quota dialog, history drawer, realtime events, language switching, My AI key, active devices, and Markdown). Fixed an `AnimatedSize` layout crash under reduced motion (`Motion.of`) and auth footer wrapping on narrow/large-font screens. Core (121 Pest tests, PHPStan clean), Console (type-check, lint, build), and App (14 tests, `flutter analyze` clean) all pass |
 
 ## 7. Work order
 

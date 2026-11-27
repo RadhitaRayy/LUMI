@@ -15,8 +15,9 @@ for bring-your-own-key (BYOK) setup, users, and quotas. The agent can take actio
 checking bot status, reading logs, restarting services, or running scripts, and asks for
 permission before anything that changes a system.
 
-> **Status: Phase 1 in progress.** Lumi Core, Lumi Console and the app's Phase 1 screens are built;
-> end-to-end testing on phones is next. Plan: [Phase 1 — Real chat](docs/PHASE-1.md).
+> **Status: Phase 1 complete.** Lumi Core, Lumi Console, and Lumi App's Phase 1 real-chat MVP are
+> built and tested. Phase 2 (AI orchestrator, layered system prompt & user persona, tools,
+> approvals, memory) is next. Plan: [Roadmap](docs/ROADMAP.md) · [Phase 1](docs/PHASE-1.md).
 
 ## Repository layout
 

@@ -16,8 +16,9 @@ abstract final class Motion {
   /// True when the phone asks for less motion; animations then jump to their end.
   static bool reduced(BuildContext context) => MediaQuery.disableAnimationsOf(context);
 
+  // 1 µs instead of Duration.zero: AnimatedSize mutates itself inside performLayout when given 0.
   static Duration of(BuildContext context, Duration duration) =>
-      reduced(context) ? Duration.zero : duration;
+      reduced(context) ? const Duration(microseconds: 1) : duration;
 }
 
 /// Page transition: the new screen fades in while rising a little.

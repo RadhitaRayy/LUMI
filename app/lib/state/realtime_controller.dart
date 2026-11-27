@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../config.dart';
@@ -46,6 +47,9 @@ class RealtimeController extends Notifier<bool> {
       onEvent: _onEvent,
     )..connect('private-user.$userId');
   }
+
+  @visibleForTesting
+  void handleEvent(String event, Map<String, dynamic> data) => _onEvent(event, data);
 
   void _onEvent(String event, Map<String, dynamic> data) {
     final conversations = ref.read(conversationsProvider.notifier);
