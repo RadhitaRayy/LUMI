@@ -1,152 +1,194 @@
-# Setup pengembangan (Windows)
+# Development setup (Windows)
 
-Catatan lingkungan yang dipasang pada 2026-11-25 dan masalah yang sudah ditemui.
+Notes on the environment installed on 2026-11-25 and the problems already hit.
 
-## Yang terpasang
+## Installed
 
-| Alat | Lokasi / versi |
+| Tool | Location / version |
 |---|---|
 | Flutter | `C:\src\flutter` — 3.50.1 stable (Dart 3.14) |
-| JDK | Microsoft OpenJDK 17 — `%LOCALAPPDATA%\Programs\Microsoft\jdk-17.0.10.7-hotspot` (`JAVA_HOME` user) |
-| Android SDK | `%LOCALAPPDATA%\Android\Sdk` (`ANDROID_HOME` user): cmdline-tools, platform-tools 37.0.3, platforms/android-35 & 36, build-tools 36.0.0, NDK 28.2.13676358 |
-| Gradle | 9.5.0 (cache di `%USERPROFILE%\.gradle`) |
+| JDK | Microsoft OpenJDK 17 — `%LOCALAPPDATA%\Programs\Microsoft\jdk-17.0.10.7-hotspot` (user `JAVA_HOME`) |
+| Android SDK | `%LOCALAPPDATA%\Android\Sdk` (user `ANDROID_HOME`): cmdline-tools, platform-tools 37.0.3, platforms/android-35 & 36, build-tools 36.0.0, NDK 28.2.13676358 |
+| Gradle | 9.5.0 (cache in `%USERPROFILE%\.gradle`) |
 | PATH (user) | `C:\src\flutter\bin`, `...\Sdk\platform-tools`, `...\Sdk\cmdline-tools\latest\bin` |
 
-Analytics Flutter dan Dart dimatikan.
+Flutter and Dart analytics are turned off.
 
-## Perintah sehari-hari
+## Everyday commands
 
 ```powershell
 cd C:\Work\lumi\app
 flutter pub get
 flutter analyze
 flutter test
-flutter run                    # HP Android tercolok (USB debugging aktif)
-flutter run -d chrome          # coba di browser
+flutter run                    # Android phone plugged in (USB debugging on)
+flutter run -d chrome          # try it in the browser
 flutter build apk --release    # build\app\outputs\flutter-apk\app-release.apk
+dart run flutter_launcher_icons   # regenerate app icons from assets/icon
 ```
 
-## Masalah yang sudah ditemui
+Strings live in `app/lib/l10n/app_en.arb` (template) and `app_id.arb`; `flutter pub get` /
+`flutter gen-l10n` regenerates `lib/l10n/gen`.
 
-### `package:flutter/material.dart` deprecated
-Sejak Flutter 3.47, Material dipindah ke paket `material_ui`. Template project sudah
-menambahkan dependensinya. Import di kode memakai:
+## Running the app on the phone against the laptop
+
+1. Start Core (API on :8000, queue worker, Reverb on :8090, Vite):
+   ```powershell
+   $env:Path = "$env:USERPROFILE\.config\herd\bin\php84;$env:Path"
+   cd C:\Work\lumi\core; php artisan dev
+   ```
+2. Forward the ports over USB so `127.0.0.1` on the phone reaches the laptop:
+   ```powershell
+   adb reverse tcp:8000 tcp:8000
+   adb reverse tcp:8090 tcp:8090
+   ```
+3. Build and install. `API_BASE_URL` defaults to `http://127.0.0.1:8000`; `REVERB_KEY` is
+   `REVERB_APP_KEY` from `core\.env` (the public Pusher key, not the secret). Without it the app
+   works but realtime sync is off.
+   ```powershell
+   cd C:\Work\lumi\app
+   flutter build apk --debug --dart-define=REVERB_KEY=<REVERB_APP_KEY>
+   adb install -r --user 0 build\app\outputs\flutter-apk\app-debug.apk
+   ```
+
+Unplugging the cable breaks the `adb reverse` link. To use the app over Wi-Fi instead, build with
+`--dart-define=API_BASE_URL=http://<laptop LAN IP>:8000` and run `php artisan serve --host=0.0.0.0`.
+
+Debug builds allow plain HTTP (`usesCleartextTraffic` in the debug manifest only); release builds
+expect HTTPS.
+
+## Problems already hit
+
+### `package:flutter/material.dart` is deprecated
+Since Flutter 3.47, Material lives in the `material_ui` package. The project template already
+adds the dependency. Code imports:
 
 ```dart
 import 'package:material_ui/material_ui.dart';
 ```
 
-Mencampur keduanya membuat dua kelas `TextTheme` yang berbeda (error di `google_fonts`).
+Mixing the two creates two different `TextTheme` classes (errors in `google_fonts`). Use
+`GlobalMaterialLocalizations.delegates` from `material_ui` too, not the one in the generated
+`AppLocalizations.localizationsDelegates`.
 
-### `sdkmanager` sudah diganti Android CLI
-`sdkmanager` di cmdline-tools terbaru hanya pembungkus Android CLI dan **tidak** mengenali
-nama paket lama berformat `;`. Pakai `android.exe` dengan pemisah `/`:
+### `sdkmanager` has been replaced by the Android CLI
+`sdkmanager` in the latest cmdline-tools is only a wrapper around the Android CLI and does **not**
+understand old `;`-style package names. Use `android.exe` with `/`:
 
 ```powershell
 & "$env:ANDROID_HOME\cmdline-tools\latest\bin\android.exe" sdk list --all "ndk*"
 & "$env:ANDROID_HOME\cmdline-tools\latest\bin\android.exe" sdk install 'ndk/28.2.13676358' 'platforms/android-36' 'build-tools/36.0.0'
 ```
 
-Gradle juga gagal memasang NDK sendiri karena masalah ini (`Package ndk not found`), jadi NDK
-versi yang diminta Flutter harus dipasang manual seperti di atas. Platform 35 masih bisa
-dipasang otomatis oleh Gradle.
+Gradle also fails to install the NDK by itself because of this (`Package ndk not found`), so the
+NDK version Flutter asks for must be installed by hand as above. Platform 35 still installs
+automatically through Gradle.
 
 ### `Unable to establish loopback connection` (Java)
-Terjadi kalau path folder TEMP terlalu panjang (Java membuat Unix domain socket di TEMP).
-Muncul di sesi otomatis dengan TEMP panjang; di terminal biasa seharusnya tidak. Solusi:
+Happens when the TEMP path is too long (Java creates a Unix domain socket in TEMP). Seen in
+automated sessions with a long TEMP; a normal terminal shouldn't hit it. Fix:
 
 ```powershell
 $env:TEMP = 'C:\src\_tmp'; $env:TMP = 'C:\src\_tmp'
 $env:JAVA_TOOL_OPTIONS = '-Djdk.net.unixdomain.tmpdir=C:\src\_tmp -Djava.io.tmpdir=C:\src\_tmp'
 ```
 
-### Download Gradle macet
-Distribusi Gradle diunduh dari GitHub dan sempat macet di 0 byte. Solusi: unduh manual
-`gradle-9.5.0-all.zip` (cek dengan file `.sha256` resminya) ke
-`%USERPROFILE%\.gradle\wrapper\dists\gradle-9.5.0-all\<hash>\`, lalu build ulang.
+### Gradle download stalls
+The Gradle distribution comes from GitHub and once stalled at 0 bytes. Fix: download
+`gradle-9.5.0-all.zip` by hand (check it against the official `.sha256`) into
+`%USERPROFILE%\.gradle\wrapper\dists\gradle-9.5.0-all\<hash>\`, then build again.
+The first build after adding Android plugins took ~9 minutes (Maven downloads); later builds ~40 s.
 
-### Dua `adb`
-scrcpy membawa `adb` sendiri. Kalau versinya beda dengan platform-tools, keduanya saling
-mematikan server adb. Tutup scrcpy saat menjalankan `flutter run`.
+### Two `adb`s
+scrcpy ships its own `adb`. If its version differs from platform-tools, the two keep killing each
+other's adb server. Close scrcpy while running `flutter run`.
 
-### HP tidak terdeteksi
-Aktifkan Opsi pengembang → Debugging USB, colok ulang, setujui popup "Izinkan debugging USB",
-pilih mode USB **Transfer file**. Cek dengan `adb devices -l`.
+### Phone not detected / "device unauthorized"
+Turn on Developer options → USB debugging, plug in again, accept the "Allow USB debugging" prompt
+(tick "Always allow from this computer"), and pick the **File transfer** USB mode. Check with
+`adb devices -l`.
+
+### Two Lumi icons on the phone (Samsung Dual App)
+The Galaxy A56 has Samsung Dual Messenger (user 95) and Secure Folder (user 150). A plain
+`adb install` also installs into Dual App, which shows a second icon. Install with `--user 0`; to
+remove a copy that landed there: `adb shell pm uninstall --user 95 io.github.radhitarayy.lumi`.
 
 ## Lumi Core (Laravel)
 
-| Alat | Catatan |
+| Tool | Notes |
 |---|---|
-| PHP | **8.4** dari Herd: `%USERPROFILE%\.config\herd\bin\php84\php.exe`. PHP di PATH default masih 7.4 (Laragon), jadi taruh folder php84 di depan PATH sebelum menjalankan `php`/`composer`. |
+| PHP | **8.4** from Herd: `%USERPROFILE%\.config\herd\bin\php84\php.exe`. The PHP on the default PATH is still 7.4 (Laragon), so put the php84 folder first on PATH before running `php`/`composer`. |
 | Composer | `C:\laragon\bin\composer\composer.phar` (2.8) |
 | Node / npm | Node 25, npm 11 |
-| PostgreSQL | Laragon `C:\laragon\bin\postgresql\postgresql-18.7`, data `C:\laragon\data\postgresql-18`, port 5432. User `lumi` (password hanya di `core\.env`), database `lumi` dan `lumi_test`. |
+| PostgreSQL | Laragon `C:\laragon\bin\postgresql\postgresql-18.7`, data `C:\laragon\data\postgresql-18`, port 5432. User `lumi` (password only in `core\.env`), databases `lumi` and `lumi_test`. |
 
 ```powershell
 $env:Path = "$env:USERPROFILE\.config\herd\bin\php84;$env:Path"
 cd C:\Work\lumi\core
 php artisan serve          # http://localhost:8000
-npm run dev                # Vite (Console React)
-php vendor/bin/pest        # test (database lumi_test)
+npm run dev                # Vite (React Console)
+php vendor/bin/pest        # tests (lumi_test database)
 php vendor/bin/phpstan analyse --memory-limit=1G
 php vendor/bin/pint --dirty
-php artisan lumi:make-superadmin email@kamu.com   # akun pemilik untuk Lumi Console
+php artisan lumi:make-superadmin you@email.com   # the owner account for Lumi Console
 ```
 
-Memasang key platform (sementara, sampai halaman Console siap). Key diketik tersembunyi,
-diuji ke provider, lalu disimpan terenkripsi:
+Platform keys are normally added in the Console (Provider & model). From the terminal, the key is
+typed hidden, tested against the provider, then stored encrypted:
 
 ```powershell
-# OpenRouter (model gratis berlabel :free)
+# OpenRouter (free models labelled :free)
 php artisan lumi:add-provider openrouter "google/gemma-4-31b-it:free" --name=OpenRouter --label="Gemma 4 31B (free)"
 # NVIDIA NIM (OpenAI-compatible)
 php artisan lumi:add-provider openai_compatible "meta/llama-3.1-8b-instruct" --name="NVIDIA NIM" --url=https://integrate.api.nvidia.com/v1
 ```
 
-Catatan:
-- Paste key dengan **klik kanan**. Di prompt tersembunyi, Ctrl+V hanya mengetik huruf `v`,
-  dan provider membalasnya dengan "Missing Authentication header". Perintah ini menolak isian
-  yang tidak berbentuk key dan menampilkan panjang serta 4 karakter terakhir key yang diterima.
-- Daftar model gratis OpenRouter sering berubah. Contohnya, `meta-llama/llama-3.3-70b-instruct:free`
-  sudah tidak gratis lagi per 2026-11-26. Cek daftar terbaru (tanpa key):
-  `curl -s https://openrouter.ai/api/v1/models`, lalu pilih id yang berakhiran `:free`.
+Notes:
+- Paste the key with a **right-click**. In a hidden prompt, Ctrl+V only types the letter `v`, and
+  the provider answers "Missing Authentication header". The command rejects input that doesn't
+  look like a key and shows the length and last 4 characters of the key it received.
+- OpenRouter's list of free models changes often. For example,
+  `meta-llama/llama-3.3-70b-instruct:free` was no longer free as of 2026-11-26. Check the current
+  list (no key needed): `curl -s https://openrouter.ai/api/v1/models`, then pick an id ending in `:free`.
 
-Realtime (Reverb) butuh tiga proses: server API, `reverb:start`, dan `queue:work` (event dikirim
-lewat queue). `php artisan dev` menjalankan semuanya sekaligus. Di laptop ini port 8080 dipakai
-Apache bawaan Laragon, jadi Reverb lokal memakai port 8090 (`REVERB_PORT=8090` dan
-`REVERB_SERVER_PORT=8090` di `.env`). Setelah mengubah `.env`, restart `queue:work`; worker lama
-masih memakai nilai yang lama.
+Realtime (Reverb) needs three processes: the API server, `reverb:start` and `queue:work` (events go
+through the queue). `php artisan dev` runs them all at once. On this laptop port 8080 is taken by
+Laragon's Apache, so local Reverb uses port 8090 (`REVERB_PORT=8090` and `REVERB_SERVER_PORT=8090`
+in `.env`). After changing `.env`, restart `queue:work`; an old worker keeps the old values.
 
-Lumi Console ada di `http://127.0.0.1:8000/console`. Buat akun pemilik dulu (password sekali
-pakai ditampilkan di terminal, ganti setelah masuk di menu Akun saya):
+Languages: the API answers in the language of the app's `Accept-Language` (`id` or `en`, default
+`APP_LOCALE=id`). Translations are in `core/lang/id.json` and `core/lang/{id,en}/validation.php`.
+
+Lumi Console is at `http://127.0.0.1:8000/console` (or `https://core.test/console` through Herd).
+Create the owner account first (a one-time password is printed in the terminal; change it after
+signing in, under My account):
 
 ```powershell
-php artisan lumi:make-superadmin email@kamu.com --name="Nama Kamu"
+php artisan lumi:make-superadmin you@email.com --name="Your Name"
 ```
 
-Setelah mengubah file di `resources/js`, jalankan `npm run build` (atau `php artisan dev` untuk
-Vite dengan hot reload). Route TypeScript (`resources/js/routes`, `resources/js/actions`) dibuat
-otomatis oleh Wayfinder saat build dan tidak di-commit.
+After changing files in `resources/js`, run `npm run build` (or `php artisan dev` for Vite with hot
+reload). The TypeScript routes (`resources/js/routes`, `resources/js/actions`) are generated by
+Wayfinder during the build and aren't committed.
 
-Menyalakan PostgreSQL kalau belum jalan (atau lewat menu Laragon):
+Starting PostgreSQL if it isn't running (or through the Laragon menu):
 
 ```powershell
 & 'C:\laragon\bin\postgresql\postgresql-18.7\bin\pg_ctl.exe' -D 'C:\laragon\data\postgresql-18' -l 'C:\laragon\data\postgresql-18.log' start
 ```
 
-### Download dari GitHub lambat
-Composer (dan Gradle) mengunduh paket dari GitHub; di jaringan ini sering timeout untuk file
-besar (mis. `phpstan` 31 MB). Solusi: ulangi `composer install` dengan
-`$env:COMPOSER_MAX_PARALLEL_HTTP = '4'` — file yang sudah terunduh tersimpan di cache Composer.
-Kalau Composer selesai memasang paket tapi tidak keluar, hentikan lalu jalankan
-`composer dump-autoload --optimize`.
+### Slow downloads from GitHub
+Composer (and Gradle) download packages from GitHub; on this network large files often time out
+(e.g. `phpstan`, 31 MB). Fix: run `composer install` again with
+`$env:COMPOSER_MAX_PARALLEL_HTTP = '4'` — files already downloaded stay in Composer's cache.
+If Composer finishes installing but doesn't exit, stop it and run `composer dump-autoload --optimize`.
 
-### Git: pakai versi 2.51, bukan Git Laragon
-Ada dua Git di PATH. Git bawaan Laragon (2.37, `C:\laragon\bin\git`) memakai credential manager
-lama yang menggantung saat push/fetch ke GitHub. Git 2.51 di
-`%LOCALAPPDATA%\Programs\Git\cmd\git.exe` (dipakai VS Code/GitHub Desktop) berjalan normal dan
-sudah tersimpan login GitHub-nya. Repo: `https://github.com/RadhitaRayy/LUMI`.
+### Git: use 2.51, not Laragon's Git
+There are two Gits on PATH. Laragon's (2.37, `C:\laragon\bin\git`) uses an old credential manager
+that hangs on push/fetch to GitHub. Git 2.51 at `%LOCALAPPDATA%\Programs\Git\cmd\git.exe` (used by
+VS Code/GitHub Desktop) works and already has the GitHub login. Repo:
+`https://github.com/RadhitaRayy/LUMI`.
 
-## Perangkat uji
+## Test device
 
-- Samsung Galaxy A56 (SM-A566B), Android, lewat USB.
+- Samsung Galaxy A56 (SM-A566B), Android, over USB.

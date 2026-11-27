@@ -8,18 +8,20 @@ for bring-your-own-key (BYOK) setup, users, and quotas. The agent can take actio
 checking bot status, reading logs, restarting services, or running scripts, and asks for
 permission before anything that changes a system.
 
-> **Status: Phase 1 in progress.** The app in `app/` still runs on mock data (`DemoAgent`)
-> until it is connected to Lumi Core. Plan: [Phase 1 — Real chat](docs/PHASE-1.md).
+> **Status: Phase 1 in progress.** Lumi Core, Lumi Console and the app's Phase 1 screens are built;
+> end-to-end testing on phones is next. Plan: [Phase 1 — Real chat](docs/PHASE-1.md).
 
 ## Repository layout
 
 | Folder | Contents |
 |---|---|
 | [`app/`](app/) | **Lumi App** — Flutter (Android, iOS, web/PWA) |
-| `core/` | **Lumi Core** + **Lumi Console** — Laravel + Inertia/React (Phase 1) |
+| [`core/`](core/) | **Lumi Core** + **Lumi Console** — Laravel + Inertia/React |
 | `bridge/` | **Lumi Bridge** — Node.js daemon for tools on a laptop/server (Phase 4) |
-| [`design/`](design/) | UI design sources (canvas) |
-| [`docs/`](docs/) | Architecture, roadmap, phase specs, dev setup (in Indonesian) |
+| [`design/`](design/) | UI design sources (canvas) and the brand |
+| [`docs/`](docs/) | Architecture, roadmap, phase specs, dev setup |
+
+The app speaks English and Indonesian; the Console is Indonesian.
 
 ## Architecture at a glance
 

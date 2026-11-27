@@ -1,93 +1,94 @@
-# Roadmap Lumi
+# Lumi roadmap
 
-> Disusun 2026-11-25. Fase 1 dan 2 dikerjakan di laptop (Laragon) sambil VPS disiapkan.
-> Arsitektur dan alasan keputusan ada di [ARCHITECTURE.md](ARCHITECTURE.md).
+> Drafted 2026-11-25. Phases 1 and 2 are built on the laptop (Laragon) while the VPS gets ready.
+> Architecture and the reasons behind decisions: [ARCHITECTURE.md](ARCHITECTURE.md).
 
-| Fase | Tujuan | Status |
+| Phase | Goal | Status |
 |---|---|---|
-| 0 | Desain UI + aplikasi demo Flutter | ✅ Selesai (2026-11-25) |
-| [1](PHASE-1.md) | Chat sungguhan end-to-end: akun + verifikasi email, riwayat tersinkron realtime antar HP, BYOK campuran (key platform + key milik user), Console superadmin | ⏳ Sedang berjalan |
-| 2 | Agent, tools, izin aksi, memori | Rencana |
-| 3 | Deploy ke VPS + APK release | Rencana |
-| 4 | Lumi Bridge (laptop) + fitur HP (sidik jari, suara, push) | Rencana |
-| 5 | Otonomi & integrasi (rutinitas, Telegram, kalender, knowledge base) | Rencana |
+| 0 | UI design + Flutter demo app | ✅ Done (2026-11-25) |
+| [1](PHASE-1.md) | Real chat end to end: accounts + email verification, history synced in realtime across phones, hybrid BYOK (platform key + the user's own key), superadmin Console | ⏳ In progress |
+| 2 | Agent, tools, action approval, memory | Planned |
+| 3 | Deploy to the VPS + release APK | Planned |
+| 4 | Lumi Bridge (laptop) + phone features (fingerprint, voice, push) | Planned |
+| 5 | Autonomy & integrations (routines, Telegram, calendar, knowledge base) | Planned |
 
 ---
 
-## Fase 0 — Desain & demo ✅
+## Phase 0 — Design & demo ✅
 
-- Desain 7 layar (Masuk, Daftar, Chat, Izin aksi, Mode suara, Tools, Riwayat & memori).
-- Aplikasi Flutter dengan data tiruan (`DemoAgent`), sudah jalan di Android (Galaxy A56) dan web.
-- `flutter analyze` bersih, 6 test lulus.
+- Seven screens designed (Sign in, Sign up, Chat, Action approval, Voice mode, Tools, History & memory).
+- A Flutter app with mock data (`DemoAgent`), running on Android (Galaxy A56) and the web.
+- `flutter analyze` clean, 6 tests passing.
 
-## Fase 1 — Chat sungguhan (MVP)
+## Phase 1 — Real chat (MVP)
 
-Rincian lengkap: [PHASE-1.md](PHASE-1.md).
+Full spec: [PHASE-1.md](PHASE-1.md).
 
-- **Repo:** monorepo (`app/` + `core/`), PostgreSQL, Mailpit untuk email dev.
-- **Core:** daftar bebas + verifikasi email & lupa password (kode 6 digit), sesi per perangkat
-  (Sanctum) + daftar perangkat aktif, percakapan & pesan, chat streaming SSE, sinkron realtime
-  antar perangkat (Reverb), kuota harian + rate limit, LLM Gateway (Prism) yang diuji dengan
-  OpenRouter lalu NVIDIA NIM, BYOK campuran (key platform dengan kuota + key milik user).
-- **Console (Inertia + React + shadcn/ui, hanya superadmin):** provider & key platform
-  (terenkripsi), model, user (verifikasi, blokir, kuota, perangkat), pengaturan, log pemakaian.
-- **App:** Riverpod; Masuk/Daftar/Verifikasi/Lupa password terhubung ke Core; chat asli
-  menggantikan `DemoAgent`; Riwayat dari server, ter-update realtime; perangkat aktif;
-  Kunci AI saya.
+- **Repo:** monorepo (`app/` + `core/`), PostgreSQL, Mailpit for dev email.
+- **Core:** open sign-up + email verification & forgotten password (6-digit codes), one session per
+  device (Sanctum) + a list of active devices, conversations & messages, SSE chat streaming,
+  realtime sync across devices (Reverb), daily quota + rate limits, an LLM Gateway (Prism) tested
+  with OpenRouter and then NVIDIA NIM, hybrid BYOK (a platform key with a quota + the user's own key).
+- **Console (Inertia + React + shadcn/ui, superadmin only):** providers & platform keys
+  (encrypted), models, users (verification, blocking, quota, devices), settings, usage log.
+- **App:** Riverpod; sign-in, sign-up, email code and password reset wired to Core; real chat
+  replaces `DemoAgent`; history from the server, updated in realtime; active devices; My AI key;
+  English and Indonesian.
 
-**Selesai jika:** user baru bisa daftar dan memverifikasi email dari HP, chat dengan model
-gratis yang dipilih superadmin atau dengan key miliknya sendiri, jawaban mengalir per potongan, riwayat sama dan ter-update realtime
-di dua HP dengan akun yang sama, dan kuota/blokir/pengaturan dari Console berlaku.
+**Done when:** a new user can sign up and verify their email from a phone, chat with a free model
+chosen by the superadmin or with their own key, see the answer stream in piece by piece, see the
+same history update in realtime on two phones signed in to the same account, and quota, blocking
+and settings from the Console take effect.
 
-## Fase 2 — Agent, tools, dan izin
+## Phase 2 — Agent, tools and approval
 
-- Framework tool calling di Core (lewat Prism) + registry tool dengan mode `auto` / `ask`.
-- Tool aman di server: `catatan` (simpan/cari), `memori` (ingat/lupa), `waktu`, `web_search`
-  (jika ada API gratis yang layak).
-- Alur izin end-to-end: aksi `ask` dikirim ke app (Reverb, sudah ada sejak Fase 1), user menyetujui/menolak,
-  agent melanjutkan. Semua aksi masuk **log audit**.
-- Memori per user: layar Memori di app terhubung, bisa dihapus.
-- Console: kelola tools & izin per peran, lihat audit log.
-- Kartu tool di chat (`ToolCallCard`, `PendingActionCard`) memakai data asli.
+- Tool calling in Core (through Prism) + a tool registry with `auto` / `ask` modes.
+- Safe server-side tools: `notes` (save/search), `memory` (remember/forget), `time`, `web_search`
+  (if a reasonable free API exists).
+- Approval flow end to end: an `ask` action is sent to the app (Reverb, in place since Phase 1),
+  the user approves or rejects, and the agent carries on. Every action goes to an **audit log**.
+- Per-user memory: the Memory screen in the app is wired up and entries can be deleted.
+- Console: manage tools & permissions per role, view the audit log.
+- Tool cards in chat (`ToolCallCard`, `PendingActionCard`) use real data.
 
-**Selesai jika:** agent bisa memilih tool sendiri, aksi `ask` menunggu persetujuan dari HP,
-dan memori yang disimpan dipakai di percakapan berikutnya.
+**Done when:** the agent picks tools by itself, `ask` actions wait for approval from the phone,
+and saved memories are used in later conversations.
 
-## Fase 3 — Deploy ke VPS
+## Phase 3 — Deploy to the VPS
 
-- VPS Ubuntu + Docker Compose (Core, PostgreSQL, queue worker, Reverb) + Caddy (HTTPS) + domain.
-- Layanan email SMTP produksi untuk kode verifikasi dan reset password.
-- Backup database terjadwal, log, monitoring dasar (uptime).
-- Konfigurasi produksi: env terpisah, `APP_DEBUG=false`, rate limit, CORS.
-- App: build APK release mengarah ke domain VPS; tambah izin `INTERNET` di manifest release
-  (template Flutter hanya memasangnya di debug/profile).
-- iOS: PWA (Add to Home Screen) atau IPA via CI macOS + sideload.
+- Ubuntu VPS + Docker Compose (Core, PostgreSQL, queue worker, Reverb) + Caddy (HTTPS) + a domain.
+- A production SMTP email service for verification and reset codes.
+- Scheduled database backups, logs, basic monitoring (uptime).
+- Production config: separate env, `APP_DEBUG=false`, rate limits, CORS.
+- App: a release APK pointing at the VPS domain (the `INTERNET` permission is already in the main
+  manifest).
+- iOS: a PWA (Add to Home Screen) or an IPA built on macOS CI + sideloading.
 
-**Selesai jika:** app di HP memakai Core di VPS lewat HTTPS tanpa laptop menyala.
+**Done when:** the app on the phone uses Core on the VPS over HTTPS without the laptop running.
 
-## Fase 4 — Lumi Bridge & fitur HP
+## Phase 4 — Lumi Bridge & phone features
 
-- **Bridge** (Node.js): daemon di laptop/server bot, koneksi WebSocket keluar ke Core,
-  autentikasi token per bridge, tool khusus admin:
-  `cek_status_bot`, `baca_log`, `restart_bot` (izin), `jalankan_script` (daftar putih, izin),
-  `git_pull` (izin). Status online/offline tampil di app dan Console.
-- **HP:** buka dengan sidik jari/Face ID (`local_auth`), input suara bahasa Indonesia
-  (`speech_to_text`), push notification (FCM), tampilan offline.
+- **Bridge** (Node.js): a daemon on the laptop/bot server with an outbound WebSocket to Core,
+  a token per bridge, and admin-only tools:
+  `check_bot_status`, `read_log`, `restart_bot` (approval), `run_script` (allowlist, approval),
+  `git_pull` (approval). Online/offline status shows in the app and the Console.
+- **Phone:** unlock with fingerprint/Face ID (`local_auth`), voice input in Indonesian and English
+  (`speech_to_text`), push notifications (FCM), an offline view.
 
-**Selesai jika:** dari HP, admin bisa melihat status bot di laptop dan me-restart-nya
-dengan persetujuan, dan notifikasi izin masuk walau app tertutup.
+**Done when:** from the phone, the admin can see the status of the bots on the laptop and restart
+them with approval, and approval notifications arrive even when the app is closed.
 
-## Fase 5 — Otonomi & integrasi
+## Phase 5 — Autonomy & integrations
 
-- Rutinitas terjadwal (Scheduler): mis. "cek bot tiap pagi, kabari kalau ada error".
-- Notifikasi proaktif dengan jam tenang, anti-duplikat, dan batas kirim.
-- Channel Telegram (chat dengan Lumi lewat bot Telegram).
-- Konektor: Google Calendar (baca dulu), kemudian lainnya.
-- Knowledge base pribadi (simpan link, ringkas artikel).
-- Routing ke beberapa provider, budget biaya, peran `admin` terbatas bila dibutuhkan.
+- Scheduled routines (Scheduler), e.g. "check the bots every morning, tell me if there's an error".
+- Proactive notifications with quiet hours, de-duplication and send limits.
+- A Telegram channel (chat with Lumi through a Telegram bot).
+- Connectors: Google Calendar (read first), then others.
+- A personal knowledge base (save links, summarise articles).
+- Routing across several providers, a cost budget, and a limited `admin` role if needed.
 
-## Di luar cakupan (untuk sekarang)
+## Out of scope (for now)
 
-- Orkestrasi coding agent (Claude Code/Codex) seperti Fleet di LISA.
-- Persona yang "berevolusi" (Soul/Rêve) dan room pixel-art.
-- Rilis ke Play Store / App Store (butuh akun developer berbayar).
+- Orchestrating coding agents (Claude Code/Codex) like LISA's Fleet.
+- An "evolving" persona (Soul/Rêve) and a pixel-art room.
+- Publishing to the Play Store / App Store (needs paid developer accounts).

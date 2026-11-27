@@ -1,37 +1,40 @@
-# Brand Lumi
+# Lumi brand
 
-Diputuskan 2026-11-26: **karakter K1 (kucing berlentera)** + **logotipe A (geometris)**.
-Sumber desain dan konsep lain yang tidak dipilih ada di kanvas Lumi Console (`design/console/`).
+Decided 2026-11-26: **character K1 (cat with a lantern)** + **wordmark A (geometric)**.
+The design sources and the concepts that weren't picked are on the Lumi Console canvas (`design/console/`).
 
-## Karakter
+## Character
 
-- **Lumi si kucing berlentera**: kucing oranye kampung, gaya stiker (garis tinta tebal,
-  warna datar, bingkai krem). Lentera kertas hijau limau di ekornya adalah warna khas Lumi.
-- Tanpa glow, gradasi, atau kilau.
-- `lumi-cat.svg`: karakter penuh (untuk halaman masuk, layar kosong, stiker).
-- `lumi-icon.svg`: ikon aplikasi, kepala kucing di kotak lime (juga favicon Console).
-- `lumi-icon-foreground.svg`: lapisan depan ikon adaptif Android (latar `#B5F23D`).
+- **Lumi, the cat with a lantern**: an orange kampung cat in sticker style (thick ink outlines,
+  flat colours, a cream border). The lime paper lantern on its tail is Lumi's signature colour.
+- No glow, gradients or sparkles.
+- `lumi-cat.svg`: the full character (sign-in screen, empty states, stickers).
+- `lumi-icon.svg`: the app icon, the cat's head on a lime tile (also the Console favicon).
+- `lumi-icon-foreground.svg`: the foreground layer of the Android adaptive icon (background `#B5F23D`).
+- The app draws the cat in code (`app/lib/widgets/lumi_cat.dart`) so the lantern, paw and eyes can
+  animate; its launcher icons are rendered from these SVGs into `app/assets/icon/`.
 
-## Logotipe
+## Wordmark
 
-- Tulisan `lumi` huruf kecil, **Bricolage Grotesque 800**, jarak huruf -0.05em.
-- Titik huruf i diganti kotak kecil lime `#B5F23D` (di latar terang: `#6C9A12`).
-- Di Console: logotipe + label `CONSOLE` (Inter 600, huruf kapital, spasi 0.1em).
+- `lumi` in lower case, **Bricolage Grotesque 800**, letter spacing -0.05em.
+- The dot of the i is a small lime square `#B5F23D` (on light backgrounds: `#6C9A12`).
+- In the Console: the wordmark + a `CONSOLE` label (Inter 600, upper case, 0.1em spacing).
 
-## Warna
+## Colours
 
-| Nama | Hex |
+| Name | Hex |
 |---|---|
-| Latar | `#0E1014` |
-| Permukaan | `#13161B` / `#171A20` |
-| Garis | `#23272F` / `#2A2F38` |
-| Teks | `#ECEEF1` |
-| Teks redup | `#9BA3AF` |
-| Lime (aksen) | `#B5F23D` |
-| Amber (peringatan) | `#F5B544` |
-| Oranye kucing | `#F2A65A` |
-| Tinta | `#14161A` |
+| Background | `#0E1014` |
+| Surface | `#13161B` / `#171A20` |
+| Line | `#23272F` / `#2A2F38` |
+| Text | `#ECEEF1` |
+| Muted text | `#9BA3AF` |
+| Lime (accent) | `#B5F23D` |
+| Amber (warning) | `#F5B544` |
+| Coral (destructive) | `#FFA899` |
+| Cat orange | `#F2A65A` |
+| Ink | `#14161A` |
 
-## Huruf
+## Type
 
-Inter (teks), Space Grotesk (judul), JetBrains Mono (kode/angka), Bricolage Grotesque (logotipe).
+Inter (body), Space Grotesk (headings), JetBrains Mono (code/numbers), Bricolage Grotesque (wordmark).
