@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\Console\AuditController;
 use App\Http\Controllers\Console\DashboardController;
 use App\Http\Controllers\Console\LogController;
 use App\Http\Controllers\Console\ModelController;
 use App\Http\Controllers\Console\ProviderController;
 use App\Http\Controllers\Console\SettingsController;
+use App\Http\Controllers\Console\ToolController;
 use App\Http\Controllers\Console\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +34,13 @@ Route::middleware(['auth', 'superadmin'])->prefix('console')->name('console.')->
     Route::patch('models/{model}', [ModelController::class, 'update'])->name('models.update');
     Route::post('models/{model}/default', [ModelController::class, 'makeDefault'])->name('models.default');
     Route::delete('models/{model}', [ModelController::class, 'destroy'])->name('models.destroy');
+
+    Route::get('tools', [ToolController::class, 'index'])->name('tools.index');
+    Route::put('tools/web-search', [ToolController::class, 'updateWebSearch'])->name('tools.web-search.update');
+    Route::post('tools/web-search/test', [ToolController::class, 'testWebSearch'])->name('tools.web-search.test');
+    Route::put('tools/{tool}', [ToolController::class, 'updatePolicy'])->name('tools.update');
+
+    Route::get('audit', [AuditController::class, 'index'])->name('audit.index');
 
     Route::get('logs', [LogController::class, 'index'])->name('logs.index');
 

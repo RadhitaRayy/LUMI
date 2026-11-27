@@ -1,6 +1,6 @@
 # Phase 2 — Agent orchestrator, layered prompt, persona, tools & approval
 
-> Status: spec agreed (2026-11-27), ready to build on branch `phase-2/orchestrator`.
+> Status: ✅ Done (2026-11-28) on branch `phase-2/orchestrator`.
 > Context: [ARCHITECTURE.md](ARCHITECTURE.md) · [ROADMAP.md](ROADMAP.md) · [PHASE-1.md](PHASE-1.md)
 
 ## Goal
@@ -223,12 +223,12 @@ Chat remains clean and full-screen (no bottom navigation bar). The **left drawer
 
 ## 10. Definition of Done
 
-- [ ] `PromptAssembler` assembles all 4 layers in strict order; user persona/memory/chat input cannot inject XML boundary tags or override Layers 1–3 (verified by tests).
-- [ ] User can configure Persona (preset or custom, max 1,000 chars, toggle on/off) in `Agent → Persona` and see Lumi's style change across devices.
-- [ ] Lumi autonomously calls `auto` tools (`get_time`, `save_note`, `search_notes`, `remember_memory`, optional `web_search`) within the 5-step orchestrator loop and streams the final answer via SSE.
-- [ ] `ask` tools (`delete_note`, `forget_memory`) pause non-blockingly, push `action.pending` over SSE + Reverb, resume streaming on Approve/Reject, expire after 10 minutes, and never execute if rejected or expired.
-- [ ] Every tool execution and approval decision is recorded in `audit_logs` and viewable in Console `/console/audit` without leaking chat text or secrets.
-- [ ] Models with `supports_tools = false` (or BYOK models rejecting tools) gracefully fall back to plain 4-layer chat with Persona + Memory.
-- [ ] `Agent` menu in the left drawer cleanly hosts Persona, Memory, Notes, and Tools, while `Settings` stays focused on account, AI key, devices, language, and security.
-- [ ] Superadmin can toggle tools, configure per-role `auto`/`ask`/`disabled`, and configure optional `web_search` in Console `/console/tools`.
-- [ ] Core (Pest + PHPStan), Console (`types:check`, `check`, `build`), and App (`flutter analyze`, `flutter test`) all pass.
+- [x] `PromptAssembler` assembles all 4 layers in strict order; user persona/memory/chat input cannot inject XML boundary tags or override Layers 1–3 (verified by tests).
+- [x] User can configure Persona (preset or custom, max 1,000 chars, toggle on/off) in `Agent → Persona` and see Lumi's style change across devices.
+- [x] Lumi autonomously calls `auto` tools (`get_time`, `save_note`, `search_notes`, `remember_memory`, optional `web_search`) within the 5-step orchestrator loop and streams the final answer via SSE.
+- [x] `ask` tools (`delete_note`, `forget_memory`) pause non-blockingly, push `action.pending` over SSE + Reverb, resume streaming on Approve/Reject, expire after 10 minutes, and never execute if rejected or expired.
+- [x] Every tool execution and approval decision is recorded in `audit_logs` and viewable in Console `/console/audit` without leaking chat text or secrets.
+- [x] Models with `supports_tools = false` (or BYOK models rejecting tools) gracefully fall back to plain 4-layer chat with Persona + Memory.
+- [x] `Agent` menu in the left drawer cleanly hosts Persona, Memory, Notes, and Tools, while `Settings` stays focused on account, AI key, devices, language, and security.
+- [x] Superadmin can toggle tools, configure per-role `auto`/`ask`/`disabled`, and configure optional `web_search` in Console `/console/tools`.
+- [x] Core (Pest + PHPStan), Console (`types:check`, `check`, `build`), and App (`flutter analyze`, `flutter test`) all pass.

@@ -99,6 +99,31 @@ class WebSearchTool implements AgentTool
     }
 
     /**
+     * Verifies a Web Search provider credential from Lumi Console with a minimal query.
+     *
+     * @return array{ok: bool, message: string}
+     */
+    public function testConnection(string $driver, string $apiKey): array
+    {
+        $key = trim($apiKey);
+        if ($key === '') {
+            return ['ok' => false, 'message' => 'API key belum diisi.'];
+        }
+
+        try {
+            match ($driver) {
+                'tavily' => $this->searchTavily('Lumi assistant', $key),
+                'brave' => $this->searchBrave('Lumi assistant', $key),
+                default => throw new \InvalidArgumentException("Unsupported driver: {$driver}"),
+            };
+
+            return ['ok' => true, 'message' => 'Koneksi Web Search berhasil.'];
+        } catch (Throwable $e) {
+            return ['ok' => false, 'message' => 'Koneksi Web Search gagal: '.Str::limit($e->getMessage(), 140)];
+        }
+    }
+
+    /**
      * @return list<array{title: string, url: string, snippet: string}>
      */
     private function searchTavily(string $query, string $apiKey): array
